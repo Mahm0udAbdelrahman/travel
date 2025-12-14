@@ -12,7 +12,7 @@ class OTPHelper
 
         try {
             $response = Http::withHeaders([
-                'beon-token' => 'mBheq217irWK8RErxXwu8kkYDKzKOmyBkXo01r6djbrDyrsL0r0Nmuof2Q1a',
+                'beon-token' => 'mBheq217irWK8RErxXwu8kkYDKzKOmyBkXo01r6djbrDyrsL0r0Nmuof2Q1a123',
                 'Accept'     => 'application/json',
             ])->post('https://v3.api.beon.chat/api/v3/messages/otp', [
                 'phoneNumber' => $phone,
