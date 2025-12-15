@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\AdditionalService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AuthController;
+use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Dashboard\SendNotificationController;
@@ -47,6 +50,21 @@ Route::group(
             Route::delete('send_notifications/{id}', [SendNotificationController::class, 'destroy'])->name('send_notifications.destroy');
             // logout
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+            //cities
+            Route::resource('cities', CityController::class);
+            Route::post('/cities/bulk-delete', [CityController::class, 'bulkDelete'])
+                ->name('cities.bulkDelete');
+
+            //excursions
+            Route::resource('excursions', ExcursionController::class);
+            Route::post('/excursions/bulk-delete', [ExcursionController::class, 'bulkDelete'])
+                ->name('excursions.bulkDelete');
+
+                 //additional_services
+            Route::resource('additional_services', AdditionalService::class);
+            Route::post('/additional_services/bulk-delete', [AdditionalService::class, 'bulkDelete'])
+                ->name('additional_services.bulkDelete');
 
         });
     });

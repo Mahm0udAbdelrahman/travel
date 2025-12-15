@@ -20,7 +20,12 @@ class PermissionSeeder extends Seeder
             'send_notifications-index','send_notifications-show','send_notifications-create','send_notifications-update','send_notifications-delete',
             'categories-index','categories-show','categories-create','categories-update','categories-delete',
             'sub_categories-index','sub_categories-show','sub_categories-create','sub_categories-update','sub_categories-delete',
-        ];
+            'cities-index','cities-create','cities-update','cities-delete',
+            'excursions-index','excursions-create','excursions-update','excursions-delete',
+            'additional_services-index','additional_services-create','additional_services-update','additional_services-delete',
+
+]
+        ;
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }

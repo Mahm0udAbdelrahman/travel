@@ -1,13 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\DeleteAccountController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\RegisterController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ExcursionController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\DeleteAccountController;
+use App\Http\Controllers\Api\AdditionalServiceController;
 
 Route::group(['middleware' => ['lang']], function () {
     // register
@@ -25,15 +28,22 @@ Route::group(['middleware' => ['lang']], function () {
     //reset-password
     Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'profile']);
-    Route::post('/profile', [ProfileController::class, 'updateProfile']);
-    Route::post('/change-password', [PasswordController::class, 'changePassword']);
-    Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::get('/notifications', [NotificationController::class, 'index']);
+    //cities
+    Route::get('/cities', [CityController::class, 'index']);
 
-    Route::delete('/delete_account', [DeleteAccountController::class, 'deleteAccount']);
-});
+    //excursions
+    Route::get('/excursions', [ExcursionController::class, 'index']);
+    //additional_services
+    Route::get('/additional_services', [AdditionalServiceController::class, 'index']);
 
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'profile']);
+        Route::post('/profile', [ProfileController::class, 'updateProfile']);
+        Route::post('/change-password', [PasswordController::class, 'changePassword']);
+        Route::post('/logout', [LogoutController::class, 'logout']);
+        Route::get('/notifications', [NotificationController::class, 'index']);
+
+        Route::delete('/delete_account', [DeleteAccountController::class, 'deleteAccount']);
+    });
 
 });

@@ -54,6 +54,34 @@
                 @endcan
 
 
+                @can('cities-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.cities.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-mtext">City</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('excursions-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.excursions.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-mtext">Excursion</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('additional_services-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.additional_services.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-mtext">Additional Service</span>
+                        </a>
+                    </li>
+                @endcan
+
+
                 {{--  <li class="pc-item pc-hasmenu">
           <a href="../elements/icon-feather.html" class="pc-link">
             <span class="pc-micon"> <i data-feather="feather"></i></span>
