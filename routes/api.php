@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ExcursionController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
+use App\Http\Controllers\Api\OrderAdditionalServiceController;
 
 Route::group(['middleware' => ['lang']], function () {
     // register
@@ -44,6 +45,8 @@ Route::group(['middleware' => ['lang']], function () {
         Route::get('/notifications', [NotificationController::class, 'index']);
 
         Route::delete('/delete_account', [DeleteAccountController::class, 'deleteAccount']);
+
+        Route::post('/order_additional_services', [OrderAdditionalServiceController::class, 'store']);
     });
 
 });

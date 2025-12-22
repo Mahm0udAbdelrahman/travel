@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Http\Requests\Api\Register;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterRequest extends FormRequest
@@ -25,13 +25,13 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone'=> 'required|string|unique:users,phone',
-            'image' => 'nullable|image',
-            'password' => 'required|string|min:8|confirmed',
-            'fcm_token'=> 'required|string',
-            'type'=> 'required|in:customer,supplier,representative',
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'phone'     => 'required|string|unique:users,phone',
+            'image'     => 'nullable|image',
+            'password'  => 'required|string|min:8|confirmed',
+            'fcm_token' => 'required|string',
+            'type'      => ['required', new Enum(\App\Enums\UserType::class)],
         ];
     }
 
@@ -40,8 +40,8 @@ class RegisterRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'message' => $validator->errors()->first(),
-                'type' => 'error',
-                'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'type'    => 'error',
+                'code'    => Response::HTTP_UNPROCESSABLE_ENTITY,
             ], Response::HTTP_UNPROCESSABLE_ENTITY)
         );
     }

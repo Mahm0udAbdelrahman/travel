@@ -41,8 +41,8 @@
                                 <td>{{ $user->phone }}</td>
                             </tr>
                             <tr>
-                                <th>{{ __('Role') }}</th>
-                                <td>{{ $user->roles->first()?->name ?? __('No Role') }}</td>
+                                <th>{{ __('Type') }}</th>
+                                <td>{{ $user->type ?? __('No Type') }}</td>
                             </tr>
                             <tr>
                                 <th>{{ __('Active') }}</th>

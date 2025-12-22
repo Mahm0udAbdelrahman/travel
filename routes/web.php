@@ -1,16 +1,18 @@
 <?php
 
-use App\Models\AdditionalService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Dashboard\SendNotificationController;
+use App\Http\Controllers\Dashboard\AdditionalServiceController;
+use App\Http\Controllers\Dashboard\OrderAdditionalServiceController;
 
 Route::group(
     [
@@ -28,6 +30,11 @@ Route::group(
 
             // roles
             Route::resource('roles', RoleController::class);
+
+            // admins
+            Route::resource('admins', AdminController::class);
+            Route::post('/admins/bulk-delete', [AdminController::class, 'bulkDelete'])
+                ->name('admins.bulkDelete');
 
             // users
             Route::resource('users', UserController::class);
@@ -62,9 +69,14 @@ Route::group(
                 ->name('excursions.bulkDelete');
 
                  //additional_services
-            Route::resource('additional_services', AdditionalService::class);
-            Route::post('/additional_services/bulk-delete', [AdditionalService::class, 'bulkDelete'])
+            Route::resource('additional_services', AdditionalServiceController::class);
+            Route::post('/additional_services/bulk-delete', [AdditionalServiceController::class, 'bulkDelete'])
                 ->name('additional_services.bulkDelete');
+
+                   //order_additional_services
+            Route::resource('order_additional_services', OrderAdditionalServiceController::class);
+            Route::post('/order_additional_services/bulk-delete', [OrderAdditionalServiceController::class, 'bulkDelete'])
+                ->name('order_additional_services.bulkDelete');
 
         });
     });

@@ -20,7 +20,7 @@
                         <span class="pc-micon">
                             <i data-feather="home"></i>
                         </span>
-                        <span class="pc-mtext">Dashboard</span>
+                        <span class="pc-mtext">{{ __('Dashboard') }}</span>
                     </a>
                 </li>
                 {{--  <li class="pc-item pc-caption">
@@ -35,6 +35,15 @@
                         </a>
                     </li>
                 @endcan
+                @can('admins-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.admins.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="user-check"></i></span>
+                            <span class="pc-mtext">Admin</span>
+                        </a>
+                    </li>
+                @endcan
+
                 @can('users-index')
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.users.index') }}" class="pc-link">
@@ -43,6 +52,9 @@
                         </a>
                     </li>
                 @endcan
+
+
+
 
                 @can('send_notifications-index')
                     <li class="pc-item pc-hasmenu">
@@ -53,11 +65,10 @@
                     </li>
                 @endcan
 
-
                 @can('cities-index')
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.cities.index') }}" class="pc-link">
-                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-micon"><i data-feather="map-pin"></i></span>
                             <span class="pc-mtext">City</span>
                         </a>
                     </li>
@@ -66,7 +77,7 @@
                 @can('excursions-index')
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.excursions.index') }}" class="pc-link">
-                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-micon"><i data-feather="compass"></i></span>
                             <span class="pc-mtext">Excursion</span>
                         </a>
                     </li>
@@ -75,11 +86,21 @@
                 @can('additional_services-index')
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.additional_services.index') }}" class="pc-link">
-                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-micon"><i data-feather="plus-circle"></i></span>
                             <span class="pc-mtext">Additional Service</span>
                         </a>
                     </li>
                 @endcan
+
+                @can('order_additional_services-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.order_additional_services.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="clipboard"></i></span>
+                            <span class="pc-mtext">Order Additional Service</span>
+                        </a>
+                    </li>
+                @endcan
+
 
 
                 {{--  <li class="pc-item pc-hasmenu">

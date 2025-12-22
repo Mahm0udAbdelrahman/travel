@@ -64,7 +64,7 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
-                                      <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <label for="image" class="form-label">{{ __('Image') }}</label>
                                         <input type="file" name="image" value="{{ old('image') }}" id="image"
                                             class="form-control" placeholder="{{ __('Enter the user image') }}">
@@ -77,8 +77,12 @@
                                         <label for="is_active" class="form-label">{{ __('Is Active') }}</label>
                                         <select class="form-select" name="is_active" id="is_active">
                                             <option value="" disabled>{{ __('Choose is_active...') }}</option>
-                                            <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>{{ __('UnActive') }}</option>
-                                            <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                            <option value="0"
+                                                {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>
+                                                {{ __('UnActive') }}</option>
+                                            <option value="1"
+                                                {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>
+                                                {{ __('Active') }}</option>
                                         </select>
                                         @error('is_active')
                                             <small class="text-danger">{{ $message }}</small>
@@ -86,21 +90,26 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="role_id" class="form-label">{{ __('Role') }}</label>
-                                        <select class="form-select" name="role_id" id="role_id">
-                                            <option value="" disabled>{{ __('Choose the user role') }}</option>
-                                            @foreach ($roles as $role)
-                                                <option value="{{ $role->id }}" {{ old('role_id', $user->roles->first()?->id) == $role->id ? 'selected' : '' }}>
-                                                    {{ $role->name }}
+                                        <label for="type" class="form-label">{{ __('Role') }}</label>
+                                        <select class="form-select" name="type" id="type">
+                                            <option value=""
+                                                {{ old('type', $user->type ?? '') === '' ? 'selected' : '' }}>
+                                                {{ __('Choose the user type') }}
+                                            </option>
+                                            @foreach (\App\Enums\UserType::options() as $key => $label)
+                                                <option value="{{ $key }}"
+                                                    {{ old('type', $user->type ?? '') == $key ? 'selected' : '' }}>
+                                                    {{ $label }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('role_id')
+                                        @error('type')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
 
-                                           <div class="col-md-6">
+
+                                    <div class="col-md-6">
                                         <label for="password" class="form-label">{{ __('Password') }}</label>
                                         <input type="password" name="password" value="{{ old('password') }}" id="password"
                                             class="form-control" placeholder="{{ __('Enter the user password') }}">

@@ -33,14 +33,14 @@ class AdditionalServiceService
 
     public function update($id, $data)
     {
-        $excursion = $this->show($id);
+        $additional_service = $this->show($id);
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'AdditionalService');
         }
 
-        $excursion->update($data);
+        $additional_service->update($data);
 
-        return $excursion;
+        return $additional_service;
 
     }
 

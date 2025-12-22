@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Requests\Dashboard\User;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
 {
@@ -22,18 +23,18 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => 'required|string|max:255',
-            'email'    => ['required', 'email', Rule::unique('users')],
-            'phone'    => [
+            'name'      => 'required|string|max:255',
+            'email'     => ['required', 'email', Rule::unique('users')],
+            'phone'     => [
                 'required',
                 'string',
                 'regex:/^[0-9]+$/',
                 Rule::unique('users'),
             ],
-            'password' => 'required|string|min:8',
-            'role_id'  => ['required', 'exists:roles,id'],
-            'is_active'  => ['required', 'boolean'],
-            'image'    => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'password'  => 'required|string|min:8',
+            'type'      => ['required', new Enum(\App\Enums\UserType::class)],
+            'is_active' => ['required', 'boolean'],
+            'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
     }
 

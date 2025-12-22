@@ -2,6 +2,7 @@
 namespace App\Http\Requests\Dashboard\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -21,18 +22,18 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'         => 'nullable|string|max:255',
-            'email'        => ['nullable', 'email'],
-            'phone' => [
+            'name'      => 'nullable|string|max:255',
+            'email'     => ['nullable', 'email'],
+            'phone'     => [
                 'nullable',
                 'string',
                 'regex:/^[0-9]+$/',
                 // 'unique:users,phone,' . $this->id,
             ],
-            'password'     => 'nullable|string|min:8',
-            'role_id'      => ['nullable', 'exists:roles,id'],
-            'is_active'  => ['required', 'in:0,1'],
-            'image'        => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'password'  => 'nullable|string|min:8',
+            'type'      => ['required', new Enum(\App\Enums\UserType::class)],
+            'is_active' => ['required', 'in:0,1'],
+            'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
     }
 }

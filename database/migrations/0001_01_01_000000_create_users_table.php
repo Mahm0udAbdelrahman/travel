@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('password');
             $table->string('image')->nullable();
-            $table->enum('type', ['customer', 'supplier','representative'])->default('customer');
+            $table->string('type')->default(\App\Enums\UserType::CUSTOMER->value);
             $table->boolean('is_active')->default(true);
             $table->string('code')->nullable();
             $table->timestamp('expire_at')->nullable();

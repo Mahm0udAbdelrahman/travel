@@ -64,7 +64,7 @@
                                                     <td>{{ $user->name }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>{{ $user->phone }}</td>
-                                                    <td>{{ $user->roles->first()?->name }}</td>
+                                                    <td>{{ $user->type }}</td>
                                                     <td>{{ $user->is_active == 1 ? 'Active' : 'Unactive' }}</td>
 
                                                     <td>

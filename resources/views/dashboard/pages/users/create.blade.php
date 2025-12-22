@@ -86,18 +86,15 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="role_id" class="form-label">{{ __('Role') }}</label>
-                                        <select class="form-select" name="role_id" id="role_id">
-                                            <option value="" {{ old('role_id') === null ? 'selected' : '' }}>
+                                        <label for="type" class="form-label">{{ __('Role') }}</label>
+                                        <select class="form-select" name="type" id="type">
+                                            <option value="" {{ old('type') === null ? 'selected' : '' }}>
                                                 {{ __('Choose the user role') }}</option>
-                                            @foreach ($roles as $role)
-                                                <option value="{{ $role->id }}"
-                                                    {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                                                    {{ $role->name }}
-                                                </option>
+                                            @foreach (\App\Enums\UserType::options() as $key => $label)
+                                                <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
                                         </select>
-                                        @error('role_id')
+                                        @error('type')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>

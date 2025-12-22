@@ -3,7 +3,6 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Traits\HasImage;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -36,14 +35,6 @@ class UserService
 
         $user = $this->user->create($data);
 
-        if (isset($data['role_id'])) {
-            DB::table('model_has_roles')->insert([
-                'model_type' => 'App\\Models\\User',
-                'model_id'   => $user->id,
-                'role_id'    => $data['role_id'],
-            ]);
-        }
-
         return $user;
     }
 
@@ -63,17 +54,6 @@ class UserService
             $data['image'] = $user->image;
         }
         $user->update($data);
-        if (isset($data['role_id']) && ! empty($data['role_id'])) {
-            $criteria   = ['model_id' => $user->id];
-            $attributes = [
-                'model_type' => 'App\\Models\\User',
-                'model_id'   => $user->id,
-                'role_id'    => $data['role_id'],
-            ];
-            DB::table('model_has_roles')->updateOrInsert($criteria, $attributes);
-        } else {
-            DB::table('model_has_roles')->where('model_id', $user->id)->delete();
-        }
 
         return $user;
 

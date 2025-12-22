@@ -21,8 +21,7 @@ class UserController extends Controller
     }
     public function create()
     {
-        $roles = $this->userService->create();
-        return view('dashboard.pages.users.create', compact('roles'));
+        return view('dashboard.pages.users.create');
     }
 
     public function store(StoreUserRequest $storeUserRequest)
@@ -43,8 +42,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = $this->userService->create();
-        return view('dashboard.pages.users.edit', compact('user', 'roles'));
+
+        return view('dashboard.pages.users.edit', compact('user'));
     }
 
     public function update($id, UpdateUserRequest $updateUserRequest)
