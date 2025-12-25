@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class RealEstate extends Model
 {
     protected $fillable = [
-        'category_event_id',
+        'category_real_estate_id',
         'image',
         'name',
         'city_id',
-        'date',
         'description',
         'price',
         'is_active',
@@ -21,14 +20,11 @@ class Event extends Model
         'name' => 'array',
         'description' => 'array',
         'is_active' => 'boolean',
-        'category_event_id' => 'integer',
-        'city_id' => 'integer',
-
     ];
 
-    public function categoryEvent()
+    public function categoryRealEstate()
     {
-        return $this->belongsTo(CategoryEvent::class);
+        return $this->belongsTo(CategoryRealEstate::class);
     }
 
     public function city()
@@ -36,7 +32,7 @@ class Event extends Model
         return $this->belongsTo(City::class);
     }
 
-     public function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }

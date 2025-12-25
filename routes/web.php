@@ -9,11 +9,13 @@ use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\EventController;
 use App\Http\Controllers\Dashboard\ExcursionController;
+use App\Http\Controllers\Dashboard\RealEstateController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use App\Http\Controllers\Dashboard\CategoryEventController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Dashboard\SendNotificationController;
 use App\Http\Controllers\Dashboard\AdditionalServiceController;
+use App\Http\Controllers\Dashboard\CategoryRealEstateController;
 use App\Http\Controllers\Dashboard\OrderAdditionalServiceController;
 
 Route::group(
@@ -88,6 +90,16 @@ Route::group(
                     Route::resource('events', EventController::class);
             Route::post('/events/bulk-delete', [EventController::class, 'bulkDelete'])
                 ->name('events.bulkDelete');
+
+
+                 Route::resource('category_real_estates', CategoryRealEstateController::class);
+            Route::post('/category_real_estates/bulk-delete', [CategoryRealEstateController::class, 'bulkDelete'])
+                ->name('category_real_estates.bulkDelete');
+
+
+                    Route::resource('real_estates', RealEstateController::class);
+            Route::post('/real_estates/bulk-delete', [RealEstateController::class, 'bulkDelete'])
+                ->name('real_estates.bulkDelete');
 
         });
     });

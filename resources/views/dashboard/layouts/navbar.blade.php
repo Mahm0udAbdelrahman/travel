@@ -120,6 +120,25 @@
                 @endcan
 
 
+                @can('category_real_estates-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.category_real_estates.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="layers"></i></span>
+                            <span class="pc-mtext">Category Real Estates</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('real_estates-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.real_estates.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="map-pin"></i></span>
+                            <span class="pc-mtext">Real Estates</span>
+                        </a>
+                    </li>
+                @endcan
+
+
 
 
                 {{--  <li class="pc-item pc-hasmenu">

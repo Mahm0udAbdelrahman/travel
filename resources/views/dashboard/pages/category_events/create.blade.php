@@ -28,7 +28,7 @@
                         @csrf
                         <div class="card border-0">
                             <div class="card-header bg-primary text-white rounded-top">
-                                <h5 class="mb-0">{{ __('Add Category Events') }}</h5>
+                                <h5 class="mb-0">{{ __('Add Category Event') }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">

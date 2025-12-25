@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Traits\HttpResponse;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\RealEstateResource;
+use App\Services\Api\RealEstateService;
+
+class RealEstateController extends Controller
+{
+    use HttpResponse;
+    public function __construct(public RealEstateService $realEstateService) {}
+    public function index(Request $request)
+    {
+        $real_estates = $this->realEstateService->index();
+        return $this->paginatedResponse($real_estates, RealEstateResource::class);
+    }
+
+}

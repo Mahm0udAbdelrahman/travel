@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Api;
 
-use App\Models\Event;
+use App\Models\RealEstate;
 
-class EventService
+class RealEstateService
 {
-    public function __construct(public Event $model)
+    public function __construct(public RealEstate $model)
     {}
 
     public function index()

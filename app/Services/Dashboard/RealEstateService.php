@@ -1,15 +1,15 @@
 <?php
 namespace App\Services\Dashboard;
 
+use App\Models\CategoryRealEstate;
 use App\Models\City;
-use App\Models\Event;
+use App\Models\RealEstate;
 use App\Traits\HasImage;
-use App\Models\CategoryEvent;
 
-class EventService
+class RealEstateService
 {
     use HasImage;
-    public function __construct(public Event $model)
+    public function __construct(public RealEstate $model)
     {}
 
     public function index()
@@ -18,9 +18,9 @@ class EventService
         return $this->model->latest()->paginate(10);
     }
 
-    public function getCategoryEvents()
+    public function getCategoryRealEstates()
     {
-        return CategoryEvent::active()->get();
+        return CategoryRealEstate::active()->get();
     }
     public function getCities()
     {
@@ -30,7 +30,7 @@ class EventService
     public function store($data)
     {
         if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'Event');
+            $data['image'] = $this->saveImage($data['image'], 'RealEstate');
         }
 
         return $this->model->create($data);
@@ -44,24 +44,24 @@ class EventService
 
     public function update($id, $data)
     {
-        $event = $this->show($id);
+        $realEstate = $this->show($id);
         if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'Event');
+            $data['image'] = $this->saveImage($data['image'], 'RealEstate');
         }
 
-        $event->update($data);
+        $realEstate->update($data);
 
-        return $event;
+        return $realEstate;
 
     }
 
     public function destroy($id)
     {
-        $event = $this->show($id);
+        $realEstate = $this->show($id);
 
-        $event->delete();
+        $realEstate->delete();
 
-        return $event;
+        return $realEstate;
     }
 
     public function bulkDelete($ids)

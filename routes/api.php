@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\ExcursionController;
+use App\Http\Controllers\Api\RealEstateController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
@@ -40,6 +41,9 @@ Route::group(['middleware' => ['lang']], function () {
 
      //events
     Route::get('/events', [EventController::class, 'index']);
+
+     //real_estates
+    Route::get('/real_estates', [RealEstateController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [ProfileController::class, 'profile']);

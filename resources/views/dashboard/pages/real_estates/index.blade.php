@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Events'))
+@section('title', __('Real Estates'))
 
 @section('content')
     <div class="pc-container">
@@ -9,11 +9,11 @@
             <div class="page-header">
                 <div class="page-block">
                     <div class="page-header-title">
-                        <h5 class="mb-0 font-medium">{{ __('Events') }}</h5>
+                        <h5 class="mb-0 font-medium">{{ __('Real Estates') }}</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('Admin.home') }}">{{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item" aria-current="page">{{ __('Events') }}</li>
+                        <li class="breadcrumb-item" aria-current="page">{{ __('Real Estates') }}</li>
                     </ul>
                 </div>
             </div>
@@ -26,11 +26,11 @@
                         <!-- Add User Button -->
 
                         <div class="card-header flex justify-between items-center">
-                            <h5>{{ __('Events List') }}</h5>
+                            <h5>{{ __('Real Estates List') }}</h5>
 
-                            @can('events-create')
-                                <a href="{{ route('Admin.events.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-add"></i> {{ __('Add Event') }}
+                            @can('real_estates-create')
+                                <a href="{{ route('Admin.real_estates.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-add"></i> {{ __('Add Real Estate') }}
                                 </a>
                             @endcan
                         </div>
@@ -39,7 +39,7 @@
                             <div class="table-responsive text-center">
                                 <table id="example2" class="table table-striped table-bordered">
 
-                                    <form action="{{ route('Admin.events.bulkDelete') }}" method="post"
+                                    <form action="{{ route('Admin.real_estates.bulkDelete') }}" method="post"
                                         id="bulkDeleteForm">
                                         @csrf
 
@@ -49,9 +49,8 @@
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Description') }}</th>
                                                 <th>{{ __('Image') }}</th>
-                                                <th>{{ __('Date') }}</th>
                                                 <th>{{ __('City') }}</th>
-                                                <th>{{ __('Category Event') }}</th>
+                                                <th>{{ __('Category Real Estate') }}</th>
                                                 <th>{{ __('Price') }}</th>
                                                 <th>{{ __('Active') }}</th>
                                                 <th>
@@ -62,48 +61,47 @@
                                         </thead>
 
                                         <tbody>
-                                            @forelse($events as $event)
+                                            @forelse($real_estates as $realEstate)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $event->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $event->description[app()->getLocale()] }}</td>
+                                                    <td>{{ $realEstate->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $realEstate->description[app()->getLocale()] }}</td>
                                                     <td>
-                                                        <img src="{{ $event->image }}" class="img-thumbnail"
+                                                        <img src="{{ $realEstate->image }}" class="img-thumbnail"
                                                             style="width:60px;">
                                                     </td>
 
-                                                    <td>{{ $event->date }}</td>
-                                                    <td>{{ $event->city->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $event->categoryEvent->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $event->price }}</td>
-                                                    <td>{{ $event->is_active == 1 ? 'Active' : 'Unactive' }}
+                                                    <td>{{ $realEstate->city->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $realEstate->categoryRealEstate->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $realEstate->price }}</td>
+                                                    <td>{{ $realEstate->is_active == 1 ? 'Active' : 'Unactive' }}
                                                     </td>
 
                                                     <td>
-                                                        <input type="checkbox" name="ids[]" value="{{ $event->id }}"
+                                                        <input type="checkbox" name="ids[]" value="{{ $realEstate->id }}"
                                                             class="userCheckbox">
                                                     </td>
 
                                                     <td>
-                                                        @can('events-delete')
+                                                        @can('real_estates-delete')
                                                             <button type="button" class="btn btn-danger w-25 delete-user-btn"
-                                                                data-id="{{ $event->id }}">
+                                                                data-id="{{ $realEstate->id }}">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </button>
                                                         @endcan
-                                                        @can('events-show')
-                                                            <a href="{{ route('Admin.events.show', $event) }}"
+                                                        @can('real_estates-show')
+                                                            <a href="{{ route('Admin.real_estates.show', $realEstate) }}"
                                                                 class="btn btn-warning"><i class="fas fa-eye"></i></a>
                                                         @endcan
-                                                        @can('events-update')
-                                                            <a href="{{ route('Admin.events.edit', $event) }}"
+                                                        @can('real_estates-update')
+                                                            <a href="{{ route('Admin.real_estates.edit', $realEstate) }}"
                                                                 class="btn btn-info"><i class="fas fa-edit"></i></a>
                                                         @endcan
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="11">{{ __('Nothing!') }}</td>
+                                                    <td colspan="10">{{ __('Nothing!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -119,7 +117,7 @@
 
                                 <!-- Pagination -->
                                 <div class="mt-3" style="padding:5px;direction: ltr;">
-                                    {!! $events->withQueryString()->links('pagination::bootstrap-5') !!}
+                                    {!! $real_estates->withQueryString()->links('pagination::bootstrap-5') !!}
                                 </div>
 
                             </div>
@@ -151,7 +149,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let form = document.createElement('form');
-                            form.action = '{{ url('/admin/events') }}/' + id;
+                            form.action = '{{ url('/admin/real_estates') }}/' + id;
                             form.method = 'POST';
                             form.style.display = 'none';
 

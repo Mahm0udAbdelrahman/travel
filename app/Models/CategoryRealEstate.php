@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryEvent extends Model
+class CategoryRealEstate extends Model
 {
-    protected $fillable = ['name', 'is_active'];
+        protected $fillable = ['name', 'is_active'];
 
     protected $casts = [
         'name' => 'array',
         'is_active' => 'boolean',
     ];
 
-    public function events()
+    public function realEstates()
     {
-        return $this->hasMany(Event::class);
+        return $this->hasMany(RealEstate::class);
     }
 
 
@@ -23,5 +23,4 @@ class CategoryEvent extends Model
     {
         return $query->where('is_active', true);
     }
-
 }
