@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
@@ -36,6 +37,9 @@ Route::group(['middleware' => ['lang']], function () {
     Route::get('/excursions', [ExcursionController::class, 'index']);
     //additional_services
     Route::get('/additional_services', [AdditionalServiceController::class, 'index']);
+
+     //events
+    Route::get('/events', [EventController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [ProfileController::class, 'profile']);

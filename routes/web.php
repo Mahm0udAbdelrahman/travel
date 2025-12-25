@@ -7,8 +7,10 @@ use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\AdminController;
+use App\Http\Controllers\Dashboard\EventController;
 use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\Dashboard\CategoryEventController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Dashboard\SendNotificationController;
 use App\Http\Controllers\Dashboard\AdditionalServiceController;
@@ -78,10 +80,19 @@ Route::group(
             Route::post('/order_additional_services/bulk-delete', [OrderAdditionalServiceController::class, 'bulkDelete'])
                 ->name('order_additional_services.bulkDelete');
 
+                    Route::resource('category_events', CategoryEventController::class);
+            Route::post('/category_events/bulk-delete', [CategoryEventController::class, 'bulkDelete'])
+                ->name('category_events.bulkDelete');
+
+
+                    Route::resource('events', EventController::class);
+            Route::post('/events/bulk-delete', [EventController::class, 'bulkDelete'])
+                ->name('events.bulkDelete');
+
         });
     });
-Route::get('/notifications/count', function () {
-    return response()->json([
-        'unread_count' => auth()->user()->unreadNotifications()->count(),
-    ]);
-})->name('notifications.count');
+// Route::get('/notifications/count', function () {
+//     return response()->json([
+//         'unread_count' => auth()->user()->unreadNotifications()->count(),
+//     ]);
+// })->name('notifications.count');

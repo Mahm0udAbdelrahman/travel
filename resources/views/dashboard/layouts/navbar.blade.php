@@ -101,6 +101,25 @@
                     </li>
                 @endcan
 
+                @can('category_events-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.category_events.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="tag"></i></span>
+                            <span class="pc-mtext">Category Events</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('events-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.events.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="calendar"></i></span>
+                            <span class="pc-mtext">Events</span>
+                        </a>
+                    </li>
+                @endcan
+
+
 
 
                 {{--  <li class="pc-item pc-hasmenu">

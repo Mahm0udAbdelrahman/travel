@@ -1,0 +1,28 @@
+<?php
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class EventResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id'   => $this->id,
+            'category_event' => $this->categoryEvent->name[app()->getLocale()] ?? $this->categoryEvent->name['en'] ?? null,
+            'image' => $this->image,
+            'name' => $this->name[app()->getLocale()] ?? $this->name['en'] ?? null,
+            'date' => $this->date,
+            'description' => $this->description[app()->getLocale()] ?? $this->description['en'] ?? null,
+            'price' => $this->price,
+            'city' => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
+
+        ];
+    }
+}
