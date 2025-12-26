@@ -18,7 +18,10 @@ class ExcursionController extends Controller
     }
     public function create()
     {
-        return view('dashboard.pages.excursions.create');
+
+         $category_excursions = $this->excursionService->getCategoryExcursions();
+            $cities = $this->excursionService->getCities();
+        return view('dashboard.pages.excursions.create', compact('category_excursions','cities'));
     }
 
     public function store(StoreExcursionRequest $storeCityRequest)
@@ -41,7 +44,10 @@ class ExcursionController extends Controller
     {
          $excursion = $this->excursionService->show($id);
 
-        return view('dashboard.pages.excursions.edit', compact('excursion'));
+         $category_excursions = $this->excursionService->getCategoryExcursions();
+            $cities = $this->excursionService->getCities();
+
+        return view('dashboard.pages.excursions.edit', compact('excursion','category_excursions','cities'));
     }
 
     public function update($id, UpdateExcursionRequest $updateCityRequest)

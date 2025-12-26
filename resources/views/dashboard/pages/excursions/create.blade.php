@@ -2,158 +2,180 @@
 @section('title', __('Add Excursion'))
 
 @section('content')
-    <div class="pc-container">
-        <div class="pc-content">
+<div class="pc-container">
+    <div class="pc-content">
 
-            <!-- Page Header -->
-            <div class="page-header">
-                <div class="page-block">
-                    <div class="page-header-title">
-                        <h5 class="mb-0 font-medium">{{ __('Add Excursion') }}</h5>
-                    </div>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('Admin.home') }}">{{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('Admin.excursions.index') }}">{{ __('Excursions') }}</a></li>
-                        <li class="breadcrumb-item" aria-current="page">{{ __('Add Excursion') }}</li>
-                    </ul>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="page-header-title">
+                    <h5 class="mb-0">{{ __('Add Excursion') }}</h5>
                 </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('Admin.home') }}">{{ __('Home') }}</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('Admin.excursions.index') }}">{{ __('Excursions') }}</a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ __('Add Excursion') }}</li>
+                </ul>
             </div>
+        </div>
 
-            <!-- Main Content -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <form method="post" action="{{ route('Admin.excursions.store') }}" enctype="multipart/form-data"
-                        class="p-3 rounded shadow-lg bg-white">
-                        @csrf
-                        <div class="card border-0">
-                            <div class="card-header bg-primary text-white rounded-top">
-                                <h5 class="mb-0">{{ __('Add City') }}</h5>
-                            </div>
-                            <div class="card-body">
+        <form method="POST" action="{{ route('Admin.excursions.store') }}" enctype="multipart/form-data">
+            @csrf
+
+            {{-- Languages Tabs --}}
+            @php
+                $langs = [
+                    'ar'=>'Arabic','en'=>'English','es'=>'Spanish','it'=>'Italian',
+                    'de'=>'German','ja'=>'Japanese','zh'=>'Chinese','ru'=>'Russian','fr'=>'French'
+                ];
+            @endphp
+
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">{{ __('Event Translations') }}</h6>
+                </div>
+
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-4" role="tablist">
+                        @foreach($langs as $key => $lang)
+                            <li class="nav-item">
+                                <button class="nav-link {{ $loop->first ? 'active' : '' }}"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#lang-{{ $key }}"
+                                    type="button">
+                                    {{ $lang }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="tab-content">
+                        @foreach($langs as $key => $lang)
+                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="lang-{{ $key }}">
                                 <div class="row g-3">
-
-
                                     <div class="col-md-6">
-                                        <label for="name_ar" class="form-label">{{ __('Name Ar') }}</label>
-                                        <input type="text" name="name[ar]" id="name_ar" value="{{ old('name.ar') }}"
-                                            class="form-control" placeholder="{{ __('Enter the city name') }}">
-                                        @error('name.ar')
+                                        <label class="form-label">Name ({{ $lang }})</label>
+                                        <input type="text"
+                                               name="name[{{ $key }}]"
+                                               value="{{ old("name.$key") }}"
+                                               class="form-control">
+                                        @error("name.$key")
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="name_en" class="form-label">{{ __('Name En') }}</label>
-                                        <input type="text" name="name[en]" id="name_en" value="{{ old('name.en') }}"
-                                            class="form-control" placeholder="{{ __('Enter the city name') }}">
-                                        @error('name.en')
+                                        <label class="form-label">Description ({{ $lang }})</label>
+                                        <input type="text"
+                                               name="description[{{ $key }}]"
+                                               value="{{ old("description.$key") }}"
+                                               class="form-control">
+                                        @error("description.$key")
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <label for="name_es" class="form-label">{{ __('Name Es') }}</label>
-                                        <input type="text" name="name[es]" id="name_es" value="{{ old('name.es') }}"
-                                            class="form-control" placeholder="{{ __('Enter the city name') }}">
-                                        @error('name.es')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-
-                                    <div class="col-md-6">
-                                        <label for="name_it" class="form-label">{{ __('Name It') }}</label>
-                                        <input type="text" name="name[it]" id="name_it" value="{{ old('name.it') }}"
-                                            class="form-control" placeholder="{{ __('Enter the city name') }}">
-                                        @error('name.it')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Name De</label>
-                                        <input type="text" name="name[de]" value="{{ old('name.de') }}"
-                                            class="form-control">
-                                        @error('name.de')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Name Ja</label>
-                                        <input type="text" name="name[ja]" value="{{ old('name.ja') }}"
-                                            class="form-control">
-                                        @error('name.ja')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Name Zh</label>
-                                        <input type="text" name="name[zh]" value="{{ old('name.zh') }}"
-                                            class="form-control">
-                                        @error('name.zh')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Name Ru</label>
-                                        <input type="text" name="name[ru]" value="{{ old('name.ru') }}"
-                                            class="form-control">
-                                        @error('name.ru')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Name Fr</label>
-                                        <input type="text" name="name[fr]" value="{{ old('name.fr') }}"
-                                            class="form-control">
-                                        @error('name.fr')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Image</label>
-                                        <input type="file" name="image" value="{{ old('image') }}"
-                                            class="form-control">
-                                        @error('image')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-
-                                    <div class="col-md-6">
-                                        <label for="is_active" class="form-label">{{ __('Is Active') }}</label>
-                                        <select class="form-select" name="is_active" id="is_active">
-                                            <option value="" {{ old('is_active') === null ? 'selected' : '' }}>
-                                                {{ __('Choose is_active...') }}</option>
-                                            <option value="0" {{ old('is_active') === '0' ? 'selected' : '' }}>
-                                                {{ __('UnActive') }}</option>
-                                            <option value="1" {{ old('is_active') === '1' ? 'selected' : '' }}>
-                                                {{ __('Active') }}</option>
-                                        </select>
-                                        @error('is_active')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-
-
-
                                 </div>
                             </div>
-                            <div class="card-footer text-end bg-light rounded-bottom">
-                                <button type="submit" class="btn btn-primary px-4">{{ __('Save') }}</button>
-                            </div>
-                        </div>
-                    </form>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-        </div>
+            {{-- Main Info --}}
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">{{ __('Event Information') }}</h6>
+                        </div>
+                        <div class="card-body row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">{{ __('Price') }}</label>
+                                <input type="text" name="price" value="{{ old('price') }}" class="form-control">
+                                @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+
+                             <div class="col-md-6">
+                                <label class="form-label">{{ __('Hours') }}</label>
+                                <input type="text" name="hours" value="{{ old('hours') }}" class="form-control">
+                                @error('hours') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+
+
+
+                            <div class="col-md-6">
+                                <label class="form-label">{{ __('Category') }}</label>
+                                <select name="category_excursion_id" class="form-select">
+                                    <option value="">{{ __('Choose...') }}</option>
+                                    @foreach($category_excursions as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ old('category_excursion_id') == $category->id ? 'selected' : '' }}>
+                                            {{ data_get($category->name, app()->getLocale(), $category->name['en']) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category_excursion_id') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">{{ __('City') }}</label>
+                                <select name="city_id" class="form-select">
+                                    <option value="">{{ __('Choose...') }}</option>
+                                    @foreach($cities as $city)
+                                        <option value="{{ $city->id }}"
+                                            {{ old('city_id') == $city->id ? 'selected' : '' }}>
+                                            {{ data_get($city->name, app()->getLocale(), $city->name['en']) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('city_id') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Settings --}}
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">{{ __('Settings') }}</h6>
+                        </div>
+                        <div class="card-body">
+
+                            <label class="form-label">{{ __('Image') }}</label>
+                            <input type="file" name="image" class="form-control mb-3">
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+
+                            <label class="form-label">{{ __('Status') }}</label>
+                            <select name="is_active" class="form-select">
+                                <option value="1" {{ old('is_active') == '1' ? 'selected' : '' }}>
+                                    {{ __('Active') }}
+                                </option>
+                                <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>
+                                    {{ __('UnActive') }}
+                                </option>
+                            </select>
+                            @error('is_active') <small class="text-danger">{{ $message }}</small> @enderror
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Submit --}}
+            <div class="text-end mb-5">
+                <button class="btn btn-primary px-5">
+                    <i class="ti ti-device-floppy"></i> {{ __('Save Event') }}
+                </button>
+            </div>
+
+        </form>
     </div>
+</div>
 @endsection

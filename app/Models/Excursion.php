@@ -6,17 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class Excursion extends Model
 {
-     protected $fillable = [
-        'name',
+    protected $fillable = [
+        'category_excursion_id',
         'image',
+        'name',
+        'city_id',
+        'description',
+        'price',
+        'hours',
         'is_active',
     ];
 
     protected $casts = [
         'name' => 'array',
+        'description' => 'array',
         'is_active' => 'boolean',
     ];
- public function scopeActive($query)
+
+    public function categoryExcursion()
+    {
+        return $this->belongsTo(CategoryExcursion::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }

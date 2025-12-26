@@ -15,7 +15,7 @@ class ExcursionController extends Controller
     public function index(Request $request)
     {
         $excursions = $this->excursionService->index();
-        return $this->paginatedResponse($excursions, ExcursionResource::class); ;
+        return $this->paginatedResponse($excursions, ExcursionResource::class);
     }
 
 }

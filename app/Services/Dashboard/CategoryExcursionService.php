@@ -2,10 +2,9 @@
 namespace App\Services\Dashboard;
 
 use App\Models\CategoryExcursion;
-use App\Models\City;
 use App\Traits\HasImage;
 
-class ExcursionService
+class CategoryExcursionService
 {
     use HasImage;
     public function __construct(public CategoryExcursion $model)
@@ -17,20 +16,8 @@ class ExcursionService
         return $this->model->latest()->paginate(10);
     }
 
-    public function getCategoryExcursions()
-    {
-        return CategoryExcursion::active()->get();
-    }
-    public function getCities()
-    {
-        return City::active()->get();
-    }
-
     public function store($data)
     {
-        if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'excursion');
-        }
 
         return $this->model->create($data);
 
@@ -43,24 +30,20 @@ class ExcursionService
 
     public function update($id, $data)
     {
-        $excursion = $this->show($id);
-        if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'excursion');
-        }
+        $categoryExcursion = $this->show($id);
 
-        $excursion->update($data);
+        $categoryExcursion->update($data);
 
-        return $excursion;
-
+        return $categoryExcursion;
     }
 
     public function destroy($id)
     {
-        $excursion = $this->show($id);
+        $categoryExcursion = $this->show($id);
 
-        $excursion->delete();
+        $categoryExcursion->delete();
 
-        return $excursion;
+        return $categoryExcursion;
     }
 
     public function bulkDelete($ids)

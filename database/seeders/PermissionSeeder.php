@@ -22,6 +22,7 @@ class PermissionSeeder extends Seeder
             'categories-index','categories-show','categories-create','categories-update','categories-delete',
             'sub_categories-index','sub_categories-show','sub_categories-create','sub_categories-update','sub_categories-delete',
             'cities-index','cities-create','cities-update','cities-delete',
+            'category_excursions-index','category_excursions-create','category_excursions-update','category_excursions-delete',
             'excursions-index','excursions-create','excursions-update','excursions-delete',
             'additional_services-index','additional_services-create','additional_services-update','additional_services-delete',
             'order_additional_services-index','order_additional_services-show','order_additional_services-delete',

@@ -15,6 +15,7 @@ use App\Http\Controllers\Dashboard\CategoryEventController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Dashboard\SendNotificationController;
 use App\Http\Controllers\Dashboard\AdditionalServiceController;
+use App\Http\Controllers\Dashboard\CategoryExcursionController;
 use App\Http\Controllers\Dashboard\CategoryRealEstateController;
 use App\Http\Controllers\Dashboard\OrderAdditionalServiceController;
 
@@ -66,6 +67,11 @@ Route::group(
             Route::resource('cities', CityController::class);
             Route::post('/cities/bulk-delete', [CityController::class, 'bulkDelete'])
                 ->name('cities.bulkDelete');
+
+                   //category_excursions
+            Route::resource('category_excursions', CategoryExcursionController::class);
+            Route::post('/category_excursions/bulk-delete', [CategoryExcursionController::class, 'bulkDelete'])
+                ->name('category_excursions.bulkDelete');
 
             //excursions
             Route::resource('excursions', ExcursionController::class);

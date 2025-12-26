@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\RealEstateController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
+use App\Http\Controllers\Api\CategoryExcursionController;
 use App\Http\Controllers\Api\OrderAdditionalServiceController;
 
 Route::group(['middleware' => ['lang']], function () {
@@ -34,6 +35,8 @@ Route::group(['middleware' => ['lang']], function () {
     //cities
     Route::get('/cities', [CityController::class, 'index']);
 
+    //category_excursions
+    Route::get('/category_excursions', [CategoryExcursionController::class, 'index']);
     //excursions
     Route::get('/excursions', [ExcursionController::class, 'index']);
     //additional_services

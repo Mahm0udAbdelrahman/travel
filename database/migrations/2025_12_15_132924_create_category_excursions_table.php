@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('excursions', function (Blueprint $table) {
+        Schema::create('category_excursions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_excursion_id')->constrained('category_excursions')->cascadeOnDelete();
-            $table->string('image');
             $table->json('name');
-            $table->foreignId('city_id')->constrained('cities')->cascadeOnDelete();
-            $table->json('description');
-            $table->string('price');
-            $table->string('hours');
+            $table->string('image');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -30,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('excursions');
+        Schema::dropIfExists('category_excursions');
     }
 };
