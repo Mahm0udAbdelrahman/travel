@@ -43,7 +43,7 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">{{ __('Image') }}</label>
                                     <div>
-                                        <img src="{{ asset($realEstate->image) }}" class="img-fluid rounded shadow"
+                                        <img src="{{ asset($realEstate->image) }}" class="img-fluid rounded shadow w-50"
                                             alt="real estate image">
                                     </div>
                                 </div>

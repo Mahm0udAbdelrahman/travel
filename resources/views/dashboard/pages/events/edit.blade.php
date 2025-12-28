@@ -160,8 +160,8 @@
 
                             <label class="form-label">{{ __('Current Image') }}</label>
                             @if($event->image)
-                                <img src="{{ asset('storage/'.$event->image) }}"
-                                     class="img-fluid rounded mb-2">
+                                <img src="{{ asset($event->image) }}"
+                                     class="img-fluid rounded mb-2 w-50">
                             @endif
 
                             <input type="file" name="image" class="form-control mb-3">

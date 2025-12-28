@@ -154,7 +154,7 @@
                             <label class="form-label">{{ __('Current Image') }}</label>
                             @if($real_estate->image)
                                 <img src="{{ asset($real_estate->image) }}"
-                                     class="img-fluid rounded mb-2">
+                                     class="img-fluid rounded mb-2 w-50">
                             @endif
 
                             <input type="file" name="image" class="form-control mb-3">
@@ -179,7 +179,7 @@
             {{-- Submit --}}
             <div class="text-end mb-5">
                 <button class="btn btn-primary px-5">
-                    <i class="ti ti-refresh"></i> {{ __('Update Event') }}
+                    <i class="ti ti-refresh"></i> {{ __('Update Real Estate') }}
                 </button>
             </div>
 

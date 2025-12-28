@@ -43,7 +43,7 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">{{ __('Image') }}</label>
                                     <div>
-                                        <img src="{{ asset($excursion->image) }}" class="img-fluid rounded shadow"
+                                        <img src="{{ asset($excursion->image) }}" class="img-fluid rounded shadow w-50"
                                             alt="excursion image">
                                     </div>
                                 </div>

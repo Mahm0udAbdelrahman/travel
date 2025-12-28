@@ -14,6 +14,7 @@
     <meta name="keywords"
         content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
     <meta name="author" content="CodedThemes" />
+<link href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- [Favicon] icon -->
     <link rel="icon" href="{{ asset('dashboard/assets/images/favicon.svg') }}" type="image/x-icon" />
@@ -34,7 +35,6 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/style.css') }}" id="main-style-link" />
 
-{{--  <link href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">  --}}
 
     @stack('css')
 </head>

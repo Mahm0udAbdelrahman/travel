@@ -42,7 +42,6 @@ class StoreExcursionRequest extends FormRequest
             'description.ru'    => ['nullable', 'string', 'max:255'],
             'description.fr'    => ['nullable', 'string', 'max:255'],
             'image'             => ['required', 'image'],
-            'date'              => ['required', 'date'],
             'category_excursion_id' => ['required', 'exists:category_excursions,id'],
             'hours'             => ['required', 'string', 'max:255'],
             'city_id'           => ['required', 'exists:cities,id'],

@@ -1,14 +1,15 @@
 <?php
 namespace App\Services\Dashboard;
 
-use App\Models\CategoryExcursion;
 use App\Models\City;
 use App\Traits\HasImage;
+use App\Models\Excursion;
+use App\Models\CategoryExcursion;
 
 class ExcursionService
 {
     use HasImage;
-    public function __construct(public CategoryExcursion $model)
+    public function __construct(public Excursion $model)
     {}
 
     public function index()

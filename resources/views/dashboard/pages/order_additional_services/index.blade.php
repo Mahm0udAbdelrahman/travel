@@ -100,7 +100,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8">{{ __('Nothing!') }}</td>
+                                                    <td colspan="10">{{ __('Nothing!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

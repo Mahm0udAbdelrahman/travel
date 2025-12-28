@@ -26,11 +26,11 @@
                         <!-- Add User Button -->
 
                         <div class="card-header flex justify-between items-center">
-                            <h5>{{ __('Category Real Estates List') }}</h5>
+                            <h5>{{ __('Category Excursions List') }}</h5>
 
                             @can('category_excursions-create')
                                 <a href="{{ route('Admin.category_excursions.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-add"></i> {{ __('Add Category Real Estate') }}
+                                    <i class="fas fa-add"></i> {{ __('Add Category Excursion') }}
                                 </a>
                             @endcan
                         </div>

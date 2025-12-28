@@ -66,13 +66,13 @@
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>{{ $excursion->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $excursion->description[app()->getLocale()] }}</td>
+                                                    <td>{{ $excursion->description[app()->getLocale()] ?? '-'}}</td>
                                                     <td>
                                                         <img src="{{ $excursion->image }}" class="img-thumbnail"
                                                             style="width:60px;">
                                                     </td>
 
-                                                    <td>{{ $excursion->city->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $excursion->city->name[app()->getLocale()] ?? '-'}}</td>
                                                     <td>{{ $excursion->categoryExcursion->name[app()->getLocale()] }}</td>
                                                     <td>{{ $excursion->price }}</td>
                                                     <td>{{ $excursion->hours }}</td>
@@ -103,7 +103,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="10">{{ __('Nothing!') }}</td>
+                                                    <td colspan="11">{{ __('Nothing!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

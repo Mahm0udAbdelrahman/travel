@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('category_excursions', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->string('image');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

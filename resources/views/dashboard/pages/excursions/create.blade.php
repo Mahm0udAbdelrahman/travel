@@ -36,7 +36,7 @@
 
             <div class="card shadow-lg border-0 mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">{{ __('Event Translations') }}</h6>
+                    <h6 class="mb-0">{{ __('Excursion Translations') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -90,7 +90,7 @@
                 <div class="col-md-8">
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0">{{ __('Event Information') }}</h6>
+                            <h6 class="mb-0">{{ __('Excursion Information') }}</h6>
                         </div>
                         <div class="card-body row g-3">
 
@@ -171,7 +171,7 @@
             {{-- Submit --}}
             <div class="text-end mb-5">
                 <button class="btn btn-primary px-5">
-                    <i class="ti ti-device-floppy"></i> {{ __('Save Event') }}
+                    <i class="ti ti-device-floppy"></i> {{ __('Save Excursion') }}
                 </button>
             </div>
 

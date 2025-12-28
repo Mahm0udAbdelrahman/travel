@@ -165,7 +165,7 @@
             {{-- Submit --}}
             <div class="text-end mb-5">
                 <button class="btn btn-primary px-5">
-                    <i class="ti ti-device-floppy"></i> {{ __('Save Event') }}
+                    <i class="ti ti-device-floppy"></i> {{ __('Save Real Estate') }}
                 </button>
             </div>
 
