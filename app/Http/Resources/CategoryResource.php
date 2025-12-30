@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryExcursionResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,6 @@ class CategoryExcursionResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name[app()->getLocale()] ?? $this->name['en'] ?? null,
-            'image' => $this->image
         ];
     }
 }

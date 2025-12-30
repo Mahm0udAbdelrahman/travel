@@ -8,9 +8,12 @@ class RealEstateService
     public function __construct(public RealEstate $model)
     {}
 
-    public function index()
+    public function index($categoryRealEstateId = null)
     {
-        return $this->model->active()->latest()->paginate(10);
+        $query = $this->model->when($categoryRealEstateId, function ($q) use ($categoryRealEstateId) {
+            $q->where('category_real_estate_id', $categoryRealEstateId);
+        });
+        return $query->active()->latest()->paginate(10);
     }
 
 

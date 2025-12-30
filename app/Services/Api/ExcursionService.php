@@ -8,11 +8,14 @@ class ExcursionService
     public function __construct(public Excursion $model)
     {}
 
-    public function index()
+    public function index($categoryId = null)
     {
-        return $this->model->active()->latest()->paginate(10);
+        return $this->model
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->where('category_excursion_id', $categoryId);
+            })
+            ->latest()
+            ->paginate(10);
     }
-
-
 
 }

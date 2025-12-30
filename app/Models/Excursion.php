@@ -37,4 +37,9 @@ class Excursion extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function offers()
+    {
+        return $this->belongsToMany(Offer::class, 'excursion_offers');
+    }
 }

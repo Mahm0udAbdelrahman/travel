@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\EventController;
+use App\Http\Controllers\Dashboard\OfferController;
 use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\RealEstateController;
 use App\Http\Controllers\Dashboard\NotificationController;
@@ -106,6 +107,10 @@ Route::group(
                     Route::resource('real_estates', RealEstateController::class);
             Route::post('/real_estates/bulk-delete', [RealEstateController::class, 'bulkDelete'])
                 ->name('real_estates.bulkDelete');
+
+                 Route::resource('offers', OfferController::class);
+            Route::post('/offers/bulk-delete', [OfferController::class, 'bulkDelete'])
+                ->name('offers.bulkDelete');
 
         });
     });

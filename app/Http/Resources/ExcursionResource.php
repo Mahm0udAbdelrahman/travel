@@ -15,7 +15,7 @@ class ExcursionResource extends JsonResource
     {
         return [
             'id'   => $this->id,
-            'category_ex' => $this->categoryExcursion->name[app()->getLocale()] ?? $this->categoryExcursion->name['en'] ?? null,
+            'category_excursion' => $this->categoryExcursion->name[app()->getLocale()] ?? $this->categoryExcursion->name['en'] ?? null,
             'image' => $this->image,
             'name' => $this->name[app()->getLocale()] ?? $this->name['en'] ?? null,
             'date' => $this->date,

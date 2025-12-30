@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryExcursionResource;
+use App\Http\Resources\CategoryResource;
 use App\Services\Api\CategoryExcursionService;
 
 class CategoryExcursionController extends Controller
@@ -15,7 +15,7 @@ class CategoryExcursionController extends Controller
     public function index(Request $request)
     {
         $categoryExcursions = $this->categoryExcursionService->index();
-        return $this->paginatedResponse($categoryExcursions, CategoryExcursionResource::class);
+        return $this->paginatedResponse($categoryExcursions, CategoryResource::class);
     }
 
 }

@@ -41,7 +41,7 @@ class StoreRealEstateRequest extends FormRequest
             'description.zh'    => ['nullable', 'string', 'max:255'],
             'description.ru'    => ['nullable', 'string', 'max:255'],
             'description.fr'    => ['nullable', 'string', 'max:255'],
-            'image'             => ['required', 'image'],
+            'image'             => ['nullable', 'image'],
             'category_real_estate_id' => ['required', 'exists:category_real_estates,id'],
             'city_id'           => ['required', 'exists:cities,id'],
             'price'             => ['required', 'string', 'max:255'],

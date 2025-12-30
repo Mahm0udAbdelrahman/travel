@@ -28,6 +28,7 @@ class PermissionSeeder extends Seeder
             'events-index','events-show','events-create','events-update','events-delete',
             'category_real_estates-index','category_real_estates-show','category_real_estates-create','category_real_estates-update','category_real_estates-delete',
             'real_estates-index','real_estates-show','real_estates-create','real_estates-update','real_estates-delete',
+            'offers-index','offers-show','offers-create','offers-update','offers-delete',
 
 
 ]

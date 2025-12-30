@@ -41,7 +41,7 @@ class StoreEventRequest extends FormRequest
             'description.zh'    => ['nullable', 'string', 'max:255'],
             'description.ru'    => ['nullable', 'string', 'max:255'],
             'description.fr'    => ['nullable', 'string', 'max:255'],
-            'image'             => ['required', 'image'],
+            'image'             => ['nullable', 'image'],
             'date'              => ['required', 'date'],
             'category_event_id' => ['required', 'exists:category_events,id'],
             'city_id'           => ['required', 'exists:cities,id'],

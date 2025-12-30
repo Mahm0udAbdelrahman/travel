@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PasswordController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
 use App\Http\Controllers\Api\CategoryExcursionController;
+use App\Http\Controllers\Api\CategoryRealEstateController;
 use App\Http\Controllers\Api\OrderAdditionalServiceController;
 
 Route::group(['middleware' => ['lang']], function () {
@@ -42,11 +44,16 @@ Route::group(['middleware' => ['lang']], function () {
     //additional_services
     Route::get('/additional_services', [AdditionalServiceController::class, 'index']);
 
-     //events
+    //events
     Route::get('/events', [EventController::class, 'index']);
 
-     //real_estates
+    //category_real_estates
+    Route::get('/category_real_estates', [CategoryRealEstateController::class, 'index']);
+    //real_estates
     Route::get('/real_estates', [RealEstateController::class, 'index']);
+
+      //offers
+    Route::get('/offers', [OfferController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [ProfileController::class, 'profile']);

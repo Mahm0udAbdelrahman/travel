@@ -147,6 +147,16 @@
                     </li>
                 @endcan
 
+                @can('offers-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.offers.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="tag"></i></span>
+                            <span class="pc-mtext">Offers</span>
+                        </a>
+                    </li>
+                @endcan
+
+
 
 
 

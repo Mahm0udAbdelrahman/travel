@@ -14,7 +14,7 @@ class RealEstateController extends Controller
     public function __construct(public RealEstateService $realEstateService) {}
     public function index(Request $request)
     {
-        $real_estates = $this->realEstateService->index();
+        $real_estates = $this->realEstateService->index($request->query('category_real_estate_id'));
         return $this->paginatedResponse($real_estates, RealEstateResource::class);
     }
 

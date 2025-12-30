@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Requests\Dashboard\AdditionalService;
+namespace App\Http\Requests\Dashboard\Offer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAdditionalServiceRequest extends FormRequest
+class StoreOfferRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -42,7 +42,11 @@ class StoreAdditionalServiceRequest extends FormRequest
             'description.ru' => ['nullable', 'string', 'max:255'],
             'description.fr' => ['nullable', 'string', 'max:255'],
             'image'          => ['nullable', 'image'],
+            'start_date'     => ['required', 'string'],
+            'end_date'       => ['required', 'string'],
+            'price'          => ['required', 'string', 'max:255'],
             'is_active'      => ['required', 'boolean'],
+            'excursion_ids'  => 'required|array|min:1',
         ];
     }
 
