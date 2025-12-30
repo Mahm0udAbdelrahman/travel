@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('excursions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_excursion_id')->constrained('category_excursions')->cascadeOnDelete();
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->json('name');
             $table->foreignId('city_id')->constrained('cities')->cascadeOnDelete();
             $table->json('description');

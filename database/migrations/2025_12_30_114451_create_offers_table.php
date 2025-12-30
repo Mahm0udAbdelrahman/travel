@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->json('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->date('start_date')->nullable();
