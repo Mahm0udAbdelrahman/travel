@@ -66,7 +66,7 @@
                         <div class="card-body !p-10">
                             <div class="text-center mb-8">
                                 <a href="#"><img src="{{ asset('dashboard/assets/images/logo-dark.svg') }}"
-                                        alt="img" class="mx-auto auth-logo" /></a>
+                                        alt="img" class="mx-auto" /></a>
                             </div>
                             <form class="form w-100" action="{{ route('loginAction') }}" method="post"
                                 data-kt-redirect-url="#" action="#">

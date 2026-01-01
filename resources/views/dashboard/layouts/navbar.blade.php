@@ -3,7 +3,7 @@
         <div class="m-header flex items-center py-4 px-6 h-header-height">
             <a href="{{ route('Admin.home') }}" class="b-brand flex items-center gap-3">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="{{ asset('dashboard/assets/images/logo-white.svg') }}" class="img-fluid logo logo-lg"
+                <img src="{{ asset('dashboard/assets/images/logo-white.svg') }}" class="img-fluid logo"
                     alt="logo" />
                 <img src="{{ asset('dashboard/assets/images/favicon.svg') }}" class="img-fluid logo logo-sm"
                     alt="logo" />
