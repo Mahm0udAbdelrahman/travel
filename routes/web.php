@@ -3,11 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CityController;
+use App\Http\Controllers\Dashboard\FileController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\EventController;
+use App\Http\Controllers\Dashboard\HotelController;
 use App\Http\Controllers\Dashboard\OfferController;
 use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\RealEstateController;
@@ -111,6 +113,15 @@ Route::group(
                  Route::resource('offers', OfferController::class);
             Route::post('/offers/bulk-delete', [OfferController::class, 'bulkDelete'])
                 ->name('offers.bulkDelete');
+
+
+                 Route::resource('files', FileController::class);
+            Route::post('/files/bulk-delete', [FileController::class, 'bulkDelete'])
+                ->name('files.bulkDelete');
+
+                Route::resource('hotels', HotelController::class);
+            Route::post('/hotels/bulk-delete', [HotelController::class, 'bulkDelete'])
+                ->name('hotels.bulkDelete');
 
         });
     });

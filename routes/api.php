@@ -1,22 +1,23 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CityController;
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\OfferController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\PasswordController;
-use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\ExcursionController;
-use App\Http\Controllers\Api\RealEstateController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
 use App\Http\Controllers\Api\CategoryExcursionController;
 use App\Http\Controllers\Api\CategoryRealEstateController;
+use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\DeleteAccountController;
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\ExcursionController;
+use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\OrderAdditionalServiceController;
+use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\RealEstateController;
+use App\Http\Controllers\Api\RegisterController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['lang']], function () {
     // register
@@ -52,8 +53,10 @@ Route::group(['middleware' => ['lang']], function () {
     //real_estates
     Route::get('/real_estates', [RealEstateController::class, 'index']);
 
-      //offers
+    //offers
     Route::get('/offers', [OfferController::class, 'index']);
+    //hotels
+    Route::get('/hotels', [HotelController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [ProfileController::class, 'profile']);

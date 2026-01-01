@@ -90,15 +90,15 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="type" class="form-label">{{ __('Role') }}</label>
+                                        <label for="type" class="form-label">{{ __('Type') }}</label>
                                         <select class="form-select" name="type" id="type">
                                             <option value=""
-                                                {{ old('type', $user->type ?? '') === '' ? 'selected' : '' }}>
+                                                {{ old('type', $user->type?->value ?? '') === '' ? 'selected' : '' }}>
                                                 {{ __('Choose the user type') }}
                                             </option>
                                             @foreach (\App\Enums\UserType::options() as $key => $label)
                                                 <option value="{{ $key }}"
-                                                    {{ old('type', $user->type ?? '') == $key ? 'selected' : '' }}>
+                                                    {{ old('type', $user->type?->value ?? '') === $key ? 'selected' : '' }}>
                                                     {{ $label }}
                                                 </option>
                                             @endforeach

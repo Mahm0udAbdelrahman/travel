@@ -56,7 +56,7 @@
 
             <div class="card shadow-lg border-0 mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">{{ __('Event Translations') }}</h6>
+                    <h6 class="mb-0">{{ __('Offer Translations') }}</h6>
                 </div>
 
                 <div class="card-body">

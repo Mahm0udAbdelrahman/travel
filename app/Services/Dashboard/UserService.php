@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Traits\HasImage;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Carbon\Carbon;
 
 class UserService
 {
@@ -32,6 +33,7 @@ class UserService
         } else {
             $data['image'] = asset('public/default/default.png');
         }
+        $data['email_verified_at'] = Carbon::now();
 
         $user = $this->user->create($data);
 

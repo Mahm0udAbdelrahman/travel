@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $query->where('is_active', true);
     }
+
+    public function files()
+    {
+        return $this->belongsToMany(File::class, 'tour_leader_files', 'user_id', 'file_id');
+    }
 }

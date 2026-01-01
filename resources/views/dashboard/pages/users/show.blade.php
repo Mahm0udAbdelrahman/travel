@@ -44,6 +44,16 @@
                                 <th>{{ __('Type') }}</th>
                                 <td>{{ $user->type ?? __('No Type') }}</td>
                             </tr>
+                            @if(isset($user->files) && $user->files->isNotEmpty())
+                            <tr>
+                                <th>{{ __('Files') }}</th>
+                                <td>
+                                    @foreach($user->files as $file)
+                                        <span class="badge bg-primary me-1">{{ $file->name[app()->getLocale()] ?? $file->name['en'] }}</span>
+                                    @endforeach
+                                </td>
+                            </tr>
+                            @endif
                             <tr>
                                 <th>{{ __('Active') }}</th>
                                 <td>{{ $user->is_active == 1 ? __('Active') : __('Unactive') }}</td>

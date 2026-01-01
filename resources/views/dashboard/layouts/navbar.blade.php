@@ -156,6 +156,25 @@
                     </li>
                 @endcan
 
+                @can('files-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.files.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="file"></i></span>
+                            <span class="pc-mtext">Files</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('hotels-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.hotels.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="map-pin"></i></span>
+                            <span class="pc-mtext">Hotels</span>
+                        </a>
+                    </li>
+                @endcan
+
+
 
 
 

@@ -29,6 +29,8 @@ class PermissionSeeder extends Seeder
             'category_real_estates-index','category_real_estates-show','category_real_estates-create','category_real_estates-update','category_real_estates-delete',
             'real_estates-index','real_estates-show','real_estates-create','real_estates-update','real_estates-delete',
             'offers-index','offers-show','offers-create','offers-update','offers-delete',
+            'files-index','files-show','files-create','files-update','files-delete',
+            'hotels-index','hotels-show','hotels-create','hotels-update','hotels-delete',
 
 
 ]

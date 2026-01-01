@@ -86,10 +86,10 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="type" class="form-label">{{ __('Role') }}</label>
+                                        <label for="type" class="form-label">{{ __('Type') }}</label>
                                         <select class="form-select" name="type" id="type">
                                             <option value="" {{ old('type') === null ? 'selected' : '' }}>
-                                                {{ __('Choose the user role') }}</option>
+                                                {{ __('Choose the user type') }}</option>
                                             @foreach (\App\Enums\UserType::options() as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach

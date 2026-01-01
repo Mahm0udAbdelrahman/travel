@@ -142,7 +142,7 @@
                             @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                                 <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
                                     class="d-flex align-items-center gap-3 py-2 dropdown-item text-decoration-none
-                   {{ App::getLocale() == $localeCode ? 'active fw-bold text-primary' : 'text-dark' }}">
+                   {{ App::getLocale() == $localeCode ? 'active fw-bold text-black' : 'text-dark' }}">
                                     @if (App::getLocale() == $localeCode)
                                         <i class="fas fa-check text-success flex-shrink-0"></i>
                                     @else
