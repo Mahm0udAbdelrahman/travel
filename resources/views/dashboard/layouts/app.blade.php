@@ -14,7 +14,7 @@
     <meta name="keywords"
         content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
     <meta name="author" content="CodedThemes" />
-<link href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- [Favicon] icon -->
     <link rel="icon" href="{{ asset('dashboard/assets/images/favicon.svg') }}" type="image/x-icon" />
@@ -113,6 +113,7 @@
     <script>
         main_layout_change('vertical');
     </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     @stack('scripts')
 </body>

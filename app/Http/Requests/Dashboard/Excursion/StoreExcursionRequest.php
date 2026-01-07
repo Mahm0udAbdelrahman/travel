@@ -43,6 +43,7 @@ class StoreExcursionRequest extends FormRequest
             'description.fr'    => ['nullable', 'string', 'max:255'],
             'image'             => ['nullable', 'image'],
             'category_excursion_id' => ['required', 'exists:category_excursions,id'],
+            'sub_category_excursion_id' => ['required', 'exists:sub_category_excursions,id'],
             'hours'             => ['required', 'string', 'max:255'],
             'city_id'           => ['required', 'exists:cities,id'],
             'price'             => ['required', 'string', 'max:255'],

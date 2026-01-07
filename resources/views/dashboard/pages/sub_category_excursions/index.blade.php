@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Excursions'))
+@section('title', __('Sub Category Excursions'))
 
 @section('content')
     <div class="pc-container">
@@ -9,11 +9,11 @@
             <div class="page-header">
                 <div class="page-block">
                     <div class="page-header-title">
-                        <h5 class="mb-0 font-medium">{{ __('Excursions') }}</h5>
+                        <h5 class="mb-0 font-medium">{{ __('Sub Category Excursions') }}</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('Admin.home') }}">{{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item" aria-current="page">{{ __('Excursions') }}</li>
+                        <li class="breadcrumb-item" aria-current="page">{{ __('Sub Category Excursions') }}</li>
                     </ul>
                 </div>
             </div>
@@ -26,11 +26,11 @@
                         <!-- Add User Button -->
 
                         <div class="card-header flex justify-between items-center">
-                            <h5>{{ __('Excursions List') }}</h5>
+                            <h5>{{ __('Category Excursions List') }}</h5>
 
-                            @can('excursions-create')
-                                <a href="{{ route('Admin.excursions.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-add"></i> {{ __('Add Excursion') }}
+                            @can('sub_category_excursions-create')
+                                <a href="{{ route('Admin.sub_category_excursions.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-add"></i> {{ __('Add Sub Category Excursion') }}
                                 </a>
                             @endcan
                         </div>
@@ -39,21 +39,14 @@
                             <div class="table-responsive text-center">
                                 <table id="example2" class="table table-striped table-bordered">
 
-                                    <form action="{{ route('Admin.excursions.bulkDelete') }}" method="post"
-                                        id="bulkDeleteForm">
+                                    <form action="{{ route('Admin.sub_category_excursions.bulkDelete') }}" method="post" id="bulkDeleteForm">
                                         @csrf
 
                                         <thead>
                                             <tr>
                                                 <th>{{ __('ID') }}</th>
+                                                <th>{{ __('Category') }}</th>
                                                 <th>{{ __('Name') }}</th>
-                                                <th>{{ __('Description') }}</th>
-                                                <th>{{ __('Image') }}</th>
-                                                <th>{{ __('City') }}</th>
-                                                <th>{{ __('Category Excursion') }}</th>
-                                                <th>{{ __('Sub Category Excursion') }}</th>
-                                                <th>{{ __('Price') }}</th>
-                                                <th>{{ __('Hours') }}</th>
                                                 <th>{{ __('Active') }}</th>
                                                 <th>
                                                     <input type="checkbox" id="selectAll">
@@ -63,49 +56,35 @@
                                         </thead>
 
                                         <tbody>
-                                            @forelse($excursions as $excursion)
+                                            @forelse($sub_category_excursions as $sub_category_excursion)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $excursion->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $excursion->description[app()->getLocale()] ?? '-'}}</td>
+                                                    <td>{{ $sub_category_excursion->categoryExcursion->name[app()->getLocale()] ?? '' }}</td>
+                                                    <td>{{ $sub_category_excursion->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $sub_category_excursion->is_active == 1 ? 'Active' : 'Unactive' }}</td>
                                                     <td>
-                                                        <img src="{{ $excursion->image }}" class="img-thumbnail"
-                                                            style="width:60px;">
-                                                    </td>
-
-                                                    <td>{{ $excursion->city->name[app()->getLocale()] ?? '-'}}</td>
-                                                    <td>{{ $excursion->categoryExcursion->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $excursion->subcategoryExcursion->name[app()->getLocale()] ?? '' }}</td>
-                                                    <td>{{ $excursion->price }}</td>
-                                                    <td>{{ $excursion->hours }}</td>
-                                                    <td>{{ $excursion->is_active == 1 ? 'Active' : 'Unactive' }}
-                                                    </td>
-
-                                                    <td>
-                                                        <input type="checkbox" name="ids[]" value="{{ $excursion->id }}"
+                                                        <input type="checkbox" name="ids[]" value="{{ $sub_category_excursion->id }}"
                                                             class="userCheckbox">
                                                     </td>
 
                                                     <td>
-                                                        @can('excursions-delete')
+                                                        @can('sub_category_excursions-delete')
                                                             <button type="button" class="btn btn-danger w-25 delete-user-btn"
-                                                                data-id="{{ $excursion->id }}">
+                                                                data-id="{{ $sub_category_excursion->id }}">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </button>
                                                         @endcan
-                                                        @can('excursions-show')
-                                                            <a href="{{ route('Admin.excursions.show', $excursion) }}"
-                                                                class="btn btn-warning"><i class="fas fa-eye"></i></a>
-                                                        @endcan
-                                                        @can('excursions-update')
-                                                            <a href="{{ route('Admin.excursions.edit', $excursion) }}"
+
+
+                                                        @can('sub_category_excursions-update')
+                                                            <a href="{{ route('Admin.sub_category_excursions.edit', $sub_category_excursion) }}"
                                                                 class="btn btn-info"><i class="fas fa-edit"></i></a>
                                                         @endcan
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="11">{{ __('Nothing!') }}</td>
+                                                    <td colspan="8">{{ __('Nothing!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -121,7 +100,7 @@
 
                                 <!-- Pagination -->
                                 <div class="mt-3" style="padding:5px;direction: ltr;">
-                                    {!! $excursions->withQueryString()->links('pagination::bootstrap-5') !!}
+                                    {!! $sub_category_excursions->withQueryString()->links('pagination::bootstrap-5') !!}
                                 </div>
 
                             </div>
@@ -153,7 +132,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let form = document.createElement('form');
-                            form.action = '{{ url('/admin/excursions') }}/' + id;
+                            form.action = '{{ url('/admin/sub_category_excursions') }}/' + id;
                             form.method = 'POST';
                             form.style.display = 'none';
 
@@ -273,7 +252,7 @@
             if (selectedIds.length === 0) {
                 Swal.fire({
                     icon: 'warning',
-                    title: '{{ __('No additional_services selected!') }}',
+                    title: '{{ __('No cities selected!') }}',
                     text: '{{ __('Please select at least one user to delete.') }}',
                 });
                 return;
@@ -281,7 +260,7 @@
 
             Swal.fire({
                 title: '{{ __('Are you sure?') }}',
-                text: "{{ __('Do you want to delete the selected additional_services?') }}",
+                text: "{{ __('Do you want to delete the selected cities?') }}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#DC143C',

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RealEstateController;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\SubCategoryExcursionController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['lang']], function () {
@@ -40,6 +41,8 @@ Route::group(['middleware' => ['lang']], function () {
 
     //category_excursions
     Route::get('/category_excursions', [CategoryExcursionController::class, 'index']);
+    //sub_category_excursions
+    Route::get('/sub_category_excursions', [SubCategoryExcursionController::class, 'index']);
     //excursions
     Route::get('/excursions', [ExcursionController::class, 'index']);
     //additional_services

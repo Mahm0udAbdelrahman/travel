@@ -70,6 +70,13 @@
                                         </div>
 
                                         <div class="col-md-6">
+                                            <label class="fw-bold">{{ __('SubCategory') }}</label>
+                                            <p class="mb-0">
+                                                {{ data_get($excursion->subcategoryExcursion->name, app()->getLocale(), $excursion->subcategoryExcursion->name['en']) ?? '' }}
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <label class="fw-bold">{{ __('City') }}</label>
                                             <p class="mb-0">
                                                 {{ data_get($excursion->city->name, app()->getLocale(), $excursion->city->name['en']) }}
@@ -103,7 +110,7 @@
                         </div>
 
                         <div class="card-footer text-end bg-light">
-                            <a href="{{ route('Admin.real_estates.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('Admin.excursions.index') }}" class="btn btn-secondary">
                                 {{ __('Back') }}
                             </a>
                         </div>

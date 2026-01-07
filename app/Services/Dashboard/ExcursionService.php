@@ -5,6 +5,7 @@ use App\Models\City;
 use App\Traits\HasImage;
 use App\Models\Excursion;
 use App\Models\CategoryExcursion;
+use App\Models\SubCategoryExcursion;
 
 class ExcursionService
 {
@@ -21,6 +22,10 @@ class ExcursionService
     public function getCategoryExcursions()
     {
         return CategoryExcursion::active()->get();
+    }
+    public function getSubCategoryExcursions()
+    {
+        return SubCategoryExcursion::active()->get();
     }
     public function getCities()
     {

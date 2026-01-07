@@ -82,6 +82,14 @@
                         </a>
                     </li>
                 @endcan
+                 @can('sub_category_excursions-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.sub_category_excursions.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="layers"></i></span>
+                            <span class="pc-mtext">Sub Category Excursions</span>
+                        </a>
+                    </li>
+                @endcan
 
                 @can('excursions-index')
                     <li class="pc-item pc-hasmenu">

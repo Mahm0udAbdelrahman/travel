@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Api;
 
-use App\Models\CategoryExcursion;
+use App\Models\SubCategoryExcursion;
 
-class CategoryExcursionService
+class SubCategoryExcursionService
 {
-    public function __construct(public CategoryExcursion $model)
+    public function __construct(public SubCategoryExcursion $model)
     {}
 
     public function index()
@@ -13,7 +13,7 @@ class CategoryExcursionService
         return $this->model->active()->latest()->paginate(10);
     }
 
-    
+
 
 
 

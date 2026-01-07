@@ -14,15 +14,18 @@ class ExcursionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'   => $this->id,
-            'category_excursion' => $this->categoryExcursion->name[app()->getLocale()] ?? $this->categoryExcursion->name['en'] ?? null,
-            'image' => $this->image,
-            'name' => $this->name[app()->getLocale()] ?? $this->name['en'] ?? null,
-            'date' => $this->date,
-            'description' => $this->description[app()->getLocale()] ?? $this->description['en'] ?? null,
-            'price' => $this->price,
-            'hours' => $this->hours,
-            'city' => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
+            'id'                        => $this->id,
+            'category_excursion_id'     => $this->category_excursion_id,
+            'category_excursion'        => $this->categoryExcursion->name[app()->getLocale()] ?? $this->categoryExcursion->name['en'] ?? null,
+            'sub_category_excursion_id' => $this->sub_category_excursion_id,
+            'sub_category_excursion'    => $this->subcategoryExcursion->name[app()->getLocale()] ?? $this->subcategoryExcursion->name['en'] ?? null,
+            'image'                     => $this->image,
+            'name'                      => $this->name[app()->getLocale()] ?? $this->name['en'] ?? null,
+            'date'                      => $this->date,
+            'description'               => $this->description[app()->getLocale()] ?? $this->description['en'] ?? null,
+            'price'                     => $this->price,
+            'hours'                     => $this->hours,
+            'city'                      => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
         ];
     }
 }

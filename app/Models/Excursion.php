@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,6 +7,7 @@ class Excursion extends Model
 {
     protected $fillable = [
         'category_excursion_id',
+        'sub_category_excursion_id',
         'image',
         'name',
         'city_id',
@@ -18,14 +18,21 @@ class Excursion extends Model
     ];
 
     protected $casts = [
-        'name' => 'array',
-        'description' => 'array',
-        'is_active' => 'boolean',
+        'category_excursion_id'     => 'int',
+        'sub_category_excursion_id' => 'int',
+        'name'                      => 'array',
+        'description'               => 'array',
+        'is_active'                 => 'boolean',
     ];
 
     public function categoryExcursion()
     {
         return $this->belongsTo(CategoryExcursion::class);
+    }
+
+    public function subcategoryExcursion()
+    {
+        return $this->belongsTo(SubCategoryExcursion::class, 'sub_category_excursion_id');
     }
 
     public function city()

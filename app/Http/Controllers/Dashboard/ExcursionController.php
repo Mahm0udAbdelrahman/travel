@@ -1,16 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Dashboard;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Session;
-use App\Http\Requests\Dashboard\Excursion\{StoreExcursionRequest, UpdateExcursionRequest};
+use App\Http\Requests\Dashboard\Excursion\StoreExcursionRequest;
+use App\Http\Requests\Dashboard\Excursion\UpdateExcursionRequest;
+use App\Models\SubCategoryExcursion;
 use App\Services\Dashboard\ExcursionService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ExcursionController extends Controller
 {
-    public function __construct(public ExcursionService $excursionService) {}
+    public function __construct(public ExcursionService $excursionService)
+    {}
     public function index(Request $request)
     {
         $excursions = $this->excursionService->index();
@@ -19,9 +21,10 @@ class ExcursionController extends Controller
     public function create()
     {
 
-         $category_excursions = $this->excursionService->getCategoryExcursions();
-            $cities = $this->excursionService->getCities();
-        return view('dashboard.pages.excursions.create', compact('category_excursions','cities'));
+        $category_excursions     = $this->excursionService->getCategoryExcursions();
+        $sub_category_excursions = $this->excursionService->getSubCategoryExcursions();
+        $cities                  = $this->excursionService->getCities();
+        return view('dashboard.pages.excursions.create', compact('category_excursions', 'cities', 'sub_category_excursions'));
     }
 
     public function store(StoreExcursionRequest $storeCityRequest)
@@ -42,12 +45,12 @@ class ExcursionController extends Controller
 
     public function edit($id)
     {
-         $excursion = $this->excursionService->show($id);
+        $excursion = $this->excursionService->show($id);
 
-         $category_excursions = $this->excursionService->getCategoryExcursions();
-            $cities = $this->excursionService->getCities();
+        $category_excursions = $this->excursionService->getCategoryExcursions();
+        $cities              = $this->excursionService->getCities();
 
-        return view('dashboard.pages.excursions.edit', compact('excursion','category_excursions','cities'));
+        return view('dashboard.pages.excursions.edit', compact('excursion', 'category_excursions', 'cities'));
     }
 
     public function update($id, UpdateExcursionRequest $updateCityRequest)
@@ -76,4 +79,13 @@ class ExcursionController extends Controller
 
         return redirect()->back()->with('success', 'Excursion deleted successfully');
     }
+
+    public function getSubCategories($categoryId)
+    {
+        $subCategories = SubCategoryExcursion::where('category_excursion_id', $categoryId)
+            ->get();
+
+        return response()->json($subCategories);
+    }
+
 }
