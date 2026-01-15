@@ -87,9 +87,10 @@ class OrderService
                 'MerchantId'   => $this->opayMerchantId,
                 'Sign'         => $sign,
             ])->post(
-                'https://sandboxapi.opaycheckout.com/api/v3/international/cashier/create',
+                $this->opayBaseUrl . '/api/v1/international/cashier/create',
                 $payload
             );
+      
 
             /** -------- Handle Response -------- */
             if (
