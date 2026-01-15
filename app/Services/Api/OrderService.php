@@ -20,7 +20,7 @@ class OrderService
         // $this->opayBaseUrl = config('services.opay.base_url', 'https://api.opaycheckout.com');
         $this->opayMerchantId = '281825072114267';
         $this->opaySecretKey = 'OPAYPRV17531054178030.4319669325059483';
-        $this->opayBaseUrl = config('services.opay.base_url', 'https://api.opaycheckout.com');
+        $this->opayBaseUrl = 'https://api.opaycheckout.com';
     }
 
     public function store($data)
@@ -70,10 +70,11 @@ class OrderService
             $headers = [
                 'Content-Type'  => 'application/json',
                 'Authorization' => 'Bearer ' . $this->opaySecretKey,
+                'MerchantId'    => $this->opayMerchantId,
             ];
 
-            $response = Http::withHeaders($headers)
-                ->post("{$this->opayBaseUrl}/api/v3/international/cashier/create", $payload);
+           $response = Http::withHeaders($headers)
+    ->post("{$this->opayBaseUrl}/api/v1/international/cashier/create", $payload);
 
             if ($response->successful() && isset($response->json()['data']['cashierUrl'])) {
                 $paymentUrl = $response->json()['data']['cashierUrl'];
