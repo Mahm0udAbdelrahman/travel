@@ -9,22 +9,25 @@ use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
-    private $opayMerchantId;
-    private $opaySecretKey;
-    private $opayBaseUrl;
+    private string $opayMerchantId;
+    private string $opaySecretKey;
+    private string $opayBaseUrl;
 
     public function __construct(public Order $model)
     {
-        // $this->opayMerchantId = config('services.opay.merchant_id');
-        // $this->opaySecretKey = config('services.opay.secret_key');
-        // $this->opayBaseUrl = config('services.opay.base_url', 'https://api.opaycheckout.com');
-        $this->opayMerchantId = '281825072114267';
-        $this->opaySecretKey = 'OPAYPRV17531054178030.4319669325059483';
-        $this->opayBaseUrl = 'https://api.opaycheckout.com';
+        $this->opayMerchantId = config('services.opay.merchant_id');
+        $this->opaySecretKey  = config('services.opay.secret_key');
+        $this->opayBaseUrl    = config('services.opay.base_url');
+        // sandbox: https://sandbox.opaycheckout.com
+        // live   : https://api.opaycheckout.com
     }
 
-    public function store($data)
+    /**
+     * Create Order + OPay Payment
+     */
+    public function store(array $data): array
     {
+
         $user = auth()->user();
 
         $map = [
@@ -34,50 +37,65 @@ class OrderService
             'offer'       => \App\Models\Offer::class,
         ];
 
-        if (!isset($map[$data['type']])) {
-            throw new \Exception('نوع المنتج غير صالح');
+        if (! isset($map[$data['type']])) {
+            return ['success' => false, 'message' => 'نوع المنتج غير صالح'];
         }
 
         $modelClass = $map[$data['type']];
-        $item = $modelClass::findOrFail($data['id']);
+        $item       = $modelClass::findOrFail($data['id']);
 
-        $quantity = $data['quantity'] ?? 1;
-        $totalPrice = $item->price * $quantity;
+        $quantity    = $data['quantity'] ?? 1;
+        $totalPrice  = $item->price * $quantity;
+        $amountCents = (int) ($totalPrice * 100);
 
-        $this->model->where('user_id', $user->id)
+        // remove old pending orders
+        $this->model
+            ->where('user_id', $user->id)
             ->where('status', 'pending')
             ->delete();
 
         $orderNumber = 'ORD-' . strtoupper(Str::random(10));
-
         try {
+
+            /** -------- OPay Payload -------- */
             $payload = [
                 'reference'   => $orderNumber,
                 'amount'      => [
                     'currency' => 'EGP',
-                    'total'    => $totalPrice * 100,
+                    'total'    => $amountCents,
                 ],
-                'callbackUrl' => route('payment.opay.callback'), // المسار الذي يستقبل رد السيستم
-                'returnUrl'   => route('payment.opay.return'),   // المسار الذي يعود إليه المستخدم
+                'callbackUrl' => route('payment.opay.callback'),
+                'returnUrl'   => route('payment.opay.return'),
                 'userInfo'    => [
                     'name'  => $user->name,
                     'email' => $user->email,
                     'phone' => $user->phone,
                 ],
-                'merchantId'  => $this->opayMerchantId,
             ];
 
-            $headers = [
-                'Content-Type'  => 'application/json',
-                'Authorization' => 'Bearer ' . $this->opaySecretKey,
-                'MerchantId'    => $this->opayMerchantId,
-            ];
 
-           $response = Http::withHeaders($headers)
-    ->post("{$this->opayBaseUrl}/api/v1/international/cashier/create", $payload);
+            /** -------- Generate Signature -------- */
+            $sign = $this->generateSign([
+                'merchantId' => $this->opayMerchantId,
+                'reference'  => $orderNumber,
+                'amount'     => $amountCents,
+                'currency'   => 'EGP',
+            ]);
+            /** -------- Send Request -------- */
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'MerchantId'   => $this->opayMerchantId,
+                'Sign'         => $sign,
+            ])->post(
+                'https://sandboxapi.opaycheckout.com/api/v3/international/cashier/create',
+                $payload
+            );
 
-            if ($response->successful() && isset($response->json()['data']['cashierUrl'])) {
-                $paymentUrl = $response->json()['data']['cashierUrl'];
+            /** -------- Handle Response -------- */
+            if (
+                $response->successful() &&
+                isset($response['data']['cashierUrl'])
+            ) {
 
                 $order = $this->model->create([
                     'user_id'        => $user->id,
@@ -93,16 +111,49 @@ class OrderService
                     'success'      => true,
                     'order_id'     => $order->id,
                     'total_price'  => $totalPrice,
-                    'redirect_url' => $paymentUrl,
+                    'redirect_url' => $response['data']['cashierUrl'],
                 ];
-            } else {
-                Log::error('Opay Error Response:', $response->json());
-                return ['success' => false, 'message' => 'فشل في إنشاء طلب الدفع عبر Opay'];
             }
 
-        } catch (\Exception $e) {
-            Log::error('Opay Exception:', ['error' => $e->getMessage()]);
-            return ['success' => false, 'message' => 'حدث خطأ أثناء معالجة الطلب'];
+            Log::error('OPay Error', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'فشل إنشاء عملية الدفع عبر OPay',
+            ];
+
+        } catch (\Throwable $e) {
+
+            Log::error('OPay Exception', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'حدث خطأ أثناء إنشاء الطلب',
+            ];
         }
+    }
+
+    /**
+     * Generate OPay Signature
+     */
+    private function generateSign(array $data): string
+    {
+        ksort($data);
+
+        $string = '';
+        foreach ($data as $key => $value) {
+            if ($value !== null && $value !== '') {
+                $string .= $key . '=' . $value . '&';
+            }
+        }
+
+        $string .= 'secretKey=' . $this->opaySecretKey;
+
+        return strtoupper(hash('sha256', $string));
     }
 }
