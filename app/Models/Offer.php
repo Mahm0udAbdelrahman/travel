@@ -32,4 +32,9 @@ class Offer extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function orders()
+{
+    return $this->morphMany(Order::class, 'orderable');
+}
 }

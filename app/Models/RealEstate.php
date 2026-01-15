@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +16,9 @@ class RealEstate extends Model
     ];
 
     protected $casts = [
-        'name' => 'array',
+        'name'        => 'array',
         'description' => 'array',
-        'is_active' => 'boolean',
+        'is_active'   => 'boolean',
     ];
 
     public function categoryRealEstate()
@@ -35,5 +34,10 @@ class RealEstate extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function orders()
+    {
+        return $this->morphMany(Order::class, 'orderable');
     }
 }

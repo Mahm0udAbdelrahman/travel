@@ -49,4 +49,9 @@ class Excursion extends Model
     {
         return $this->belongsToMany(Offer::class, 'excursion_offers');
     }
+
+    public function orders()
+{
+    return $this->morphMany(Order::class, 'orderable');
+}
 }
