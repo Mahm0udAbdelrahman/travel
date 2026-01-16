@@ -15,6 +15,9 @@ class Order extends Model
         'order_number',
         'price',
         'status',
+        'payment_method',
+        'payment_id',
+        'payment_status',
     ];
 
     public function orderable()

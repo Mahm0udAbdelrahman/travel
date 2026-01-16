@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('order_number')->unique();
             $table->decimal('price', 10, 2);
             $table->string('status')->default('pending');
+            $table->string('payment_method')->nullable();
+            $table->string('payment_id')->nullable();
+            $table->enum('payment_status', ['pending', 'failed', 'paid'])->default('pending');
             $table->timestamps();
         });
     }

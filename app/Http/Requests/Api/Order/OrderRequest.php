@@ -29,6 +29,7 @@ class OrderRequest extends FormRequest
             'quantity' => 'required|integer|min:1',
             'hotel_id' => 'required|exists:hotels,id',
             'room_number' => 'required|string|max:255',
+           'payment_method' => 'required|in:card,wallet,cash',
         ];
     }
     protected function failedValidation(Validator $validator)
