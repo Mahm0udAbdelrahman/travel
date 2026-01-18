@@ -134,7 +134,6 @@ Route::group(
 //         'unread_count' => auth()->user()->unreadNotifications()->count(),
 //     ]);
 // })->name('notifications.count');
-Route::middleware('auth')->group(function () {
     Route::get('/payment/success', function () {
         $sessionId = request('session_id');
         return view('payment.success', compact('sessionId'));
@@ -143,4 +142,3 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment/cancel', function () {
         return view('payment.cancel');
     })->name('payment.cancel');
-});
