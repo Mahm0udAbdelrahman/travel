@@ -80,3 +80,6 @@ Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->nam
 
 // الرابط الذي يرسل إليه OPay تحديثات الحالة (Webhook)
 Route::post('payment/opay/callback', [OrderController::class, 'handleCallback'])->name('payment.opay.callback');
+
+
+Route::post('/stripe/webhook', [OrderController::class, 'handleCallback']);

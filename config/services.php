@@ -41,4 +41,9 @@ return [
         'base_url'    => env('OPAY_BASE_URL'),
     ],
 
+    'stripe'   => [
+        'key'    => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 ];
