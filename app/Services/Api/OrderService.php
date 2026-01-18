@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Services\Api;
 
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class OrderService
 {
@@ -77,20 +78,20 @@ class OrderService
         try {
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
-                'mode'                 => 'payment',
-                'customer_email'       => $user->email,
-                'line_items'           => [[
+                'mode' => 'payment',
+                'customer_email' => $user->email,
+                'line_items' => [[
                     'price_data' => [
-                        'currency'     => 'usd',
+                        'currency' => 'usd',
                         'product_data' => [
-                            'name' => $item->name['en'] ?? 'Default Product Name',
+                            'name' =>  $item->name['en'] ?? 'Default Product Name',
                         ],
-                        'unit_amount'  => (int) ($item->price * 100),
+                        'unit_amount' => (int) ($item->price * 100),
                     ],
-                    'quantity'   => $quantity,
+                    'quantity' => $quantity,
                 ]],
-                'success_url'          => url('/payment/success?session_id={CHECKOUT_SESSION_ID}'),
-                'cancel_url'           => url('/payment/cancel'),
+                'success_url' => url('/payment/success?session_id={CHECKOUT_SESSION_ID}'),
+                'cancel_url'  => url('/payment/cancel'),
             ]);
 
             $order = $this->model->create([
@@ -109,7 +110,7 @@ class OrderService
             ]);
 
             return response()->json([
-                'success'      => true,
+                'success' => true,
                 'order_number' => $order->order_number,
                 'redirect_url' => $session->url,
             ]);

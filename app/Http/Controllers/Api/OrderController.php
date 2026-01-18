@@ -26,7 +26,7 @@ class OrderController extends Controller
     {
         $payload    = $request->getContent();
         $sigHeader  = $request->header('Stripe-Signature');
-        $secret     = env('STRIPE_SECRET');
+        $secret     = env('STRIPE_WEBHOOK_SECRET');
 
         try {
             $event = Webhook::constructEvent(
