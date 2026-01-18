@@ -82,4 +82,4 @@ Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->nam
 Route::post('payment/opay/callback', [OrderController::class, 'handleCallback'])->name('payment.opay.callback');
 
 
-Route::post('/stripe/webhook', [OrderController::class, 'handleCallback']);
+Route::post('/stripe/webhook', [OrderController::class, 'handle']);
