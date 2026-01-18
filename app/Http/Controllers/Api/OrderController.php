@@ -20,7 +20,6 @@ class OrderController extends Controller
 
         $method = $orderRequest->payment_method == 'cash' ? 'cashOrder' : 'store';
         return $this->orderService->$method($orderRequest->validated());
-سفقهح
     }
 
     public function handle(Request $request)
