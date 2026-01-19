@@ -101,7 +101,7 @@ class OrderService
                 'currency'       => 'USD',
                 'quantity'       => $quantity,
                 'status'         => 'pending',
-                'payment_method' => 'stripe',
+                'payment_method' => $data['payment_method'] ?? 'stripe',
                 'payment_id'     => $session->id,
                 'orderable_id'   => $item->id,
                 'orderable_type' => get_class($item),
