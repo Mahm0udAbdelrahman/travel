@@ -8,8 +8,9 @@ use App\Services\Api\OrderService;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Stripe\Webhook;
 use Stripe\Exception\SignatureVerificationException;
+use Stripe\Webhook;
+
 class OrderController extends Controller
 {
     use HttpResponse;
@@ -24,9 +25,9 @@ class OrderController extends Controller
 
     public function handle(Request $request)
     {
-        $payload    = $request->getContent();
-        $sigHeader  = $request->header('Stripe-Signature');
-        $secret     = env('STRIPE_WEBHOOK_SECRET');
+        $payload   = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+        $secret    = config('services.stripe.webhook_secret');
 
         try {
             $event = Webhook::constructEvent(
@@ -46,9 +47,6 @@ class OrderController extends Controller
             return response()->json(['error' => 'Invalid payload'], 400);
         }
 
-        /**
-         * event types
-         */
         if ($event->type === 'checkout.session.completed') {
 
             $session = $event->data->object;
@@ -74,6 +72,5 @@ class OrderController extends Controller
 
         return response()->json(['status' => 'success']);
     }
-
 
 }

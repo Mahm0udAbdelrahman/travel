@@ -84,8 +84,8 @@
     <div class="container">
         <h1>شكراً على الدفع!</h1>
         <p>تم تأكيد الدفع بنجاح.</p>
-        <div class="session-id">رقم الجلسة: {{ $sessionId }}</div>
-        <a href="{{ url('/') }}">العودة للصفحة الرئيسية</a>
+        {{--  <div class="session-id">رقم الجلسة: {{ $sessionId }}</div>  --}}
+        <a href="#">العودة للصفحة الرئيسية</a>
     </div>
 </body>
 
