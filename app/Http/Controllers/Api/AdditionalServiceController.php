@@ -15,7 +15,7 @@ class AdditionalServiceController extends Controller
     public function index(Request $request)
     {
         $additionalServices = $this->additionalServiceService->index();
-        return $this->paginatedResponse($additionalServices, AdditionalServiceResource::class); ;
+        return $this->paginatedResponse($additionalServices, AdditionalServiceResource::class);
     }
 
 }

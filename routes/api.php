@@ -73,6 +73,7 @@ Route::group(['middleware' => ['lang']], function () {
 
         Route::post('/order_additional_services', [OrderAdditionalServiceController::class, 'store']);
         Route::post('/orders', [OrderController::class, 'store']);
+        Route::get('/my_order', [OrderController::class, 'myOrder']);
     });
 
 });

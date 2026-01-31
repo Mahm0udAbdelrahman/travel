@@ -1,15 +1,16 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Order\OrderRequest;
+use Stripe\Webhook;
 use App\Models\Order;
-use App\Services\Api\OrderService;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use App\Services\Api\OrderService;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderResource;
+use App\Http\Requests\Api\Order\OrderRequest;
 use Stripe\Exception\SignatureVerificationException;
-use Stripe\Webhook;
 
 class OrderController extends Controller
 {
@@ -71,6 +72,12 @@ class OrderController extends Controller
         }
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function myOrder()
+    {
+        $order = $this->orderService->myOrder();
+         return $this->paginatedResponse($order, OrderResource::class);
     }
 
 }
