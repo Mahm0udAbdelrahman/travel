@@ -1,10 +1,13 @@
 <?php
 namespace App\Http\Requests\Api\Order;
 
+use App\Enums\InquiryType;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Validation\Rule;
 
 class OrderRequest extends FormRequest
 {
@@ -24,12 +27,32 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'       => 'required',
-            'type'     => 'required|in:real_estate,event,excursion,offer',
-            'quantity' => 'required|integer|min:1',
-            'hotel_id' => 'required|exists:hotels,id',
-            'room_number' => 'required|string|max:255',
-           'payment_method' => 'required|in:card,wallet,cash',
+
+            'id'             => 'required',
+            'type_model'     => 'required|in:real_estate,event,excursion,offer,additional_service',
+            'quantity'       => 'required|integer|min:1',
+            'hotel_id'       => 'required|exists:hotels,id',
+            'room_number'    => 'required|string|max:255',
+
+            'date'           => [
+                Rule::requiredIf(request('type_model') === 'additional_service'),
+                'date',
+            ],
+
+            'time'           => [
+                Rule::requiredIf(request('type_model') === 'additional_service'),
+                'string',
+            ],
+
+            'type'           => [
+                Rule::requiredIf(request('type_model') === 'additional_service'),
+                new Enum(InquiryType::class),
+            ],
+
+            'notes'          => 'nullable|string',
+
+            'payment_method' => 'required|in:card,wallet,cash',
+
         ];
     }
     protected function failedValidation(Validator $validator)

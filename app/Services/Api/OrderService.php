@@ -26,11 +26,11 @@ class OrderService
             'additional_service' => \App\Models\AdditionalService::class,
         ];
 
-        if (! isset($map[$data['type']])) {
+        if (! isset($map[$data['type_model']])) {
             return ['success' => false, 'message' => 'نوع المنتج غير صالح'];
         }
 
-        $item       = $map[$data['type']]::findOrFail($data['id']);
+        $item       = $map[$data['type_model']]::findOrFail($data['id']);
         $quantity   = $data['quantity'] ?? 1;
         $price      = $item->price ?? 1;
         $totalPrice = $price * $quantity;
@@ -145,16 +145,16 @@ class OrderService
             'additional_service' => \App\Models\AdditionalService::class,
         ];
 
-        if (! isset($map[$data['type']])) {
+        if (! isset($map[$data['type_model']])) {
             return response()->json(['success' => false, 'message' => 'نوع المنتج غير صالح'], 422);
         }
 
-        $item       = $map[$data['type']]::findOrFail($data['id']);
+        $item       = $map[$data['type_model']]::findOrFail($data['id']);
         $quantity   = $data['quantity'] ?? 1;
         $price      = $item->price ?? 1;
         $totalPrice = $price * $quantity;
 
-        if (in_array($data['type'], ['real_estate', 'additional_service'])) {
+        if (in_array($data['type_model'], ['real_estate', 'additional_service'])) {
 
             $order = $this->model->create([
                 'user_id'        => $user->id,

@@ -17,6 +17,10 @@ return new class extends Migration
             $table->foreignId('hotel_id')->constrained('hotels', 'id')->cascadeOnDelete();
             $table->string('room_number')->nullable();
             $table->morphs('orderable');
+            $table->string('date');
+            $table->string('time');
+            $table->string('type')->default(\App\Enums\InquiryType::NORMAL->value);
+            $table->text('notes')->nullable();
             $table->integer('quantity')->default(1);
             $table->string('order_number')->unique();
             $table->decimal('price', 10, 2);
