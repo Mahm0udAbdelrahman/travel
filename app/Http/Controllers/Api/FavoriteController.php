@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\FavoriteResource;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,8 @@ class FavoriteController extends Controller
     public function index()
     {
         $favorite = $this->favoriteService->index();
-        return $this->okResponse($favorite, __('favorite', [], Request()->header('Accept-language')));
+
+        return $this->paginatedResponse($favorite, FavoriteResource::class);
     }
 
     public function store(FavoriteRequest $request)
