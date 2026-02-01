@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,12 @@ class Offer extends Model
     }
 
     public function orders()
-{
-    return $this->morphMany(Order::class, 'orderable');
-}
+    {
+        return $this->morphMany(Order::class, 'orderable');
+    }
+
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
+    }
 }

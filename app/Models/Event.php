@@ -36,12 +36,17 @@ class Event extends Model
         return $this->belongsTo(City::class);
     }
 
-     public function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
     public function orders()
-{
-    return $this->morphMany(Order::class, 'orderable');
-}
+    {
+        return $this->morphMany(Order::class, 'orderable');
+    }
+
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
+    }
 }

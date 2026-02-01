@@ -1,25 +1,26 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CityController;
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\HotelController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\OfferController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\PasswordController;
-use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\ExcursionController;
-use App\Http\Controllers\Api\RealEstateController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\DeleteAccountController;
 use App\Http\Controllers\Api\AdditionalServiceController;
 use App\Http\Controllers\Api\CategoryExcursionController;
 use App\Http\Controllers\Api\CategoryRealEstateController;
-use App\Http\Controllers\Api\SubCategoryExcursionController;
+use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\DeleteAccountController;
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\ExcursionController;
+use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\OrderAdditionalServiceController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\RealEstateController;
+use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\SubCategoryExcursionController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['lang']], function () {
     // register
@@ -68,19 +69,23 @@ Route::group(['middleware' => ['lang']], function () {
         Route::post('/change-password', [PasswordController::class, 'changePassword']);
         Route::post('/logout', [LogoutController::class, 'logout']);
         Route::get('/notifications', [NotificationController::class, 'index']);
-
+        //delete account
         Route::delete('/delete_account', [DeleteAccountController::class, 'deleteAccount']);
 
         Route::post('/order_additional_services', [OrderAdditionalServiceController::class, 'store']);
+        //orders
         Route::post('/orders', [OrderController::class, 'store']);
-        Route::get('/my_order', [OrderController::class, 'myOrder']);
-    });
 
+        // user's orders
+        Route::get('/my_order', [OrderController::class, 'myOrder']);
+
+        Route::get('/favorite', [FavoriteController::class, 'index']);
+        Route::post('/favorite', [FavoriteController::class, 'store']);
+    });
 });
 Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->name('payment.opay.return');
 
 // الرابط الذي يرسل إليه OPay تحديثات الحالة (Webhook)
 Route::post('payment/opay/callback', [OrderController::class, 'handleCallback'])->name('payment.opay.callback');
-
 
 Route::post('/stripe/webhook', [OrderController::class, 'handle']);

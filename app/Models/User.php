@@ -57,7 +57,7 @@ class User extends Authenticatable
         ];
     }
 
-     public function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
@@ -65,5 +65,10 @@ class User extends Authenticatable
     public function files()
     {
         return $this->belongsToMany(File::class, 'tour_leader_files', 'user_id', 'file_id');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }
