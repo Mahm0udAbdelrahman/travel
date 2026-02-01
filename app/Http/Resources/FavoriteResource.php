@@ -17,6 +17,9 @@ class FavoriteResource extends JsonResource
         return [
             'id'   => $this->id,
             'favoritable_name' => $this->favoritable->name[app()->getLocale()],
+            'favoritable_image' => $this->favoritable->image,
+            'favoritable_price' => $this->favoritable->price ?? 0,
+            'favoritable_description' => $this->favoritable->description[app()->getLocale()],
             'is_favorite' => $this->is_favorite,
 
         ];
