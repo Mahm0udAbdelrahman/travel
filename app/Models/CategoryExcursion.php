@@ -23,4 +23,9 @@ class CategoryExcursion extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

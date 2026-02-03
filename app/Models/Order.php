@@ -38,4 +38,6 @@ class Order extends Model
     {
         return $this->belongsTo(Hotel::class, 'hotel_id', 'id');
     }
+
+
 }

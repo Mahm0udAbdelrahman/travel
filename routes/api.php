@@ -1,25 +1,26 @@
 <?php
 
-use App\Http\Controllers\Api\AdditionalServiceController;
-use App\Http\Controllers\Api\CategoryExcursionController;
-use App\Http\Controllers\Api\CategoryRealEstateController;
-use App\Http\Controllers\Api\CityController;
-use App\Http\Controllers\Api\DeleteAccountController;
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\ExcursionController;
-use App\Http\Controllers\Api\FavoriteController;
-use App\Http\Controllers\Api\HotelController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\OfferController;
-use App\Http\Controllers\Api\OrderAdditionalServiceController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\PasswordController;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\RealEstateController;
-use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\SubCategoryExcursionController;
+use App\Http\Controllers\Api\User\AdditionalServiceController;
+use App\Http\Controllers\Api\User\CategoryExcursionController;
+use App\Http\Controllers\Api\User\CategoryRealEstateController;
+use App\Http\Controllers\Api\User\CityController;
+use App\Http\Controllers\Api\User\DeleteAccountController;
+use App\Http\Controllers\Api\User\EventController;
+use App\Http\Controllers\Api\User\ExcursionController;
+use App\Http\Controllers\Api\User\FavoriteController;
+use App\Http\Controllers\Api\User\HotelController;
+use App\Http\Controllers\Api\User\LoginController;
+use App\Http\Controllers\Api\User\LogoutController;
+use App\Http\Controllers\Api\User\NotificationController;
+use App\Http\Controllers\Api\User\OfferController;
+use App\Http\Controllers\Api\User\OrderAdditionalServiceController;
+use App\Http\Controllers\Api\User\OrderController;
+use App\Http\Controllers\Api\Supplier\OrderController as SupplierOrderController;
+use App\Http\Controllers\Api\User\PasswordController;
+use App\Http\Controllers\Api\User\ProfileController;
+use App\Http\Controllers\Api\User\RealEstateController;
+use App\Http\Controllers\Api\User\RegisterController;
+use App\Http\Controllers\Api\User\SubCategoryExcursionController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['lang']], function () {
@@ -81,6 +82,10 @@ Route::group(['middleware' => ['lang']], function () {
 
         Route::get('/favorite', [FavoriteController::class, 'index']);
         Route::post('/favorite', [FavoriteController::class, 'store']);
+    });
+
+    Route::group(['prefix' => 'supplier', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/order', [SupplierOrderController::class, 'index']);
     });
 });
 Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->name('payment.opay.return');

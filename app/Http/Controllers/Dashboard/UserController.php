@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Dashboard\User\{StoreUserRequest, UpdateUserRequest};
+use App\Models\CategoryExcursion;
 use App\Services\Dashboard\UserService;
 
 class UserController extends Controller
@@ -21,7 +22,8 @@ class UserController extends Controller
     }
     public function create()
     {
-        return view('dashboard.pages.users.create');
+        $category_excursions = CategoryExcursion::active()->get();
+        return view('dashboard.pages.users.create', compact('category_excursions'));
     }
 
     public function store(StoreUserRequest $storeUserRequest)
@@ -42,8 +44,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-
-        return view('dashboard.pages.users.edit', compact('user'));
+        $category_excursions = CategoryExcursion::active()->get();
+        return view('dashboard.pages.users.edit', compact('user', 'category_excursions'));
     }
 
     public function update($id, UpdateUserRequest $updateUserRequest)

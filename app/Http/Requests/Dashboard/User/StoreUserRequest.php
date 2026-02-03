@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests\Dashboard\User;
 
 use Illuminate\Validation\Rule;
@@ -35,7 +36,8 @@ class StoreUserRequest extends FormRequest
             'type'      => ['required', new Enum(\App\Enums\UserType::class)],
             'is_active' => ['required', 'boolean'],
             'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'category_excursion_id' => 'required_if:type,' . \App\Enums\UserType::SUPPLIER->value . '|exists:category_excursions,id',
+
         ];
     }
-
 }

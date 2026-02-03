@@ -30,6 +30,7 @@ class User extends Authenticatable
         'expire_at',
         'fcm_token',
         'email_verified_at',
+        'category_excursion_id',
     ];
 
     /**
@@ -71,4 +72,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favorite::class);
     }
+
+    public function categoryExcursion()
+    {
+        return $this->belongsTo(CategoryExcursion::class, 'category_excursion_id', 'id');
+    }
+
 }

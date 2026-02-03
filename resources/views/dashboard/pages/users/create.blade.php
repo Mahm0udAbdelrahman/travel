@@ -99,6 +99,24 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-6" id="category_div" style="display: none;">
+                                        <label class="form-label">{{ __('Category') }}</label>
+                                        <select name="category_excursion_id" class="form-select">
+                                            <option value="">{{ __('Choose...') }}</option>
+                                            @foreach ($category_excursions as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ old('category_excursion_id') == $category->id ? 'selected' : '' }}>
+                                                    {{ data_get($category->name, app()->getLocale(), $category->name['en']) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('category_excursion_id')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+
                                     <div class="col-md-6">
                                         <label for="password" class="form-label">{{ __('Password') }}</label>
                                         <input type="password" name="password" value="{{ old('password') }}" id="password"
@@ -123,3 +141,24 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const typeSelect = document.getElementById('type');
+        const categoryDiv = document.getElementById('category_div');
+
+        const supplierValue = 'supplier';
+
+        function toggleCategory() {
+            if (typeSelect.value === supplierValue) {
+                categoryDiv.style.display = 'block';
+            } else {
+                categoryDiv.style.display = 'none';
+            }
+        }
+
+        typeSelect.addEventListener('change', toggleCategory);
+
+        toggleCategory();
+    });
+</script>

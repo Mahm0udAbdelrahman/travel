@@ -34,6 +34,7 @@ class UpdateUserRequest extends FormRequest
             'type'      => ['required', new Enum(\App\Enums\UserType::class)],
             'is_active' => ['required', 'in:0,1'],
             'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'category_excursion_id' => ['nullable', 'exists:category_excursions,id'],   
         ];
     }
 }
