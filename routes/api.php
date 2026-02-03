@@ -84,7 +84,7 @@ Route::group(['middleware' => ['lang']], function () {
         Route::post('/favorite', [FavoriteController::class, 'store']);
     });
 
-    Route::group(['prefix' => 'supplier', 'middleware' => 'auth:sanctum'], function () {
+    Route::group(['prefix' => 'supplier', 'middleware' => 'auth:sanctum,supplier'], function () {
         Route::get('/order', [SupplierOrderController::class, 'index']);
     });
 });

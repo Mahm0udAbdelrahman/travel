@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             /**** OTHER MIDDLEWARE ALIASES ****/
+            'supplier' => \App\Http\Middleware\EnsureUserIsSupplier::class,
             'is_role'             => \App\Http\Middleware\AdminMiddleware::class,
             'notification'        => \App\Http\Middleware\CheckNotification::class,
             'lang' =>                 \App\Http\Middleware\SetLocaleFromHeader::class,
