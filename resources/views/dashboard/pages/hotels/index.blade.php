@@ -47,6 +47,7 @@
                                             <tr>
                                                 <th>{{ __('ID') }}</th>
                                                 <th>{{ __('Name') }}</th>
+                                                <th>{{ __('Count TourLeader') }}</th>
                                                 <th>{{ __('Active') }}</th>
                                                 <th>
                                                     <input type="checkbox" id="selectAll">
@@ -60,7 +61,7 @@
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>{{ $hotel->name[app()->getLocale()] }}</td>
-
+                                                    <td>{{ count($hotel->tourLeaders) ?? 0 }}</td>
                                                     <td>{{ $hotel->is_active == 1 ? 'Active' : 'Unactive' }}
                                                     </td>
 

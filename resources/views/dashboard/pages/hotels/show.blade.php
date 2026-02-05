@@ -48,6 +48,33 @@
                 </div>
             </div>
 
+            {{-- Tour Leaders --}}
+            <section>
+                <h5 class="mb-3">{{ __('Tour Leaders') }}</h5>
+
+                @if ($hotel->tourLeaders->isEmpty())
+                    <p class="fst-italic text-secondary">{{ __('No tour leaders selected.') }}</p>
+                @else
+                    <div class="row g-4">
+                        @foreach ($hotel->tourLeaders as $tourLeader)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div
+                                    class="card shadow-sm h-100 border-0 rounded-3
+                            bg-white hover-shadow cursor-pointer">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-primary fw-bold mb-2"><a
+                                                href="{{ route('Admin.users.show', $tourLeader->id) }}"
+                                                class="text-decoration-none">{{ $tourLeader->name }}</a></h6>
+                                        <p class="card-text text-muted fst-italic mb-0">
+                                            {{ $tourLeader->type->label() ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </section>
+
             <a href="{{ route('Admin.offers.index') }}" class="btn btn-outline-secondary">
                 <i class="ti ti-arrow-left"></i> {{ __('Back to Offers') }}
             </a>

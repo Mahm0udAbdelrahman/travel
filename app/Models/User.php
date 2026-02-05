@@ -68,6 +68,11 @@ class User extends Authenticatable
         return $this->belongsToMany(File::class, 'tour_leader_files', 'user_id', 'file_id');
     }
 
+    public function hotels()
+    {
+        return $this->belongsToMany(Hotel::class, 'tour_leader_hotels', 'user_id', 'hotel_id');
+    }
+
     public function favorites()
     {
         return $this->hasMany(Favorite::class);

@@ -32,6 +32,9 @@ class StoreHotelRequest extends FormRequest
             'name.ru'   => ['nullable', 'string', 'max:255'],
             'name.fr'   => ['nullable', 'string', 'max:255'],
             'is_active' => ['required', 'boolean'],
+
+            'tour_leader_ids'  => 'required|array|min:1',
+
         ];
     }
 

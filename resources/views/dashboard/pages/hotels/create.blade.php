@@ -128,6 +128,66 @@
                     </div>
                 </div>
 
+                  {{-- ================= files ================= --}}
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h6 class="mb-0">
+                            <i class="ti ti-map-pin text-primary"></i> Select Tour Leaders
+                        </h6>
+
+                        <div class="d-flex gap-2 align-items-center">
+                            {{--  <select id="categoryFilter" class="form-select form-select-sm">
+                                <option value="">All Types</option>
+                                @foreach (\App\Enums\UserType::options() as $key => $label)
+                                    @if ($key !== 'customer')
+                                        <option value="{{ $key }}">{{ $label }}</option>
+                                    @endif
+                                @endforeach
+                            </select>  --}}
+
+                            <input type="text" id="fileSearch" class="form-control form-control-sm"
+                                placeholder="Search...">
+
+                            <button type="button" id="selectAll" class="btn btn-sm btn-outline-primary">
+                                Select All
+                            </button>
+
+                            <button type="button" id="clearAll" class="btn btn-sm btn-outline-secondary">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body" style="max-height: 450px; overflow:auto">
+                        <div class="row g-3">
+
+                            @foreach ($tourLeaders as $tourLeader)
+                                <div class="col-md-6 file-item" data-category="{{ $tourLeader->type->value }}"
+                                    data-name="{{ strtolower($tourLeader->name) }}">
+
+                                    <label class="card h-100 p-3 file-card">
+
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ $tourLeader->name }}</h6>
+                                                <small class="text-muted">
+                                                    {{ $tourLeader->type->label() }}
+                                                </small>
+                                            </div>
+
+                                            <input class="form-check-input file-checkbox" type="checkbox"
+                                                value="{{ $tourLeader->id }}" name="tour_leader_ids[]">
+                                        </div>
+
+                                    </label>
+                                </div>
+                            @endforeach
+
+                        </div>
+                    </div>
+                </div>
+
 
                 {{-- Submit --}}
                 <div class="text-end mb-5">

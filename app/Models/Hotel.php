@@ -22,4 +22,9 @@ class Hotel extends Model
     {
         return $this->morphMany(Favorite::class, 'favoritable');
     }
+
+    public function tourLeaders()
+    {
+        return $this->belongsToMany(User::class, 'tour_leader_hotels', 'hotel_id', 'user_id');
+    }
 }

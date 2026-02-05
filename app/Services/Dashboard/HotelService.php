@@ -18,8 +18,9 @@ class HotelService
 
     public function store($data)
     {
-
-        return $this->model->create($data);
+        $hotel = $this->model->create($data);
+        $hotel->tourLeaders()->attach($data['tour_leader_ids'] ?? []);
+        return $hotel;
 
     }
 
@@ -33,7 +34,7 @@ class HotelService
         $hotel = $this->show($id);
 
         $hotel->update($data);
-
+        $hotel->tourLeaders()->sync($data['tour_leader_ids'] ?? []);
         return $hotel;
     }
 
