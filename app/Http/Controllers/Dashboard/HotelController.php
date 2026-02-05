@@ -18,7 +18,8 @@ class HotelController extends Controller
     }
     public function create()
     {
-        return view('dashboard.pages.hotels.create');
+        $tourLeaders = $this->hotelService->getTourLeaders();
+        return view('dashboard.pages.hotels.create', compact('tourLeaders'));
     }
 
     public function store(StoreHotelRequest $storeHotelRequest)
@@ -39,8 +40,8 @@ class HotelController extends Controller
     public function edit($id)
     {
          $hotel = $this->hotelService->show($id);
-
-        return view('dashboard.pages.hotels.edit', compact('hotel'));
+        $tourLeaders = $this->hotelService->getTourLeaders();
+        return view('dashboard.pages.hotels.edit', compact('hotel', 'tourLeaders'));
     }
 
     public function update($id, UpdateHotelRequest $updateHotelRequest)

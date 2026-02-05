@@ -2,6 +2,7 @@
 namespace App\Services\Dashboard;
 
 use App\Models\Hotel;
+use App\Models\User;
 use App\Traits\HasImage;
 
 class HotelService
@@ -22,6 +23,13 @@ class HotelService
         $hotel->tourLeaders()->attach($data['tour_leader_ids'] ?? []);
         return $hotel;
 
+    }
+    public function getTourLeaders()
+    {
+        return User::whereDoesntHave('roles')
+            ->where('is_active', '!=', 0)
+            ->whereNotIn('type', ['customer', 'supplier'])
+            ->get();
     }
 
     public function show($id)
