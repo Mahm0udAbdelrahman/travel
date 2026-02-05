@@ -39,5 +39,10 @@ class Order extends Model
         return $this->belongsTo(Hotel::class, 'hotel_id', 'id');
     }
 
+    public function orderStatuses()
+    {
+        return $this->hasMany(OrderStatus::class);
+    }
+
 
 }

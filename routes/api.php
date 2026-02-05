@@ -86,6 +86,7 @@ Route::group(['middleware' => ['lang']], function () {
 
     Route::group(['prefix' => 'supplier', 'middleware' => ['auth:sanctum', 'supplier']], function () {
         Route::get('/order', [SupplierOrderController::class, 'index']);
+        Route::post('/order/{id}/status', [SupplierOrderController::class, 'updateOrderStatus']);
     });
 });
 Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->name('payment.opay.return');

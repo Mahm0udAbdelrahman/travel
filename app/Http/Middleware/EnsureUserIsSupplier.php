@@ -18,7 +18,7 @@ class EnsureUserIsSupplier
     {
         $user = $request->user();
 
-        if (! $user || $user->type !== UserType::SUPPLIER->value) {
+        if (! $user || $user->type !== UserType::SUPPLIER) {
             return response()->json([
                 'message' => 'Unauthorized — Supplier only'
             ], 403);
