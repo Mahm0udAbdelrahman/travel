@@ -38,9 +38,9 @@ class CategoryExcursionController extends Controller
 
     public function edit($id)
     {
-         $categoryExcursion = $this->categoryExcursionService->show($id);
+         $category_excursion = $this->categoryExcursionService->show($id);
 
-        return view('dashboard.pages.category_excursions.edit', compact('categoryExcursion'));
+        return view('dashboard.pages.category_excursions.edit', compact('category_excursion'));
     }
 
     public function update($id, UpdateCategoryExcursionRequest $updateCategoryExcursionRequest)
