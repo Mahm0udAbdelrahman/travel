@@ -55,7 +55,7 @@
                                     <div class="col-md-6">
                                         <label for="name_ar" class="form-label">{{ __('Name') }}</label>
                                         <input type="text" name="name[ar]" id="name_ar"
-                                            value="{{ old('name.ar', data_get($category_excursion->name, 'ar', '')) }}"
+                                            value="{{ old('name.ar', data_get($sub_category_excursion->name, 'ar', '')) }}"
                                             class="form-control"
                                             placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.ar')
