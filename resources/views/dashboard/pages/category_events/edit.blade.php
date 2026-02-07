@@ -13,7 +13,8 @@
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('Admin.home') }}">{{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('Admin.category_events.index') }}">{{ __('Category Events') }}</a></li>
+                        <li class="breadcrumb-item"><a
+                                href="{{ route('Admin.category_events.index') }}">{{ __('Category Events') }}</a></li>
                         <li class="breadcrumb-item" aria-current="page">{{ __('Edit Category Event') }}</li>
                     </ul>
                 </div>
@@ -80,31 +81,51 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Name De</label>
                                         <input type="text" name="name[de]"
-                                            value="{{ old('name.de', data_get($category_event->name, 'de')) }}" class="form-control">
+                                            value="{{ old('name.de', data_get($category_event->name, 'de')) }}"
+                                            class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Ja</label>
                                         <input type="text" name="name[ja]"
-                                            value="{{ old('name.ja', data_get($category_event->name, 'ja')) }}" class="form-control">
+                                            value="{{ old('name.ja', data_get($category_event->name, 'ja')) }}"
+                                            class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Zh</label>
                                         <input type="text" name="name[zh]"
-                                            value="{{ old('name.zh', data_get($category_event->name, 'zh')) }}" class="form-control">
+                                            value="{{ old('name.zh', data_get($category_event->name, 'zh')) }}"
+                                            class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Ru</label>
                                         <input type="text" name="name[ru]"
-                                            value="{{ old('name.ru', data_get($category_event->name, 'ru')) }}" class="form-control">
+                                            value="{{ old('name.ru', data_get($category_event->name, 'ru')) }}"
+                                            class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Fr</label>
                                         <input type="text" name="name[fr]"
-                                            value="{{ old('name.fr', data_get($category_event->name, 'fr')) }}" class="form-control">
+                                            value="{{ old('name.fr', data_get($category_event->name, 'fr')) }}"
+                                            class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">{{ __('Image') }}</label>
+                                        <input type="file" name="image" class="form-control">
+                                        @error('image')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+
+                                        @if ($category_event->image)
+                                            <div class="mt-2">
+                                                <img src="{{ asset($category_event->image) }}" alt="Current Image"
+                                                    style="max-width: 150px; max-height: 150px; border-radius: 6px;">
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <div class="col-md-6">

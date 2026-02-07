@@ -14,7 +14,8 @@
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('Admin.home') }}">{{ __('Home') }}</a></li>
                         <li class="breadcrumb-item"><a
-                                href="{{ route('Admin.category_excursions.index') }}">{{ __('Category Excursions') }}</a></li>
+                                href="{{ route('Admin.category_excursions.index') }}">{{ __('Category Excursions') }}</a>
+                        </li>
                         <li class="breadcrumb-item" aria-current="page">{{ __('Add Category Excursion') }}</li>
                     </ul>
                 </div>
@@ -23,8 +24,8 @@
             <!-- Main Content -->
             <div class="row mb-5">
                 <div class="col-12">
-                    <form method="post" action="{{ route('Admin.category_excursions.store') }}" enctype="multipart/form-data"
-                        class="p-3 rounded shadow-lg bg-white">
+                    <form method="post" action="{{ route('Admin.category_excursions.store') }}"
+                        enctype="multipart/form-data" class="p-3 rounded shadow-lg bg-white">
                         @csrf
                         <div class="card border-0">
                             <div class="card-header bg-primary text-white rounded-top">
@@ -37,7 +38,8 @@
                                     <div class="col-md-6">
                                         <label for="name_ar" class="form-label">{{ __('Name Ar') }}</label>
                                         <input type="text" name="name[ar]" id="name_ar" value="{{ old('name.ar') }}"
-                                            class="form-control" placeholder="{{ __('Enter the category excursion name') }}">
+                                            class="form-control"
+                                            placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.ar')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -46,7 +48,8 @@
                                     <div class="col-md-6">
                                         <label for="name_en" class="form-label">{{ __('Name En') }}</label>
                                         <input type="text" name="name[en]" id="name_en" value="{{ old('name.en') }}"
-                                            class="form-control" placeholder="{{ __('Enter the category excursion name') }}">
+                                            class="form-control"
+                                            placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.en')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -55,7 +58,8 @@
                                     <div class="col-md-6">
                                         <label for="name_es" class="form-label">{{ __('Name Es') }}</label>
                                         <input type="text" name="name[es]" id="name_es" value="{{ old('name.es') }}"
-                                            class="form-control" placeholder="{{ __('Enter the category excursion name') }}">
+                                            class="form-control"
+                                            placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.es')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -65,7 +69,8 @@
                                     <div class="col-md-6">
                                         <label for="name_it" class="form-label">{{ __('Name It') }}</label>
                                         <input type="text" name="name[it]" id="name_it" value="{{ old('name.it') }}"
-                                            class="form-control" placeholder="{{ __('Enter the category excursion name') }}">
+                                            class="form-control"
+                                            placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.it')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -112,6 +117,15 @@
                                         <input type="text" name="name[fr]" value="{{ old('name.fr') }}"
                                             class="form-control">
                                         @error('name.fr')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">{{ __('Image') }}</label>
+                                        <input type="file" name="image" value="{{ old('image') }}"
+                                            class="form-control">
+                                        @error('image')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>

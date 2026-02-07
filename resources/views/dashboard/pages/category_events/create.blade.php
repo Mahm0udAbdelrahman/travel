@@ -116,6 +116,14 @@
                                         @enderror
                                     </div>
 
+                                      <div class="col-md-6">
+                                <label class="form-label">{{ __('Image') }}</label>
+                                <input type="file" name="image" value="{{ old('image') }}" class="form-control">
+                                @error('image')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+
 
                                     <div class="col-md-6">
                                         <label for="is_active" class="form-label">{{ __('Is Active') }}</label>

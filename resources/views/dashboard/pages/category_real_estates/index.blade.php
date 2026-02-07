@@ -46,6 +46,7 @@
                                             <tr>
                                                 <th>{{ __('ID') }}</th>
                                                 <th>{{ __('Name') }}</th>
+                                                <th>{{ __('Image') }}</th>
                                                 <th>{{ __('Active') }}</th>
                                                 <th>
                                                     <input type="checkbox" id="selectAll">
@@ -59,6 +60,10 @@
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>{{ $category_real_estate->name[app()->getLocale()] }}</td>
+                                                    <td>
+                                                        <img src="{{ $category_real_estate->image }}" class="img-thumbnail"
+                                                            style="width:60px;">
+                                                    </td>
                                                     <td>{{ $category_real_estate->is_active == 1 ? 'Active' : 'Unactive' }}</td>
                                                     <td>
                                                         <input type="checkbox" name="ids[]" value="{{ $category_real_estate->id }}"

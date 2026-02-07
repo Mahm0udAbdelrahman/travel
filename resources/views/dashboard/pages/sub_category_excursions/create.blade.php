@@ -130,6 +130,22 @@
                                         @enderror
                                     </div>
 
+                                     <div class="col-md-6">
+                                        <label class="form-label">{{ __('Image') }}</label>
+                                        <input type="file" name="image" class="form-control">
+                                        @error('image')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+
+                                        @if ($category_event->image)
+                                            <div class="mt-2">
+                                                <img src="{{ asset($category_event->image) }}" alt="Current Image"
+                                                    style="max-width: 150px; max-height: 150px; border-radius: 6px;">
+                                            </div>
+                                        @endif
+                                    </div>
+
+
 
                                     <div class="col-md-6">
                                         <label for="is_active" class="form-label">{{ __('Is Active') }}</label>
