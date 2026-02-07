@@ -3,9 +3,9 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Traits\HasImage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Carbon\Carbon;
 
 class UserService
 {
@@ -34,6 +34,9 @@ class UserService
             $data['image'] = asset('public/default/default.png');
         }
         $data['email_verified_at'] = Carbon::now();
+        if (! str_starts_with($data['phone'], '+2')) {
+            $data['phone'] = '+2' . $data['phone'];
+        }
 
         $user = $this->user->create($data);
 
