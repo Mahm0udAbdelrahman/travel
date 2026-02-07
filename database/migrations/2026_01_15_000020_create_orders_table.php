@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
             $table->foreignId('hotel_id')->constrained('hotels', 'id')->cascadeOnDelete();
+            $table->boolean('is_tour_leader')->default(false);
             $table->string('room_number')->nullable();
             $table->morphs('orderable');
             $table->string('date');

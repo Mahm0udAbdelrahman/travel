@@ -6,23 +6,24 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             /**** OTHER MIDDLEWARE ALIASES ****/
-            'supplier' => \App\Http\Middleware\EnsureUserIsSupplier::class,
-            'is_role'             => \App\Http\Middleware\AdminMiddleware::class,
-            'notification'        => \App\Http\Middleware\CheckNotification::class,
-            'lang' =>                 \App\Http\Middleware\SetLocaleFromHeader::class,
-            'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
-            'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
-            'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
-            'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
-            'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
+            'supplier'              => \App\Http\Middleware\EnsureUserIsSupplier::class,
+            'tour_leader'           => \App\Http\Middleware\EnsureUserIsTourLeader::class,
+            'is_role'               => \App\Http\Middleware\AdminMiddleware::class,
+            'notification'          => \App\Http\Middleware\CheckNotification::class,
+            'lang'                  => \App\Http\Middleware\SetLocaleFromHeader::class,
+            'localize'              => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
+            'localizationRedirect'  => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
+            'localeSessionRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
+            'localeCookieRedirect'  => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
+            'localeViewPath'        => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

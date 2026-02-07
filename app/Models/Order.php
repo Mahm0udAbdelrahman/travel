@@ -22,6 +22,7 @@ class Order extends Model
         'payment_method',
         'payment_id',
         'payment_status',
+        'is_tour_leader'
     ];
 
     public function orderable()

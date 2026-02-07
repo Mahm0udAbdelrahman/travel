@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\User\OfferController;
 use App\Http\Controllers\Api\User\OrderAdditionalServiceController;
 use App\Http\Controllers\Api\User\OrderController;
 use App\Http\Controllers\Api\Supplier\OrderController as SupplierOrderController;
+use App\Http\Controllers\Api\TourLeader\OrderController as TourLeaderOrderController;
 use App\Http\Controllers\Api\User\PasswordController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\RealEstateController;
@@ -87,6 +88,10 @@ Route::group(['middleware' => ['lang']], function () {
     Route::group(['prefix' => 'supplier', 'middleware' => ['auth:sanctum', 'supplier']], function () {
         Route::get('/order', [SupplierOrderController::class, 'index']);
         Route::post('/order/{id}/status', [SupplierOrderController::class, 'updateOrderStatus']);
+    });
+
+    Route::group(['prefix' => 'tour_leader', 'middleware' => ['auth:sanctum', 'tour_leader']], function () {
+          Route::post('/orders', [TourLeaderOrderController::class, 'store']);
     });
 });
 Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->name('payment.opay.return');
