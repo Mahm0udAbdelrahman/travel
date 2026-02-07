@@ -42,7 +42,7 @@
                                             <option value="">{{ __('Choose...') }}</option>
                                             @foreach ($category_excursions as $category)
                                                 <option value="{{ $category->id }}"
-                                                    {{ old('category_excursion_id', $excursion->category_excursion_id) == $category->id ? 'selected' : '' }}>
+                                                    {{ old('category_excursion_id', $sub_category_excursion->category_excursion_id) == $category->id ? 'selected' : '' }}>
                                                     {{ data_get($category->name, app()->getLocale(), $category->name['en']) }}
                                                 </option>
                                             @endforeach
@@ -67,7 +67,7 @@
                                     <div class="col-md-6">
                                         <label for="name_en" class="form-label">{{ __('Name EN') }}</label>
                                         <input type="text" name="name[en]" id="name_en"
-                                            value="{{ old('name.en', data_get($category_excursion->name, 'en', '')) }}"
+                                            value="{{ old('name.en', data_get($sub_category_excursion->name, 'en', '')) }}"
                                             class="form-control"
                                             placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.en')
@@ -79,7 +79,7 @@
                                     <div class="col-md-6">
                                         <label for="name_es" class="form-label">{{ __('Name Es') }}</label>
                                         <input type="text" name="name[es]" id="name_es"
-                                            value="{{ old('name.es', data_get($category_excursion->name, 'es', '')) }}"
+                                            value="{{ old('name.es', data_get($sub_category_excursion->name, 'es', '')) }}"
                                             class="form-control"
                                             placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.es')
@@ -90,7 +90,7 @@
                                     <div class="col-md-6">
                                         <label for="name_it" class="form-label">{{ __('Name It') }}</label>
                                         <input type="text" name="name[it]" id="name_it"
-                                            value="{{ old('name.it', data_get($category_excursion->name, 'it', '')) }}"
+                                            value="{{ old('name.it', data_get($sub_category_excursion->name, 'it', '')) }}"
                                             class="form-control"
                                             placeholder="{{ __('Enter the category excursion name') }}">
                                         @error('name.it')
@@ -101,35 +101,35 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Name De</label>
                                         <input type="text" name="name[de]"
-                                            value="{{ old('name.de', data_get($category_excursion->name, 'de')) }}"
+                                            value="{{ old('name.de', data_get($sub_category_excursion->name, 'de')) }}"
                                             class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Ja</label>
                                         <input type="text" name="name[ja]"
-                                            value="{{ old('name.ja', data_get($category_excursion->name, 'ja')) }}"
+                                            value="{{ old('name.ja', data_get($sub_category_excursion->name, 'ja')) }}"
                                             class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Zh</label>
                                         <input type="text" name="name[zh]"
-                                            value="{{ old('name.zh', data_get($category_excursion->name, 'zh')) }}"
+                                            value="{{ old('name.zh', data_get($sub_category_excursion->name, 'zh')) }}"
                                             class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Ru</label>
                                         <input type="text" name="name[ru]"
-                                            value="{{ old('name.ru', data_get($category_excursion->name, 'ru')) }}"
+                                            value="{{ old('name.ru', data_get($sub_category_excursion->name, 'ru')) }}"
                                             class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Name Fr</label>
                                         <input type="text" name="name[fr]"
-                                            value="{{ old('name.fr', data_get($category_excursion->name, 'fr')) }}"
+                                            value="{{ old('name.fr', data_get($sub_category_excursion->name, 'fr')) }}"
                                             class="form-control">
                                     </div>
 
@@ -140,9 +140,9 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
 
-                                        @if ($category_excursion->image)
+                                        @if ($sub_category_excursion->image)
                                             <div class="mt-2">
-                                                <img src="{{ asset($category_excursion->image) }}" alt="Current Image"
+                                                <img src="{{ asset($sub_category_excursion->image) }}" alt="Current Image"
                                                     style="max-width: 150px; max-height: 150px; border-radius: 6px;">
                                             </div>
                                         @endif
@@ -154,10 +154,10 @@
                                         <select class="form-select" name="is_active" id="is_active">
                                             <option value="" disabled>{{ __('Choose is_active...') }}</option>
                                             <option value="0"
-                                                {{ old('is_active', $category_excursion->is_active) == 0 ? 'selected' : '' }}>
+                                                {{ old('is_active', $sub_category_excursion->is_active) == 0 ? 'selected' : '' }}>
                                                 {{ __('UnActive') }}</option>
                                             <option value="1"
-                                                {{ old('is_active', $category_excursion->is_active) == 1 ? 'selected' : '' }}>
+                                                {{ old('is_active', $sub_category_excursion->is_active) == 1 ? 'selected' : '' }}>
                                                 {{ __('Active') }}</option>
                                         </select>
                                         @error('is_active')
