@@ -18,7 +18,9 @@ class CategoryExcursionService
 
     public function store($data)
     {
-
+         if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryExcursion');
+        }
         return $this->model->create($data);
 
     }
@@ -31,6 +33,9 @@ class CategoryExcursionService
     public function update($id, $data)
     {
         $categoryExcursion = $this->show($id);
+        if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryExcursion');
+        }
 
         $categoryExcursion->update($data);
 

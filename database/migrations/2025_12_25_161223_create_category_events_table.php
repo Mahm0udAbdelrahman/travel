@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('category_events', function (Blueprint $table) {
             $table->id();
             $table->json('name');
+            $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

@@ -18,7 +18,9 @@ class CategoryEventService
 
     public function store($data)
     {
-
+        if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryEvent');
+        }
         return $this->model->create($data);
 
     }
@@ -31,7 +33,9 @@ class CategoryEventService
     public function update($id, $data)
     {
         $categoryEvent = $this->show($id);
-
+        if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryEvent');
+        }
         $categoryEvent->update($data);
 
         return $categoryEvent;

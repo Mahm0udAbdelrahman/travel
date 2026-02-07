@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_excursion_id')->constrained('category_excursions')->cascadeOnDelete();
             $table->json('name');
+            $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

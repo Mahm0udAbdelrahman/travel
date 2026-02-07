@@ -7,6 +7,7 @@ class SubCategoryExcursion extends Model
 {
     protected $fillable = [
         'category_excursion_id',
+        'image',
         'name',
         'is_active',
     ];

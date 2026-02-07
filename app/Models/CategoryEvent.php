@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryEvent extends Model
 {
-    protected $fillable = ['name', 'is_active'];
-
+    protected $fillable = ['name', 'image','is_active'];
     protected $casts = [
         'name' => 'array',
         'is_active' => 'boolean',

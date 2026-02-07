@@ -33,6 +33,7 @@ class StoreSubCategoryExcursionRequest extends FormRequest
             'name.fr'               => ['nullable', 'string', 'max:255'],
             'is_active'             => ['required', 'boolean'],
             'category_excursion_id' => ['required', 'exists:category_excursions,id'],
+            'image'                 => ['nullable', 'image'],
         ];
     }
 

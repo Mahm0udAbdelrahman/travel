@@ -18,6 +18,9 @@ class CategoryRealEstateService
 
     public function store($data)
     {
+         if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryRealEstate');
+        }
 
         return $this->model->create($data);
 
@@ -31,6 +34,9 @@ class CategoryRealEstateService
     public function update($id, $data)
     {
         $categoryRealEstate = $this->show($id);
+         if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'CategoryRealEstate');
+        }
 
         $categoryRealEstate->update($data);
 

@@ -23,6 +23,9 @@ class SubCategoryExcursionService
 
     public function store($data)
     {
+        if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'SubCategoryExcursion');
+        }
         return $this->model->create($data);
     }
 
@@ -34,6 +37,9 @@ class SubCategoryExcursionService
     public function update($id, $data)
     {
         $subcategoryExcursion = $this->show($id);
+         if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'SubCategoryExcursion');
+        }
 
         $subcategoryExcursion->update($data);
 

@@ -32,6 +32,7 @@ class UpdateCategoryExcursionRequest extends FormRequest
             'name.ru'   => ['nullable', 'string', 'max:255'],
             'name.fr'   => ['nullable', 'string', 'max:255'],
             'is_active' => ['required', 'boolean'],
+            'image'     => ['nullable', 'image'],
 
         ];
     }
