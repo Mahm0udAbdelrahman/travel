@@ -38,9 +38,9 @@ class CategoryRealEstateController extends Controller
 
     public function edit($id)
     {
-         $categoryRealEstate = $this->categoryRealEstateService->show($id);
+         $category_real_estate = $this->categoryRealEstateService->show($id);
 
-        return view('dashboard.pages.category_real_estates.edit', compact('categoryRealEstate'));
+        return view('dashboard.pages.category_real_estates.edit', compact('category_real_estate'));
     }
 
     public function update($id, UpdateCategoryRealEstateRequest $updateCategoryRealEstateRequest)

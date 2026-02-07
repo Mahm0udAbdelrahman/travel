@@ -38,9 +38,9 @@ class CategoryEventController extends Controller
 
     public function edit($id)
     {
-         $categoryEvent = $this->categoryEventService->show($id);
+         $category_event = $this->categoryEventService->show($id);
 
-        return view('dashboard.pages.category_events.edit', compact('categoryEvent'));
+        return view('dashboard.pages.category_events.edit', compact('category_event'));
     }
 
     public function update($id, UpdateCategoryEventRequest $updateCategoryEventRequest)
