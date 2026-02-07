@@ -46,12 +46,11 @@ class OrderService
         $order = $this->model->findOrFail($id);
         $order->orderStatuses()->updateOrCreate(
             [
-                'user_id' => auth()->id(),
-                'order_id' => $order->id,
+                'user_id' => auth()->id()
             ],[
                 'status' => $data['status'],
             ]);
-     
+
         return $order;
     }
 }
