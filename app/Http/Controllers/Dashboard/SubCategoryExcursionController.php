@@ -41,9 +41,9 @@ class SubCategoryExcursionController extends Controller
 
     public function edit($id)
     {
-        $subcategoryExcursion = $this->subCategoryExcursionService->show($id);
+        $sub_category_excursion = $this->subCategoryExcursionService->show($id);
         $category_excursions  = $this->subCategoryExcursionService->getCategoryExcursions();
-        return view('dashboard.pages.sub_category_excursions.edit', compact('subcategoryExcursion', 'category_excursions'));
+        return view('dashboard.pages.sub_category_excursions.edit', compact('sub_category_excursion', 'category_excursions'));
     }
 
     public function update($id, UpdateSubCategoryExcursionRequest $updateCategoryExcursionRequest)

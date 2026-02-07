@@ -24,7 +24,7 @@
             <!-- Main Content -->
             <div class="row mb-5">
                 <div class="col-12">
-                    <form method="post" action="{{ route('Admin.sub_category_excursions.update', $sub_category_excursions->id) }}"
+                    <form method="post" action="{{ route('Admin.sub_category_excursions.update', $sub_category_excursion->id) }}"
                         enctype="multipart/form-data" class="p-3 rounded shadow-lg bg-white">
                         @csrf
                         @method('PUT')
