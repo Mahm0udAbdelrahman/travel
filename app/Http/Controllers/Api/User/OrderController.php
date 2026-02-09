@@ -6,12 +6,13 @@ use Stripe\Webhook;
 use App\Models\Order;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
-use App\Services\Api\User\OrderService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\Api\User\OrderService;
 use App\Http\Resources\User\OrderResource;
 use App\Http\Requests\Api\User\Order\OrderRequest;
 use Stripe\Exception\SignatureVerificationException;
+use App\Http\Requests\Api\User\Order\OrderUpdateRequest;
 
 class OrderController extends Controller
 {
@@ -22,6 +23,12 @@ class OrderController extends Controller
 
         $method = $orderRequest->payment_method == 'cash' ? 'cashOrder' : 'store';
         return $this->orderService->$method($orderRequest->validated());
+    }
+
+    public function update($id,OrderUpdateRequest $orderUpdateRequest)
+    {
+        $this->orderService->update($id,$orderUpdateRequest->validated());
+        return $this->okResponse([],'Update Order successfully');
     }
 
     public function handle(Request $request)

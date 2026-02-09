@@ -34,8 +34,10 @@ class OrderRequest extends FormRequest
             'hotel_id'       => 'required|exists:hotels,id',
             'room_number'    => 'required|string|max:255',
 
-            'date'           => [
-                Rule::requiredIf(request('type_model') === 'additional_service'),
+             'date' => [
+                Rule::requiredIf(
+                    in_array(request('type_model'), ['additional_service', 'excursion'])
+                ),
                 'date',
             ],
 
@@ -44,16 +46,22 @@ class OrderRequest extends FormRequest
                 'string',
             ],
 
-            'type'           => [
+              'type' => [
                 Rule::requiredIf(request('type_model') === 'additional_service'),
-                new Enum(InquiryType::class),
+                Rule::when(
+                    request('type_model') === 'additional_service',
+                    [new Enum(InquiryType::class)]
+                ),
             ],
 
             'notes'          => 'nullable|string',
 
             'payment_method' => 'nullable|in:card,wallet,cash',
 
-            'time_id'        => 'required_if:type_model,excursion|exists:excursion_times,id',
+            'time_id' => [
+                Rule::requiredIf(request('type_model') === 'excursion'),
+                'exists:excursion_times,id'
+            ],
 
         ];
     }
