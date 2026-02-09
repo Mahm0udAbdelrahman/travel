@@ -33,7 +33,7 @@ class StoreHotelRequest extends FormRequest
             'name.fr'   => ['nullable', 'string', 'max:255'],
             'is_active' => ['required', 'boolean'],
 
-            'tour_leader_ids'  => 'required|array|min:1',
+            'tour_leader_ids'  => 'nullable|array|min:1',
 
         ];
     }

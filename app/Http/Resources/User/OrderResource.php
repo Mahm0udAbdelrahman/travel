@@ -22,6 +22,7 @@ class OrderResource extends JsonResource
             'hotel_name'        => $this->hotel->name[app()->getLocale()] ?? null,
             'category_name'     => $this->orderable->categoryExcursion->name[app()->getLocale()] ?? null,
             'sub_category_name' => $this->orderable->subcategoryExcursion->name[app()->getLocale()] ?? null,
+            'image'             => $this->orderable->image ?? null,
             'room_number'       => $this->room_number,
             'orderable_id'      => $this->orderable_id,
             'orderable_type'    => $this->orderable_type,

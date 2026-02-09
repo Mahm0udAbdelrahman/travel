@@ -77,6 +77,7 @@ Route::group(['middleware' => ['lang']], function () {
         Route::post('/order_additional_services', [OrderAdditionalServiceController::class, 'store']);
         //orders
         Route::post('/orders', [OrderController::class, 'store']);
+        Route::post('/orders/{id}', [OrderController::class, 'update']);
 
         // user's orders
         Route::get('/my_order', [OrderController::class, 'myOrder']);

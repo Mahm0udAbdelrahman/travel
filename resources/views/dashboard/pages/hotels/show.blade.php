@@ -22,14 +22,9 @@
             {{-- Hotel Card --}}
             <div class="card shadow-sm border-0 mb-5">
                 <div class="row g-0">
-                    @if ($hotel->image)
-                        <div class="col-md-4">
-                            <img src="{{ asset($hotel->image) }}" alt="Hotel Image" class="img-fluid rounded-start"
-                                style="height: 100%; object-fit: cover;">
-                        </div>
-                    @endif
 
-                    <div class="{{ $hotel->image ? 'col-md-8' : 'col-md-12' }}">
+
+                    <div>
                         <div class="card-body">
                             <h3 class="card-title mb-3">
                                 {{ $hotel->name[app()->getLocale()] ?? $hotel->name['en'] }}
@@ -37,8 +32,8 @@
 
                             {{-- Status --}}
                             <p>
-                                <span class="badge {{ $offer->is_active ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $offer->is_active ? __('Active') : __('UnActive') }}
+                                <span class="badge {{ $hotel->is_active ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $hotel->is_active ? __('Active') : __('UnActive') }}
                                 </span>
                             </p>
 
@@ -74,6 +69,42 @@
                     </div>
                 @endif
             </section>
+
+            <section class="mt-5">
+                <h5>{{ __('Orders by Date') }}</h5>
+
+                @if ($ordersGroupedByDate->isEmpty())
+                    <p class="text-muted fst-italic">{{ __('No orders found.') }}</p>
+                @else
+                    @foreach ($ordersGroupedByDate as $date => $orders)
+                        @php
+                            $carbonDate = \Carbon\Carbon::parse($date);
+                            $displayDate = $carbonDate->isToday()
+                                ? __('Today')
+                                : ($carbonDate->isYesterday()
+                                    ? __('Yesterday')
+                                    : $carbonDate->format('d M Y'));
+                        @endphp
+
+                        <div class="mb-4">
+                            <h6 class="text-primary">{{ $displayDate }}</h6>
+                            <ul class="list-group">
+                                @foreach ($orders as $order)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ $order->order_number }}</strong> - {{ $order->type }}
+                                            <br>
+                                            <small>{{ __('Quantity') }}: {{ $order->quantity }}</small>
+                                        </div>
+                                        <span class="badge bg-info">{{ $order->status }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                @endif
+            </section>
+
 
             <a href="{{ route('Admin.offers.index') }}" class="btn btn-outline-secondary">
                 <i class="ti ti-arrow-left"></i> {{ __('Back to Offers') }}

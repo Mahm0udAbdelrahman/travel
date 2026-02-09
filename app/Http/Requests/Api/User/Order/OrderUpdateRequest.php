@@ -28,7 +28,7 @@ class OrderUpdateRequest extends FormRequest
     {
         return [
 
-           'status' => 'required|in:canceled',
+           'status' => 'required|in:cancelled',
 
         ];
     }

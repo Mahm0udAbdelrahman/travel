@@ -33,8 +33,8 @@ class HotelController extends Controller
 
     public function show($id)
     {
-        $Hotel = $this->hotelService->show($id);
-        return view('dashboard.pages.hotels.show', compact('Hotel'));
+        $data = $this->hotelService->show($id);
+        return view('dashboard.pages.hotels.show', $data);
     }
 
     public function edit($id)

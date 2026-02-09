@@ -35,12 +35,26 @@ class OrderService
     public function updateOrderStatus($id, $data)
     {
         $order = $this->model->findOrFail($id);
+
+        $exists = $order->orderStatuses()
+            ->where('user_id', auth()->id())
+            ->where('status', $data['status'])
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status'  => 'exists',
+                'message' => 'أنت بالفعل وافقت على هذا الطلب.',
+            ]);
+        }
+
         $order->orderStatuses()->updateOrCreate(
             [
                 'user_id' => auth()->id(),
             ], [
                 'status' => $data['status'],
-            ]);
+            ]
+        );
 
         return $order;
     }

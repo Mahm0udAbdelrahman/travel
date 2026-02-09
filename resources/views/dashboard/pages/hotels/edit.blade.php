@@ -41,89 +41,48 @@
                 @csrf
                 @method('PUT')
 
-                {{-- Languages Tabs --}}
-                @php
-                    $langs = [
-                        'ar' => 'Arabic',
-                        'en' => 'English',
-                        'es' => 'Spanish',
-                        'it' => 'Italian',
-                        'de' => 'German',
-                        'ja' => 'Japanese',
-                        'zh' => 'Chinese',
-                        'ru' => 'Russian',
-                        'fr' => 'French',
-                    ];
-                @endphp
-
+                {{-- Name (English Only) --}}
                 <div class="card shadow-lg border-0 mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h6 class="mb-0">{{ __('Hotel Translations') }}</h6>
+                        <h6 class="mb-0">{{ __('Hotel Name') }}</h6>
                     </div>
 
                     <div class="card-body">
-                        <ul class="nav nav-tabs mb-4" role="tablist">
-                            @foreach ($langs as $key => $lang)
-                                <li class="nav-item">
-                                    <button class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"
-                                        data-bs-target="#lang-{{ $key }}" type="button">
-                                        {{ $lang }}
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <div class="tab-content">
-                            @foreach ($langs as $key => $lang)
-                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
-                                    id="lang-{{ $key }}">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Name ({{ $lang }})</label>
-                                            <input type="text" name="name[{{ $key }}]"
-                                                value="{{ old("name.$key", data_get($hotel->name, $key)) }}"
-                                                class="form-control">
-                                            @error("name.$key")
-                                                <small class="text-danger">{{ $message }}</small>
-                                            @enderror
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Name (English)</label>
+                                <input type="text" name="name[en]"
+                                       value="{{ old('name.en', data_get($hotel->name, 'en')) }}"
+                                       class="form-control"
+                                       placeholder="Enter hotel name">
+                                @error('name.en')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Main Info --}}
                 <div class="row">
-
-                    {{-- Settings --}}
                     <div class="col-md-12">
                         <div class="card shadow-sm border-0 mb-4">
                             <div class="card-header bg-light">
                                 <h6 class="mb-0">{{ __('Settings') }}</h6>
                             </div>
                             <div class="card-body">
-
-
-
                                 <label class="form-label">{{ __('Status') }}</label>
                                 <select name="is_active" class="form-select">
-                                    <option value="1"
-                                        {{ old('is_active', $hotel->is_active) == '1' ? 'selected' : '' }}>
+                                    <option value="1" {{ old('is_active', $hotel->is_active) == '1' ? 'selected' : '' }}>
                                         {{ __('Active') }}
                                     </option>
-                                    <option value="0"
-                                        {{ old('is_active', $hotel->is_active) == '0' ? 'selected' : '' }}>
+                                    <option value="0" {{ old('is_active', $hotel->is_active) == '0' ? 'selected' : '' }}>
                                         {{ __('UnActive') }}
                                     </option>
                                 </select>
                                 @error('is_active')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
-
                             </div>
                         </div>
                     </div>
@@ -132,24 +91,16 @@
                 @php
                     $selectedTourLeaders = old('tour_leader_ids', $hotel->tourLeaders->pluck('id')->toArray());
                 @endphp
-                {{-- ================= hotel tour leaders ================= --}}
-                <div class="card shadow-sm border-0 mb-4">
 
+                {{-- Select Tour Leaders --}}
+                <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h6 class="mb-0">
                             <i class="ti ti-map-pin text-primary"></i> Select Tour Leaders
                         </h6>
 
                         <div class="d-flex gap-2 align-items-center">
-                            {{--  <select id="categoryFilter" class="form-select form-select-sm">
-                                <option value="">All Types</option>
-                                @foreach (\App\Enums\UserType::options() as $key => $label)
-                                    <option value="{{ $key }}">{{ $label }}</option>
-                                @endforeach
-                            </select>  --}}
-
-                            <input type="text" id="fileSearch" class="form-control form-control-sm"
-                                placeholder="Search...">
+                            <input type="text" id="fileSearch" class="form-control form-control-sm" placeholder="Search...">
 
                             <button type="button" id="selectAll" class="btn btn-sm btn-outline-primary">
                                 Select All
@@ -163,34 +114,23 @@
 
                     <div class="card-body" style="max-height: 450px; overflow:auto">
                         <div class="row g-3">
-
                             @foreach ($tourLeaders as $tourLeader)
-                                <div class="col-md-6 file-item" data-category="{{ $tourLeader->type->value }}"
-                                    data-name="{{ strtolower($tourLeader->name) }}">
-
+                                <div class="col-md-6 file-item" data-category="{{ $tourLeader->type->value }}" data-name="{{ strtolower($tourLeader->name) }}">
                                     <label class="card h-100 p-3 file-card">
-
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
                                                 <h6 class="mb-1">{{ $tourLeader->name }}</h6>
-                                                <small class="text-muted">
-                                                    {{ $tourLeader->type->label() }}
-                                                </small>
+                                                <small class="text-muted">{{ $tourLeader->type->label() }}</small>
                                             </div>
 
-                                            <input class="form-check-input file-checkbox" type="checkbox"
-                                                value="{{ $tourLeader->id }}" name="tour_leader_ids[]"
-                                                {{ in_array($tourLeader->id, $selectedTourLeaders) ? 'checked' : '' }}>
+                                            <input class="form-check-input file-checkbox" type="checkbox" value="{{ $tourLeader->id }}" name="tour_leader_ids[]" {{ in_array($tourLeader->id, $selectedTourLeaders) ? 'checked' : '' }}>
                                         </div>
-
                                     </label>
                                 </div>
                             @endforeach
-
                         </div>
                     </div>
                 </div>
-
 
                 {{-- Submit --}}
                 <div class="text-end mb-5">

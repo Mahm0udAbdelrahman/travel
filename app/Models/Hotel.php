@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +8,7 @@ class Hotel extends Model
     protected $fillable = ['name', 'is_active'];
 
     protected $casts = [
-        'name' => 'array',
+        'name'      => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -26,5 +25,10 @@ class Hotel extends Model
     public function tourLeaders()
     {
         return $this->belongsToMany(User::class, 'tour_leader_hotels', 'hotel_id', 'user_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

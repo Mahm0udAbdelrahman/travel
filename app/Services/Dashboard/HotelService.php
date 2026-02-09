@@ -34,12 +34,24 @@ class HotelService
 
     public function show($id)
     {
-        return $this->model->findOrFail($id);
+       $hotel = $this->model->with([
+            'tourLeaders',
+            'orders' => function ($query) {
+                $query->orderBy('date', 'desc');
+            }
+        ])->findOrFail($id);
+
+        $ordersGroupedByDate = $hotel->orders->groupBy('date');
+
+        return [
+            'hotel' => $hotel,
+            'ordersGroupedByDate' => $ordersGroupedByDate,
+        ];
     }
 
     public function update($id, $data)
     {
-        $hotel = $this->show($id);
+        $hotel =$this->model->findOrFail($id);
 
         $hotel->update($data);
         $hotel->tourLeaders()->sync($data['tour_leader_ids'] ?? []);
@@ -48,7 +60,7 @@ class HotelService
 
     public function destroy($id)
     {
-        $hotel = $this->show($id);
+        $hotel = $this->model->findOrFail($id);
 
         $hotel->delete();
 

@@ -24,7 +24,7 @@ class Order extends Model
         'payment_status',
         'is_tour_leader',
         'excursion_day_id',
-        'excursion_time_id'
+        'excursion_time_id',
     ];
 
     public function orderable()
@@ -49,13 +49,22 @@ class Order extends Model
 
     public function excursionDay()
     {
-         return $this->belongsTo(ExcursionDay::class, 'excursion_day_id', 'id');
+        return $this->belongsTo(ExcursionDay::class, 'excursion_day_id', 'id');
     }
 
     public function excursionTime()
     {
-         return $this->belongsTo(ExcursionTime::class, 'excursion_time_id', 'id');
+        return $this->belongsTo(ExcursionTime::class, 'excursion_time_id', 'id');
     }
 
+    public function statuses()
+    {
+        return $this->hasMany(OrderStatus::class);
+    }
+
+    public function lastStatus()
+    {
+        return $this->hasOne(OrderStatus::class)->latestOfMany();
+    }
 
 }

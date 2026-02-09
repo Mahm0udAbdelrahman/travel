@@ -1,27 +1,28 @@
 <?php
 
-use App\Http\Controllers\Dashboard\AdditionalServiceController;
-use App\Http\Controllers\Dashboard\AdminController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AuthController;
-use App\Http\Controllers\Dashboard\CategoryEventController;
-use App\Http\Controllers\Dashboard\CategoryExcursionController;
-use App\Http\Controllers\Dashboard\CategoryRealEstateController;
 use App\Http\Controllers\Dashboard\CityController;
-use App\Http\Controllers\Dashboard\EventController;
-use App\Http\Controllers\Dashboard\ExcursionController;
 use App\Http\Controllers\Dashboard\FileController;
 use App\Http\Controllers\Dashboard\HomeController;
-use App\Http\Controllers\Dashboard\HotelController;
-use App\Http\Controllers\Dashboard\NotificationController;
-use App\Http\Controllers\Dashboard\OfferController;
-use App\Http\Controllers\Dashboard\OrderAdditionalServiceController;
-use App\Http\Controllers\Dashboard\RealEstateController;
 use App\Http\Controllers\Dashboard\RoleController;
-use App\Http\Controllers\Dashboard\SendNotificationController;
-use App\Http\Controllers\Dashboard\SubCategoryExcursionController;
 use App\Http\Controllers\Dashboard\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\AdminController;
+use App\Http\Controllers\Dashboard\EventController;
+use App\Http\Controllers\Dashboard\HotelController;
+use App\Http\Controllers\Dashboard\OfferController;
+use App\Http\Controllers\Dashboard\OrderController;
+use App\Http\Controllers\Dashboard\ExcursionController;
+use App\Http\Controllers\Dashboard\RealEstateController;
+use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\Dashboard\CategoryEventController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Http\Controllers\Dashboard\SendNotificationController;
+use App\Http\Controllers\Dashboard\AdditionalServiceController;
+use App\Http\Controllers\Dashboard\CategoryExcursionController;
+use App\Http\Controllers\Dashboard\CategoryRealEstateController;
+use App\Http\Controllers\Dashboard\SubCategoryExcursionController;
+use App\Http\Controllers\Dashboard\OrderAdditionalServiceController;
 
 Route::group(
     [
@@ -126,6 +127,10 @@ Route::group(
             Route::resource('hotels', HotelController::class);
             Route::post('/hotels/bulk-delete', [HotelController::class, 'bulkDelete'])
                 ->name('hotels.bulkDelete');
+
+                 Route::resource('orders', OrderController::class);
+            Route::post('/orders/bulk-delete', [OrderController::class, 'bulkDelete'])
+                ->name('orders.bulkDelete');
 
         });
     });

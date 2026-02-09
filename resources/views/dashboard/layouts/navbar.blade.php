@@ -182,6 +182,15 @@
                     </li>
                 @endcan
 
+                @can('orders-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.orders.index') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="send"></i></span>
+                            <span class="pc-mtext">Orders</span>
+                        </a>
+                    </li>
+                @endcan
+
 
 
 
