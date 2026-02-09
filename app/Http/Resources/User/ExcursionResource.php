@@ -27,6 +27,22 @@ class ExcursionResource extends JsonResource
             'price'                     => $this->price,
             'hours'                     => $this->hours,
             'city'                      => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
+
+                    'days' => $this->whenLoaded('days', function () {
+            return $this->days->map(function ($day) {
+                return [
+                    'id'   => $day->id,
+                    'day'  => $day->day,
+                    'times' => $day->times->map(function ($time) {
+                        return [
+                            'id'        => $time->id,
+                            'from_time' => $time->from_time,
+                            'to_time'   => $time->to_time,
+                        ];
+                    })->values(),
+                ];
+            })->values();
+        }),
         ];
     }
 }

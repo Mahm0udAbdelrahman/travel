@@ -136,13 +136,6 @@
                                         @error('image')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
-
-                                        @if ($category_event->image)
-                                            <div class="mt-2">
-                                                <img src="{{ asset($category_event->image) }}" alt="Current Image"
-                                                    style="max-width: 150px; max-height: 150px; border-radius: 6px;">
-                                            </div>
-                                        @endif
                                     </div>
 
 

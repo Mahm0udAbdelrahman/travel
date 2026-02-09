@@ -173,6 +173,9 @@
                         </div>
                     </div>
 
+
+
+
                     {{-- Settings --}}
                     <div class="col-md-4">
                         <div class="card shadow-sm border-0 mb-4">
@@ -209,6 +212,19 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{ __('Days & Times') }}</h6>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="addDay()">
+                                + {{ __('Add Day') }}
+                            </button>
+                        </div>
+
+                        <div class="card-body" id="days-wrapper">
+
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Submit --}}
@@ -223,51 +239,156 @@
     </div>
 @endsection
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const categorySelect = document.getElementById('category_excursion');
-        const subSelect = document.getElementById('sub_category_excursion');
-        const selectedSub = subSelect.getAttribute('data-selected');
+    @php
+        $preparedDays = old('days');
 
-        function loadSubCategories(categoryId, selectedSubId = null) {
-            subSelect.innerHTML = '<option>Loading...</option>';
+        if (!$preparedDays) {
+            $preparedDays = $excursion->days
+                ->map(function ($day) {
+                    return [
+                        'day' => $day->day,
+                        'times' => $day->times
+                            ->map(function ($time) {
+                                return [
+                                    'from_time' => $time->from_time,
+                                    'to_time' => $time->to_time,
+                                ];
+                            })
+                            ->toArray(),
+                    ];
+                })
+                ->toArray();
+        }
+    @endphp
 
-            if (!categoryId) {
-                subSelect.innerHTML = '<option>Choose category first</option>';
-                return;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            const categorySelect = document.getElementById('category_excursion');
+            const subSelect = document.getElementById('sub_category_excursion');
+            const selectedSub = subSelect.getAttribute('data-selected');
+
+            function loadSubCategories(categoryId, selectedSubId = null) {
+                subSelect.innerHTML = '<option>Loading...</option>';
+
+                if (!categoryId) {
+                    subSelect.innerHTML = '<option>Choose category first</option>';
+                    return;
+                }
+
+                fetch("{{ route('Admin.get.sub.categories', '__id__') }}".replace('__id__', categoryId))
+                    .then(response => response.json())
+                    .then(data => {
+                        subSelect.innerHTML = '<option value="">Choose...</option>';
+
+                        data.forEach(sub => {
+                            let name = sub.name['{{ app()->getLocale() }}'] ?? sub.name.en;
+                            let option = document.createElement('option');
+                            option.value = sub.id;
+                            option.textContent = name;
+
+                            if (selectedSubId && selectedSubId == sub.id) {
+                                option.selected = true;
+                            }
+
+                            subSelect.appendChild(option);
+                        });
+                    })
+                    .catch(() => {
+                        subSelect.innerHTML = '<option>Error loading data</option>';
+                    });
             }
 
-            fetch("{{ route('Admin.get.sub.categories', '__id__') }}".replace('__id__', categoryId))
-                .then(response => response.json())
-                .then(data => {
-                    subSelect.innerHTML = '<option value="">Choose...</option>';
+            categorySelect.addEventListener('change', function() {
+                loadSubCategories(this.value);
+            });
 
-                    data.forEach(sub => {
-                        let name = sub.name['{{ app()->getLocale() }}'] ?? sub.name.en;
-                        let option = document.createElement('option');
-                        option.value = sub.id;
-                        option.textContent = name;
-                        if (selectedSubId && selectedSubId == sub.id) {
-                            option.selected = true;
-                        }
-                        subSelect.appendChild(option);
-                    });
-                })
-                .catch(() => {
-                    subSelect.innerHTML = '<option>Error loading data</option>';
-                });
-        }
+            if (categorySelect.value) {
+                loadSubCategories(categorySelect.value, selectedSub);
+            }
 
+            
+            const oldDays = @json($preparedDays);
+            const daysWrapper = document.getElementById('days-wrapper');
 
-        categorySelect.addEventListener('change', function() {
-            loadSubCategories(this.value);
+            oldDays.forEach(day => addDay(day));
         });
 
+        let dayIndex = 0;
 
-        if (categorySelect.value) {
-            loadSubCategories(categorySelect.value, selectedSub);
+        function addDay(data = null) {
+            const wrapper = document.getElementById('days-wrapper');
+            const currentDayIndex = dayIndex++;
+
+            let html = `
+        <div class="border rounded p-3 mb-3 day-block">
+            <div class="d-flex justify-content-between mb-2 align-items-center">
+                <strong>Day</strong>
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.day-block').remove()">Remove</button>
+            </div>
+
+            <div class="mb-3">
+                <select name="days[${currentDayIndex}][day]" class="form-select" required>
+                    <option value="">Choose day</option>
+                    <option ${data?.day === 'Saturday' ? 'selected' : ''}>Saturday</option>
+                    <option ${data?.day === 'Sunday' ? 'selected' : ''}>Sunday</option>
+                    <option ${data?.day === 'Monday' ? 'selected' : ''}>Monday</option>
+                    <option ${data?.day === 'Tuesday' ? 'selected' : ''}>Tuesday</option>
+                    <option ${data?.day === 'Wednesday' ? 'selected' : ''}>Wednesday</option>
+                    <option ${data?.day === 'Thursday' ? 'selected' : ''}>Thursday</option>
+                    <option ${data?.day === 'Friday' ? 'selected' : ''}>Friday</option>
+                </select>
+            </div>
+
+            <div class="times-wrapper"></div>
+
+            <button type="button" class="btn btn-sm btn-secondary" onclick="addTime(this, ${currentDayIndex})">
+                + Add Time
+            </button>
+        </div>
+    `;
+
+            wrapper.insertAdjacentHTML('beforeend', html);
+
+            if (data?.times && data.times.length > 0) {
+                const dayBlock = wrapper.querySelectorAll('.day-block');
+                const timesWrapper = dayBlock[dayBlock.length - 1].querySelector('.times-wrapper');
+
+                data.times.forEach(time => {
+                    addTimeToWrapper(timesWrapper, currentDayIndex, time);
+                });
+            }
         }
-    });
-</script>
-@endpush
 
+        function addTime(button, dayIdx) {
+            const timesWrapper = button.parentElement.querySelector('.times-wrapper');
+            addTimeToWrapper(timesWrapper, dayIdx);
+        }
+
+        function addTimeToWrapper(timesWrapper, dayIdx, timeData = null) {
+            const tIndex = timesWrapper.children.length;
+
+            let fromVal = timeData?.from_time ?? '';
+            let toVal = timeData?.to_time ?? '';
+
+            let html = `
+        <div class="row g-2 mb-2 time-block">
+            <div class="col-md-5">
+                <input type="time" name="days[${dayIdx}][times][${tIndex}][from_time]" class="form-control" value="${fromVal}" required>
+            </div>
+
+            <div class="col-md-5">
+                <input type="time" name="days[${dayIdx}][times][${tIndex}][to_time]" class="form-control" value="${toVal}" required>
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger w-100" onclick="this.closest('.time-block').remove()">X</button>
+            </div>
+        </div>
+    `;
+
+            timesWrapper.insertAdjacentHTML('beforeend', html);
+        }
+    </script>
+@endpush

@@ -51,7 +51,13 @@ class Excursion extends Model
     }
 
     public function orders()
-{
-    return $this->morphMany(Order::class, 'orderable');
-}
+    {
+        return $this->morphMany(Order::class, 'orderable');
+    }
+
+    public function days()
+    {
+        return $this->hasMany(ExcursionDay::class);
+    }
+
 }

@@ -109,6 +109,41 @@
                             </div>
                         </div>
 
+                        
+
+                        <div class="col-12 mt-4">
+                            <hr>
+                            <label class="fw-bold">{{ __('Days & Times') }}</label>
+
+                            @if ($excursion->days && $excursion->days->count())
+                                <div class="mt-3">
+                                    @foreach ($excursion->days as $day)
+                                        <div class="mb-3">
+                                            <h6>{{ $day->day }}</h6>
+                                            @if ($day->times && $day->times->count())
+                                                <ul class="list-group">
+                                                    @foreach ($day->times as $time)
+                                                        <li
+                                                            class="list-group-item d-flex justify-content-between align-items-center p-2">
+                                                            <span>{{ __('From') }}:
+                                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $time->from_time)->format('H:i') }}</span>
+                                                            <span>{{ __('To') }}:
+                                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $time->to_time)->format('H:i') }}</span>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <p><em>{{ __('No times set for this day.') }}</em></p>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p><em>{{ __('No days or times available for this excursion.') }}</em></p>
+                            @endif
+                        </div>
+
+
                         <div class="card-footer text-end bg-light">
                             <a href="{{ route('Admin.excursions.index') }}" class="btn btn-secondary">
                                 {{ __('Back') }}

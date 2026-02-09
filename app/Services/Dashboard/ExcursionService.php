@@ -1,11 +1,12 @@
 <?php
 namespace App\Services\Dashboard;
 
-use App\Models\City;
-use App\Traits\HasImage;
-use App\Models\Excursion;
 use App\Models\CategoryExcursion;
+use App\Models\City;
+use App\Models\Excursion;
 use App\Models\SubCategoryExcursion;
+use App\Traits\HasImage;
+use Illuminate\Support\Facades\DB;
 
 class ExcursionService
 {
@@ -37,9 +38,24 @@ class ExcursionService
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
+        $days = $data['days'] ?? [];
+        unset($data['days']);
 
-        return $this->model->create($data);
+        $excursion = $this->model->create($data);
 
+        foreach ($days as $dayData) {
+
+            $times = $dayData['times'] ?? [];
+            unset($dayData['times']);
+
+            $day = $excursion->days()->create($dayData);
+
+            foreach ($times as $time) {
+                $day->times()->create($time);
+            }
+        }
+
+        return $excursion->load('days.times');
     }
 
     public function show($id)
@@ -49,15 +65,35 @@ class ExcursionService
 
     public function update($id, $data)
     {
-        $excursion = $this->show($id);
-        if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'excursion');
-        }
+        return DB::transaction(function () use ($id, $data) {
 
-        $excursion->update($data);
+            $excursion = $this->show($id);
 
-        return $excursion;
+            if (isset($data['image'])) {
+                $data['image'] = $this->saveImage($data['image'], 'excursion');
+            }
 
+            $days = $data['days'] ?? [];
+            unset($data['days']);
+
+            $excursion->update($data);
+
+            $excursion->days()->delete();
+
+            foreach ($days as $dayData) {
+
+                $times = $dayData['times'] ?? [];
+                unset($dayData['times']);
+
+                $day = $excursion->days()->create($dayData);
+
+                foreach ($times as $time) {
+                    $day->times()->create($time);
+                }
+            }
+
+            return $excursion->load('days.times');
+        });
     }
 
     public function destroy($id)
