@@ -48,27 +48,32 @@ class OrderService
             }
 
             $time = $timeModel->from_time . '-' . $timeModel->to_time;
+
+            $excursionTimeId = $timeModel->id;
+            $excursionDayId  = $timeModel->excursion_day_id;
         }
 
         return $this->model->create([
-            'user_id'        => $user->id,
-            'order_number'   => 'ORD-' . strtoupper(Str::random(10)),
+            'user_id'           => $user->id,
+            'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
 
-            'price'          => $totalPrice,
-            'quantity'       => $quantity,
+            'price'             => $totalPrice,
+            'quantity'          => $quantity,
 
-            'status'         => 'completed',
-            'payment_method' => 'cash',
-            'payment_status' => 'paid',
+            'status'            => 'completed',
+            'payment_method'    => 'cash',
+            'payment_status'    => 'paid',
 
-            'orderable_id'   => $item->id,
-            'orderable_type' => get_class($item),
+            'orderable_id'      => $item->id,
+            'orderable_type'    => get_class($item),
 
-            'hotel_id'       => $data['hotel_id'] ?? null,
-            'room_number'    => $data['room_number'] ?? null,
+            'hotel_id'          => $data['hotel_id'] ?? null,
+            'room_number'       => $data['room_number'] ?? null,
 
-            'date'           => $date,
-            'time'           => $time,
+            'date'              => $date,
+            'time'              => $time,
+            'excursion_time_id' => $excursionTimeId,
+            'excursion_day_id'  => $excursionDayId,
         ]);
     }
 
@@ -225,8 +230,10 @@ class OrderService
                 ], 422);
             }
 
-            $date       = $data['date'];
-            $timeString = $timeModel->from_time . '-' . $timeModel->to_time;
+            $date            = $data['date'];
+            $timeString      = $timeModel->from_time . '-' . $timeModel->to_time;
+            $excursionTimeId = $timeModel->id;
+            $excursionDayId  = $timeModel->excursion_day_id;
 
         }
 
@@ -280,24 +287,26 @@ class OrderService
             ]);
 
             $order = $this->model->create([
-                'user_id'        => $user->id,
-                'order_number'   => 'ORD-' . strtoupper(Str::random(10)),
-                'price'          => $totalPrice,
-                'currency'       => 'USD',
-                'quantity'       => $quantity,
+                'user_id'           => $user->id,
+                'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
+                'price'             => $totalPrice,
+                'currency'          => 'USD',
+                'quantity'          => $quantity,
 
-                'status'         => 'pending',
-                'payment_method' => $data['payment_method'] ?? 'stripe',
-                'payment_id'     => $session->id,
+                'status'            => 'pending',
+                'payment_method'    => $data['payment_method'] ?? 'stripe',
+                'payment_id'        => $session->id,
 
-                'orderable_id'   => $item->id,
-                'orderable_type' => get_class($item),
+                'orderable_id'      => $item->id,
+                'orderable_type'    => get_class($item),
 
-                'hotel_id'       => $data['hotel_id'] ?? null,
-                'room_number'    => $data['room_number'] ?? null,
+                'hotel_id'          => $data['hotel_id'] ?? null,
+                'room_number'       => $data['room_number'] ?? null,
 
-                'date'           => $date,
-                'time'           => $timeString,
+                'date'              => $date,
+                'time'              => $timeString,
+                'excursion_time_id' => $excursionTimeId,
+                'excursion_day_id'  => $excursionDayId,
             ]);
 
             return response()->json([
