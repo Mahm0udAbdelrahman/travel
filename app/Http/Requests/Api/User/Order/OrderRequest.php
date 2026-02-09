@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Http\Requests\Api\User\Order;
 
 use App\Enums\InquiryType;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Validation\Rule;
 
 class OrderRequest extends FormRequest
 {
@@ -52,7 +51,9 @@ class OrderRequest extends FormRequest
 
             'notes'          => 'nullable|string',
 
-            'payment_method' => 'required|in:card,wallet,cash',
+            'payment_method' => 'nullable|in:card,wallet,cash',
+
+            'time_id'        => 'required_if:type_model,excursion|exists:excursion_times,id',
 
         ];
     }
