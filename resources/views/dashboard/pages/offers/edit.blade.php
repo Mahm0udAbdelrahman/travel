@@ -146,7 +146,8 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Name ({{ $lang }})</label>
                                             <input type="text" name="name[{{ $key }}]"
-                                               value="{{ old("name.$key", data_get($offer->name, $key)) }}" class="form-control">
+                                                value="{{ old("name.$key", data_get($offer->name, $key)) }}"
+                                                class="form-control">
                                             @error("name.$key")
                                                 <small class="text-danger">{{ $message }}</small>
                                             @enderror
@@ -155,7 +156,8 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Description ({{ $lang }})</label>
                                             <input type="text" name="description[{{ $key }}]"
-                                                value="{{ old("description.$key", data_get($offer->description, $key)) }}" class="form-control">
+                                                value="{{ old("description.$key", data_get($offer->description, $key)) }}"
+                                                class="form-control">
                                             @error("description.$key")
                                                 <small class="text-danger">{{ $message }}</small>
                                             @enderror
@@ -177,7 +179,8 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Price') }}</label>
-                                    <input type="text" name="price" value="{{ old('price', $offer->price) }}" class="form-control">
+                                    <input type="text" name="price" value="{{ old('price', $offer->price) }}"
+                                        class="form-control">
                                     @error('price')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
@@ -185,9 +188,9 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Start Date') }}</label>
-                                   <input type="date" name="start_date"
-    value="{{ old('start_date', $offer->start_date ? \Carbon\Carbon::parse($offer->start_date)->format('Y-m-d') : '') }}"
-    class="form-control">
+                                    <input type="date" name="start_date"
+                                        value="{{ old('start_date', $offer->start_date ? \Carbon\Carbon::parse($offer->start_date)->format('Y-m-d') : '') }}"
+                                        class="form-control">
 
                                     @error('start_date')
                                         <small class="text-danger">{{ $message }}</small>
@@ -196,9 +199,9 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('End Date') }}</label>
-                                   <input type="date" name="end_date"
-    value="{{ old('end_date', $offer->end_date ? \Carbon\Carbon::parse($offer->end_date)->format('Y-m-d') : '') }}"
-    class="form-control">
+                                    <input type="date" name="end_date"
+                                        value="{{ old('end_date', $offer->end_date ? \Carbon\Carbon::parse($offer->end_date)->format('Y-m-d') : '') }}"
+                                        class="form-control">
 
                                     @error('end_date')
                                         <small class="text-danger">{{ $message }}</small>
@@ -227,10 +230,12 @@
 
                                 <label class="form-label">{{ __('Status') }}</label>
                                 <select name="is_active" class="form-select">
-                                    <option value="1" {{ old('is_active', $offer->is_active) == '1' ? 'selected' : '' }}>
+                                    <option value="1"
+                                        {{ old('is_active', $offer->is_active) == '1' ? 'selected' : '' }}>
                                         {{ __('Active') }}
                                     </option>
-                                    <option value="0" {{ old('is_active', $offer->is_active) == '0' ? 'selected' : '' }}>
+                                    <option value="0"
+                                        {{ old('is_active', $offer->is_active) == '0' ? 'selected' : '' }}>
                                         {{ __('UnActive') }}
                                     </option>
                                 </select>
@@ -256,19 +261,23 @@
                                     <select id="categoryFilter" class="form-select form-select-sm w-auto">
                                         <option value="">{{ __('All Categories') }}</option>
                                         @foreach ($categoryExcursions as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name['en'] ?? '' }}</option>
+                                            <option value="{{ $category->id }}">{{ $category->name['en'] ?? '' }}
+                                            </option>
                                         @endforeach
                                     </select>
 
                                     <div class="input-group input-group-sm w-auto">
-                                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-search"></i></span>
+                                        <span class="input-group-text bg-light border-end-0"><i
+                                                class="fas fa-search"></i></span>
                                         <input type="text" id="excursionSearch" class="form-control border-start-0"
                                             placeholder="{{ __('Search...') }}">
                                     </div>
 
                                     <div class="btn-group btn-group-sm">
-                                        <button type="button" id="selectAll" class="btn btn-outline-primary">{{ __('Select All') }}</button>
-                                        <button type="button" id="clearAll" class="btn btn-outline-danger">{{ __('Clear') }}</button>
+                                        <button type="button" id="selectAll"
+                                            class="btn btn-outline-primary">{{ __('Select All') }}</button>
+                                        <button type="button" id="clearAll"
+                                            class="btn btn-outline-danger">{{ __('Clear') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -279,30 +288,47 @@
                         <div class="row g-3">
                             @foreach ($excursions as $excursion)
                                 @php
-                                    $selected = in_array($excursion->id, old('excursion_ids', $offer->excursions->pluck('id')->toArray()));
-                                    $selectedDay = old('days.' . $excursion->id, $offer->excursion_offers->where('excursion_id', $excursion->id)->first()?->excursion_day_id);
-                                    $selectedTime = old('times.' . $excursion->id, $offer->excursion_offers->where('excursion_id', $excursion->id)->first()?->excursion_time_id);
+                                    $selected = in_array(
+                                        $excursion->id,
+                                        old('excursion_ids', $offer->excursions->pluck('id')->toArray()),
+                                    );
+                                    $selectedDay = old(
+                                        'days.' . $excursion->id,
+                                        $offer->excursions->firstWhere('id', $excursion->id)?->pivot->excursion_day_id,
+                                    );
+                                    $selectedTime = old(
+                                        'times.' . $excursion->id,
+                                        $offer->excursions->firstWhere('id', $excursion->id)?->pivot->excursion_time_id,
+                                    );
                                 @endphp
-                                <div class="col-xl-4 col-md-6 excursion-item" data-category="{{ $excursion->category_excursion_id }}">
-                                    <div class="card h-100 border-0 shadow-sm excursion-card-wrapper {{ $selected ? 'selected' : '' }}">
+
+                                <div class="col-xl-4 col-md-6 excursion-item"
+                                    data-category="{{ $excursion->category_excursion_id }}">
+                                    <div
+                                        class="card h-100 border-0 shadow-sm excursion-card-wrapper {{ $selected ? 'selected' : '' }}">
                                         <label class="card-body p-0 cursor-pointer" for="excursion-{{ $excursion->id }}">
                                             <div class="p-3">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div style="max-width: 80%;">
-                                                        <h6 class="fw-bold mb-0 text-dark">{{ $excursion->name['en'] ?? '' }}</h6>
-                                                        <small class="text-muted"><i class="fas fa-location-arrow f-10"></i> {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
+                                                        <h6 class="fw-bold mb-0 text-dark">
+                                                            {{ $excursion->name['en'] ?? '' }}</h6>
+                                                        <small class="text-muted"><i
+                                                                class="fas fa-location-arrow f-10"></i>
+                                                            {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
                                                     </div>
                                                     <div class="form-check">
                                                         <input class="form-check-input excursion-checkbox custom-check"
                                                             type="checkbox" value="{{ $excursion->id }}"
                                                             data-price="{{ $excursion->price }}" name="excursion_ids[]"
-                                                            id="excursion-{{ $excursion->id }}" {{ $selected ? 'checked' : '' }}>
+                                                            id="excursion-{{ $excursion->id }}"
+                                                            {{ $selected ? 'checked' : '' }}>
                                                     </div>
                                                 </div>
 
                                                 <div class="d-flex gap-2 mt-2">
                                                     <span class="badge bg-soft-primary text-primary px-2">
-                                                        <i class="far fa-clock me-1"></i>{{ $excursion->hours ?? '-' }} {{ __('Hrs') }}
+                                                        <i class="far fa-clock me-1"></i>{{ $excursion->hours ?? '-' }}
+                                                        {{ __('Hrs') }}
                                                     </span>
                                                     <span class="badge bg-soft-success text-success px-2 font-weight-bold">
                                                         ${{ number_format($excursion->price, 2) }}
@@ -315,7 +341,8 @@
                                             <div class="p-3 bg-white selection-area">
                                                 <div class="row g-2">
                                                     <div class="col-6">
-                                                        <label class="x-small fw-bold text-muted mb-1">{{ __('Day') }}</label>
+                                                        <label
+                                                            class="x-small fw-bold text-muted mb-1">{{ __('Day') }}</label>
                                                         <select name="days[{{ $excursion->id }}]"
                                                             id="day-{{ $excursion->id }}"
                                                             class="form-select form-select-sm excursion-day-select border-dashed"
@@ -323,25 +350,31 @@
                                                             {{ $selected ? '' : 'disabled' }}>
                                                             <option value="">-- {{ __('Day') }} --</option>
                                                             @foreach ($excursion->days as $day)
-                                                                <option value="{{ $day->id }}" {{ $selectedDay == $day->id ? 'selected' : '' }}>
+                                                                <option value="{{ $day->id }}"
+                                                                    {{ $selectedDay == $day->id ? 'selected' : '' }}>
                                                                     {{ $day->day }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-6">
-                                                        <label class="x-small fw-bold text-muted mb-1">{{ __('Time') }}</label>
+                                                        <label
+                                                            class="x-small fw-bold text-muted mb-1">{{ __('Time') }}</label>
                                                         <select name="times[{{ $excursion->id }}]"
                                                             id="time-{{ $excursion->id }}"
                                                             class="form-select form-select-sm excursion-time-select border-dashed"
                                                             {{ $selected ? '' : 'disabled' }}>
                                                             <option value="">-- {{ __('Time') }} --</option>
-                                                            @if($selectedDay)
+                                                            @if ($selectedDay)
                                                                 @php
-                                                                    $timesForDay = $excursion->days->where('id', $selectedDay)->first()->times ?? collect();
+                                                                    $timesForDay =
+                                                                        $excursion->days
+                                                                            ->where('id', $selectedDay)
+                                                                            ->first()->times ?? collect();
                                                                 @endphp
                                                                 @foreach ($timesForDay as $time)
-                                                                    <option value="{{ $time->id }}" {{ $selectedTime == $time->id ? 'selected' : '' }}>
+                                                                    <option value="{{ $time->id }}"
+                                                                        {{ $selectedTime == $time->id ? 'selected' : '' }}>
                                                                         {{ $time->from_time }} - {{ $time->to_time }}
                                                                     </option>
                                                                 @endforeach
@@ -410,7 +443,8 @@
                     } else {
                         daySelect.value = '';
                         daySelect.disabled = true;
-                        timeSelect.innerHTML = '<option value="">-- {{ __("Time") }} --</option>';
+                        timeSelect.innerHTML =
+                            '<option value="">-- {{ __('Time') }} --</option>';
                         timeSelect.disabled = true;
                     }
 
@@ -424,7 +458,7 @@
                     const selectedDayId = this.value;
                     const timeSelect = document.getElementById(`time-${excursionId}`);
 
-                    timeSelect.innerHTML = '<option value="">-- {{ __("Time") }} --</option>';
+                    timeSelect.innerHTML = '<option value="">-- {{ __('Time') }} --</option>';
                     timeSelect.disabled = true;
 
                     if (!selectedDayId) return;
