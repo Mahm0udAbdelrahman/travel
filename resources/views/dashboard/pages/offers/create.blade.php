@@ -1,20 +1,22 @@
 @extends('dashboard.layouts.app')
 @section('title', __('Add Offer'))
 @push('styles')
-<style>
-    .excursion-card {
-        transition: all .2s ease;
-        cursor: pointer;
-    }
-    .excursion-card:hover {
-        border-color: #0d6efd;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,.08);
-    }
-    .excursion-checkbox {
-        transform: scale(1.2);
-    }
-</style>
+    <style>
+        .excursion-card {
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+
+        .excursion-card:hover {
+            border-color: #0d6efd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+        }
+
+        .excursion-checkbox {
+            transform: scale(1.2);
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -175,97 +177,202 @@
                 </div>
 
                 {{-- ================= Excursions ================= --}}
+                {{-- ================= Excursions Section ================= --}}
                 <div class="card shadow-sm border-0 mb-4">
 
-                    {{-- Header --}}
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">
-                            <i class="ti ti-map-pin"></i> Select Excursions
-                        </h6>
+                    {{-- Header: أكثر ترتيباً واستجابة --}}
+                    <div class="card-header bg-white py-3">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-4">
+                                <h6 class="mb-0 text-primary">
+                                    <i class="fas fa-map-marked-alt me-2"></i> {{ __('Select Excursions') }}
+                                </h6>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                                    <select id="categoryFilter" class="form-select form-select-sm w-auto">
+                                        <option value="">{{ __('All Categories') }}</option>
+                                        @foreach ($categoryExcursions as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name['en'] ?? '' }}</option>
+                                        @endforeach
+                                    </select>
 
-                        <div class="d-flex gap-2">
-                            <select id="categoryFilter" class="form-select form-select-sm">
-                                <option value="">All Categories</option>
-                                @foreach ($categoryExcursions as $category)
-                                    <option value="{{ $category->id }}">
-                                        {{ $category->name['en'] ?? '' }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                    <div class="input-group input-group-sm w-auto">
+                                        <span class="input-group-text bg-light border-end-0"><i
+                                                class="fas fa-search"></i></span>
+                                        <input type="text" id="excursionSearch" class="form-control border-start-0"
+                                            placeholder="{{ __('Search...') }}">
+                                    </div>
 
-                            <input type="text"
-                                id="excursionSearch"
-                                class="form-control form-control-sm"
-                                placeholder="Search...">
-
-                            <button type="button" id="selectAll"
-                                class="btn btn-sm btn-outline-primary">
-                                Select All
-                            </button>
-
-                            <button type="button" id="clearAll"
-                                class="btn btn-sm btn-outline-secondary">
-                                Clear
-                            </button>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" id="selectAll"
+                                            class="btn btn-outline-primary">{{ __('Select All') }}</button>
+                                        <button type="button" id="clearAll"
+                                            class="btn btn-outline-danger">{{ __('Clear') }}</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {{-- Body --}}
-                    <div class="card-body" style="max-height: 450px; overflow:auto">
+                    {{-- Body: بطاقات محسنة --}}
+                    <div class="card-body bg-light-alt" style="max-height: 550px; overflow-y:auto; overflow-x:hidden;">
                         <div class="row g-3">
-
                             @foreach ($excursions as $excursion)
-                                <div class="col-md-6 excursion-item"
+                                <div class="col-xl-4 col-md-6 excursion-item"
                                     data-category="{{ $excursion->category_excursion_id }}">
 
-                                    <label class="card h-100 border p-3 excursion-card">
+                                    <div class="card h-100 border-0 shadow-sm excursion-card-wrapper transition-all">
+                                        <label class="card-body p-0 cursor-pointer" for="excursion-{{ $excursion->id }}">
+                                            {{-- الجزء العلوي للبطاقة --}}
+                                            <div class="p-3">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div style="max-width: 80%;">
+                                                        <h6 class="fw-bold mb-0 text-dark">
+                                                            {{ $excursion->name['en'] ?? '' }}</h6>
+                                                        <small class="text-muted"><i
+                                                                class="fas fa-location-arrow f-10"></i>
+                                                            {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input excursion-checkbox custom-check"
+                                                            type="checkbox" value="{{ $excursion->id }}"
+                                                            data-price="{{ $excursion->price }}" name="excursion_ids[]"
+                                                            id="excursion-{{ $excursion->id }}">
+                                                    </div>
+                                                </div>
 
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <h6 class="mb-1">
-                                                    {{ $excursion->name['en'] ?? '' }}
-                                                </h6>
-                                                <small class="text-muted">
-                                                    {{ $excursion->city->name[app()->getLocale()] ?? '' }}
-                                                </small>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <span class="badge bg-soft-primary text-primary px-2">
+                                                        <i class="far fa-clock me-1"></i>{{ $excursion->hours ?? '-' }}
+                                                        {{ __('Hrs') }}
+                                                    </span>
+                                                    <span class="badge bg-soft-success text-success px-2 font-weight-bold">
+                                                        ${{ number_format($excursion->price, 2) }}
+                                                    </span>
+                                                </div>
                                             </div>
 
-                                            <input class="form-check-input excursion-checkbox"
-                                                type="checkbox"
-                                                value="{{ $excursion->id }}"
-                                                data-price="{{ $excursion->price }}"
-                                                name="excursion_ids[]">
-                                        </div>
+                                            <hr class="my-0 opacity-10">
 
-                                        <div class="mt-3 d-flex justify-content-between">
-                                            <span class="badge bg-primary-subtle text-primary">
-                                                {{ $excursion->hours ?? '-' }} Hours
-                                            </span>
-
-                                            <span class="fw-bold text-success">
-                                                ${{ $excursion->price }}
-                                            </span>
-                                        </div>
-                                    </label>
+                                            {{-- خيارات اليوم والوقت (تظهر بشكل أوضح) --}}
+                                            <div class="p-3 bg-white selection-area">
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <label
+                                                            class="x-small fw-bold text-muted mb-1">{{ __('Day') }}</label>
+                                                        <select name="days[{{ $excursion->id }}]"
+                                                            id="day-{{ $excursion->id }}"
+                                                            class="form-select form-select-sm excursion-day-select border-dashed"
+                                                            data-excursion-id="{{ $excursion->id }}" disabled>
+                                                            <option value="">-- {{ __('Day') }} --</option>
+                                                            @foreach ($excursion->days as $day)
+                                                                <option value="{{ $day->id }}">{{ $day->day }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label
+                                                            class="x-small fw-bold text-muted mb-1">{{ __('Time') }}</label>
+                                                        <select name="times[{{ $excursion->id }}]"
+                                                            id="time-{{ $excursion->id }}"
+                                                            class="form-select form-select-sm excursion-time-select border-dashed"
+                                                            disabled>
+                                                            <option value="">-- {{ __('Time') }} --</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                             @endforeach
-
                         </div>
                     </div>
 
-                   {{-- Footer --}}
-            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">
-                    <i class="ti ti-calculator me-1"></i>
-                    Total Excursions Price
-                </span>
-
-                <span class="fs-5 fw-bold text-primary">
-                    $<span id="totalPrice">0.00</span>
-                </span>
-            </div>
+                    {{-- Footer --}}
+                    <div class="card-footer bg-white py-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted small d-block">{{ __('Calculation Summary') }}</span>
+                                <span class="fw-bold h5 mb-0 text-dark">
+                                    <i class="fas fa-wallet me-1 text-primary"></i> {{ __('Total Price') }}
+                                </span>
+                            </div>
+                            <div class="text-end">
+                                <span class="h3 fw-bold text-primary mb-0">$<span id="totalPrice">0.00</span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <style>
+                    /* تحسينات التصميم */
+                    .bg-light-alt {
+                        background-color: #f8f9fa;
+                    }
+
+                    .bg-soft-primary {
+                        background-color: rgba(13, 110, 253, 0.1);
+                    }
+
+                    .bg-soft-success {
+                        background-color: rgba(25, 135, 84, 0.1);
+                    }
+
+                    .cursor-pointer {
+                        cursor: pointer;
+                    }
+
+                    .x-small {
+                        font-size: 11px;
+                    }
+
+                    .f-10 {
+                        font-size: 10px;
+                    }
+
+                    .border-dashed {
+                        border-style: dashed !important;
+                    }
+
+                    .excursion-card-wrapper {
+                        border: 2px solid transparent !important;
+                        transition: all 0.3s ease;
+                    }
+
+                    /* تأثير عند اختيار الرحلة */
+                    .excursion-card-wrapper.selected {
+                        border-color: #0d6efd !important;
+                        background-color: #fff;
+                        transform: translateY(-3px);
+                    }
+
+                    .custom-check {
+                        width: 1.4em;
+                        height: 1.4em;
+                        cursor: pointer;
+                    }
+
+                    .transition-all {
+                        transition: all 0.2s ease-in-out;
+                    }
+
+                    /* تحسين الـ Scrollbar */
+                    .card-body::-webkit-scrollbar {
+                        width: 5px;
+                    }
+
+                    .card-body::-webkit-scrollbar-track {
+                        background: #f1f1f1;
+                    }
+
+                    .card-body::-webkit-scrollbar-thumb {
+                        background: #ccc;
+                        border-radius: 10px;
+                    }
+                </style>
                 {{-- Submit --}}
                 <div class="text-end mb-5">
                     <button class="btn btn-primary px-5">
@@ -279,58 +386,117 @@
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const checkboxes = document.querySelectorAll('.excursion-checkbox');
-    const excursionItems = document.querySelectorAll('.excursion-item');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // كل العناصر
+            const checkboxes = document.querySelectorAll('.excursion-checkbox');
+            const excursionItems = document.querySelectorAll('.excursion-item');
+            const totalPriceEl = document.getElementById('totalPrice');
 
-    const totalPriceEl = document.getElementById('totalPrice');
+            // بيانات الرحلات مع الأيام والأوقات (محمّلة من السيرفر)
+            const excursions = @json($excursions->load('days.times'));
 
-    function calculate() {
-        let total = 0;
-
-        checkboxes.forEach(cb => {
-            if (cb.checked) total += parseFloat(cb.dataset.price);
-        });
-
-        totalPriceEl.innerText = total.toFixed(2);
-    }
-
-    checkboxes.forEach(cb => cb.addEventListener('change', calculate));
-
-    // Category Filter
-    document.getElementById('categoryFilter').addEventListener('change', function () {
-        const val = this.value;
-        excursionItems.forEach(item => {
-            item.style.display = (!val || item.dataset.category === val) ? 'block' : 'none';
-        });
-    });
-
-    // Search
-    document.getElementById('excursionSearch').addEventListener('keyup', function () {
-        const key = this.value.toLowerCase();
-        excursionItems.forEach(item => {
-            item.style.display = item.innerText.toLowerCase().includes(key)
-                ? 'block' : 'none';
-        });
-    });
-
-    // Select / Clear
-    document.getElementById('selectAll').onclick = () => {
-        excursionItems.forEach(item => {
-            if (item.style.display !== 'none') {
-                item.querySelector('.excursion-checkbox').checked = true;
+            // حساب السعر الكلي
+            function calculate() {
+                let total = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) total += parseFloat(cb.dataset.price);
+                });
+                totalPriceEl.innerText = total.toFixed(2);
             }
+
+            // تفعيل أو تعطيل اختيار اليوم والوقت بناء على Checkbox
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const excursionId = this.value;
+                    const daySelect = document.getElementById(`day-${excursionId}`);
+                    const timeSelect = document.getElementById(`time-${excursionId}`);
+
+                    if (this.checked) {
+                        daySelect.disabled = false;
+                    } else {
+                        daySelect.value = '';
+                        daySelect.disabled = true;
+                        timeSelect.innerHTML = '<option value="">Select Time</option>';
+                        timeSelect.disabled = true;
+                    }
+
+                    calculate();
+                });
+            });
+
+            // عند تغيير اليوم يتم تحديث قائمة الأوقات المتاحة لذلك اليوم
+            document.querySelectorAll('.excursion-day-select').forEach(daySelect => {
+                daySelect.addEventListener('change', function() {
+                    const excursionId = this.dataset.excursionId;
+                    const selectedDayId = this.value;
+                    const timeSelect = document.getElementById(`time-${excursionId}`);
+
+                    timeSelect.innerHTML = '<option value="">Select Time</option>';
+                    timeSelect.disabled = true;
+
+                    if (!selectedDayId) return;
+
+                    const excursion = excursions.find(e => e.id == excursionId);
+                    if (!excursion) return;
+
+                    const day = excursion.days.find(d => d.id == selectedDayId);
+                    if (!day || !day.times) return;
+
+                    day.times.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time.id;
+                        option.textContent = `${time.from_time} - ${time.to_time}`;
+                        timeSelect.appendChild(option);
+                    });
+
+                    timeSelect.disabled = false;
+                });
+            });
+
+            // فلتر الفئة
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                const val = this.value;
+                excursionItems.forEach(item => {
+                    item.style.display = (!val || item.dataset.category === val) ? 'block' : 'none';
+                });
+            });
+
+            // بحث نصي
+            document.getElementById('excursionSearch').addEventListener('keyup', function() {
+                const key = this.value.toLowerCase();
+                excursionItems.forEach(item => {
+                    item.style.display = item.innerText.toLowerCase().includes(key) ?
+                        'block' : 'none';
+                });
+            });
+
+            // تحديد الكل
+            document.getElementById('selectAll').onclick = () => {
+                excursionItems.forEach(item => {
+                    if (item.style.display !== 'none') {
+                        const cb = item.querySelector('.excursion-checkbox');
+                        cb.checked = true;
+                        document.getElementById(`day-${cb.value}`).disabled = false;
+                    }
+                });
+                calculate();
+            };
+
+            // إلغاء التحديد الكل
+            document.getElementById('clearAll').onclick = () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    document.getElementById(`day-${cb.value}`).disabled = true;
+                    document.getElementById(`day-${cb.value}`).value = '';
+                    document.getElementById(`time-${cb.value}`).disabled = true;
+                    document.getElementById(`time-${cb.value}`).innerHTML =
+                        '<option value="">Select Time</option>';
+                });
+                calculate();
+            };
+
+            calculate(); // حساب أولي للسعر عند تحميل الصفحة
         });
-        calculate();
-    };
-
-    document.getElementById('clearAll').onclick = () => {
-        checkboxes.forEach(cb => cb.checked = false);
-        calculate();
-    };
-
-    calculate(); // حساب أولي لما الصفحة تحمل
-});
-</script>
+    </script>
 @endpush

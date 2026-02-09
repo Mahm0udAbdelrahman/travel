@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('excursion_id')->constrained()->cascadeOnDelete();
             $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('excursion_day_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('excursion_time_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

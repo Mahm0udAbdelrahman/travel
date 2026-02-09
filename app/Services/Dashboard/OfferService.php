@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Dashboard;
 
+use App\Models\CategoryExcursion;
 use App\Models\City;
+use App\Models\Excursion;
 use App\Models\Offer;
 use App\Traits\HasImage;
-use App\Models\Excursion;
-use App\Models\CategoryExcursion;
 
 class OfferService
 {
@@ -18,7 +18,7 @@ class OfferService
 
         return $this->model->latest()->paginate(10);
     }
-  public function getCategoryExcursions()
+    public function getCategoryExcursions()
     {
         return CategoryExcursion::active()->get();
     }
@@ -39,8 +39,24 @@ class OfferService
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
+
         $offer = $this->model->create($data);
-        $offer->excursions()->attach($data['excursion_ids'] ?? []);
+
+        $attachData = [];
+
+        $excursionIds = $data['excursion_ids'] ?? [];
+        $days         = $data['days'] ?? [];
+        $times        = $data['times'] ?? [];
+
+        foreach ($excursionIds as $excursionId) {
+            $attachData[$excursionId] = [
+                'excursion_day_id'  => $days[$excursionId] ?? null,
+                'excursion_time_id' => $times[$excursionId] ?? null,
+            ];
+        }
+
+        $offer->excursions()->attach($attachData);
+
         return $offer;
     }
 
@@ -51,17 +67,30 @@ class OfferService
 
     public function update($id, $data)
     {
-        $excursion = $this->show($id);
+        $offer = $this->show($id);
+
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
 
-        $excursion->update($data);
+        $offer->update($data);
 
-        $excursion->excursions()->sync($data['excursion_ids'] ?? []);
+        $attachData = [];
 
-        return $excursion;
+        $excursionIds = $data['excursion_ids'] ?? [];
+        $days         = $data['days'] ?? [];
+        $times        = $data['times'] ?? [];
 
+        foreach ($excursionIds as $excursionId) {
+            $attachData[$excursionId] = [
+                'excursion_day_id'  => $days[$excursionId] ?? null,
+                'excursion_time_id' => $times[$excursionId] ?? null,
+            ];
+        }
+
+        $offer->excursions()->sync($attachData);
+
+        return $offer;
     }
 
     public function destroy($id)

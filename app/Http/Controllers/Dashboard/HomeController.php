@@ -2,16 +2,6 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\User;
-use App\Models\Nurse;
-use App\Models\Banner;
-use App\Models\Course;
-use App\Models\Patient;
-use App\Models\Analysis;
-use App\Models\RaysType;
-use App\Models\BloodType;
-use App\Models\BloodGroup;
-use App\Models\OrderPatient;
-use App\Models\AnalysisCategory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;

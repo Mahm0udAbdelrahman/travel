@@ -24,10 +24,12 @@ class Offer extends Model
         'is_active'   => 'boolean',
     ];
 
-    public function excursions()
-    {
-        return $this->belongsToMany(Excursion::class, 'excursion_offers');
-    }
+  public function excursions()
+{
+    return $this->belongsToMany(Excursion::class, 'excursion_offers')
+                ->withPivot('excursion_day_id', 'excursion_time_id')
+                ->withTimestamps();
+}
 
     public function scopeActive($query)
     {
