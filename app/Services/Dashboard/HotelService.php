@@ -1,8 +1,9 @@
 <?php
 namespace App\Services\Dashboard;
 
-use App\Models\Hotel;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Hotel;
 use App\Traits\HasImage;
 
 class HotelService
@@ -34,18 +35,28 @@ class HotelService
 
     public function show($id)
     {
-       $hotel = $this->model->with([
-            'tourLeaders',
-            'orders' => function ($query) {
-                $query->orderBy('date', 'desc');
-            }
-        ])->findOrFail($id);
+       $hotel = Hotel::with('tourLeaders', 'orders')->findOrFail($id);
 
-        $ordersGroupedByDate = $hotel->orders->groupBy('date');
+        $orders = $hotel->orders;
+
+        $today = Carbon::today();
+        $yesterday = $today->copy()->subDay();
+        $dayBeforeYesterday = $today->copy()->subDays(2);
+        $tomorrow = $today->copy()->addDay();
+        $dayAfterTomorrow = $today->copy()->addDays(2);
+
+        $ordersByPeriod = [
+            'today' => $orders->filter(fn($order) => Carbon::parse($order->date)->isSameDay($today)),
+            'yesterday' => $orders->filter(fn($order) => Carbon::parse($order->date)->isSameDay($yesterday)),
+            'day_before_yesterday' => $orders->filter(fn($order) => Carbon::parse($order->date)->isSameDay($dayBeforeYesterday)),
+            'tomorrow' => $orders->filter(fn($order) => Carbon::parse($order->date)->isSameDay($tomorrow)),
+            'day_after_tomorrow' => $orders->filter(fn($order) => Carbon::parse($order->date)->isSameDay($dayAfterTomorrow)),
+            'all' => $orders->sortByDesc('date'),
+        ];
 
         return [
             'hotel' => $hotel,
-            'ordersGroupedByDate' => $ordersGroupedByDate,
+            'ordersByPeriod' => $ordersByPeriod,
         ];
     }
 
