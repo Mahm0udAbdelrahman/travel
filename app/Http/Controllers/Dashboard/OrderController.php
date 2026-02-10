@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\Order\UpdateOrderRequest;
-use App\Services\Dashboard\OrderService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use App\Services\Dashboard\OrderService;
+use App\Http\Requests\Dashboard\Order\UpdateOrderRequest;
 
 class OrderController extends Controller
 {

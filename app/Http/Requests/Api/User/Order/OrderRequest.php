@@ -36,15 +36,12 @@ class OrderRequest extends FormRequest
 
              'date' => [
                 Rule::requiredIf(
-                    in_array(request('type_model'), ['additional_service', 'excursion'])
+                    in_array(request('type_model'), ['excursion'])
                 ),
                 'date',
             ],
 
-            'time'           => [
-                Rule::requiredIf(request('type_model') === 'additional_service'),
-                'string',
-            ],
+            'time'           => 'nullable|string|max:255',
 
               'type' => [
                 Rule::requiredIf(request('type_model') === 'additional_service'),

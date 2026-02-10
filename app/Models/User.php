@@ -86,4 +86,9 @@ class User extends Authenticatable
         return $this->belongsTo(CategoryExcursion::class, 'category_excursion_id', 'id');
     }
 
+    public function OrderStatus()
+    {
+        return $this->hasMany(OrderStatus::class, 'user_id', 'id');
+    }
+
 }

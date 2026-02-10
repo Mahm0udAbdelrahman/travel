@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests\Api\TourLeader\Order;
+namespace App\Http\Requests\Dashboard\Order;
 
 use App\Enums\InquiryType;
 use Illuminate\Contracts\Validation\Validator;
@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderRequest extends FormRequest
+class UpdateOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,25 +27,8 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'          => 'required',
-            'type_model'  => 'required|in:real_estate,event,excursion,offer,additional_service',
-            'quantity'    => 'required|integer|min:1',
-            'hotel_id'    => 'nullable|exists:hotels,id',
-            'room_number' => 'nullable|string|max:255',
 
-            'date'        => [
-                Rule::requiredIf(request('type_model') === 'excursion'),
-                'date',
-            ],
-
-            'time'        => 'nullable|string|max:255',
-
-            'type'        => [
-                Rule::requiredIf(request('type_model') === 'additional_service'),
-                new Enum(InquiryType::class),
-            ],
-
-            'notes'       => 'nullable|string',
+           'status' => 'required',
 
         ];
     }

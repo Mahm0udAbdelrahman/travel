@@ -43,8 +43,8 @@ class OfferController extends Controller
     {
          $offer = $this->offerService->show($id);
 
-       $excursions = $this->offerService->getExcursions();
-            $categoryExcursions = $this->offerService->getCategoryExcursions();
+        $excursions = $this->offerService->getExcursions();
+        $categoryExcursions = $this->offerService->getCategoryExcursions();
 
         return view('dashboard.pages.offers.edit', compact('offer','excursions', 'categoryExcursions'));
     }

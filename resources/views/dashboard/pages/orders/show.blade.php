@@ -108,7 +108,7 @@
                                     <tr>
                                         <td class="ps-4 small">{{ $status->created_at->format('Y-m-d H:i') }}</td>
                                         <td><span class="badge bg-primary-subtle text-primary">{{ $status->status }}</span></td>
-                                        <td>{{ $status->user->name ?? 'System' }}</td>
+                                        <td><a href="{{ route('Admin.users.show',$status->user->id) }}">{{ $status->user->name ?? 'System' }}</a></td>
                                         <td class="text-end pe-4 font-monospace">{{ $status->user->phone ?? '-' }}</td>
                                     </tr>
                                     @empty
