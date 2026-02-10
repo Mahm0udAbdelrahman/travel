@@ -22,7 +22,11 @@ class Offer extends Model
         'name'       => 'array',
         'description' => 'array',
         'is_active'   => 'boolean',
+         'start_date' => 'date',
+    'end_date' => 'date',
     ];
+
+
 
   public function excursions()
 {

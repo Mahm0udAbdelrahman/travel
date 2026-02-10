@@ -49,17 +49,30 @@ class OfferService
         $times        = $data['times'] ?? [];
 
         foreach ($excursionIds as $excursionId) {
-            $attachData[$excursionId] = [
-                'excursion_day_id'  => $days[$excursionId] ?? null,
-                'excursion_time_id' => $times[$excursionId] ?? null,
-            ];
+            if (isset($days[$excursionId]) && is_array($days[$excursionId])) {
+                foreach ($days[$excursionId] as $dayId) {
+                    $attachData[$excursionId][] = [
+                        'excursion_day_id'  => $dayId,
+                        'excursion_time_id' => $times[$excursionId][$dayId] ?? null,
+                    ];
+                }
+            } else {
+
+                $attachData[$excursionId][] = [
+                    'excursion_day_id'  => null,
+                    'excursion_time_id' => null,
+                ];
+            }
         }
 
-        $offer->excursions()->attach($attachData);
+        foreach ($attachData as $excursionId => $daysTimesArray) {
+            foreach ($daysTimesArray as $pivotData) {
+                $offer->excursions()->attach($excursionId, $pivotData);
+            }
+        }
 
         return $offer;
     }
-
     public function show($id)
     {
         return $this->model->findOrFail($id);
@@ -67,28 +80,47 @@ class OfferService
 
     public function update($id, $data)
     {
-        $offer = $this->show($id);
+        $offer = $this->model->findOrFail($id);
 
         if (isset($data['image'])) {
+            if ($offer->image) {
+                \Storage::delete('excursion/' . $offer->image);
+            }
             $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
 
         $offer->update($data);
 
+
+        $offer->excursions()->detach();
+
         $attachData = [];
 
         $excursionIds = $data['excursion_ids'] ?? [];
-        $days         = $data['days'] ?? [];
+        $days         = $data['days'] ?? []; 
         $times        = $data['times'] ?? [];
 
         foreach ($excursionIds as $excursionId) {
-            $attachData[$excursionId] = [
-                'excursion_day_id'  => $days[$excursionId] ?? null,
-                'excursion_time_id' => $times[$excursionId] ?? null,
-            ];
+            if (isset($days[$excursionId]) && is_array($days[$excursionId])) {
+                foreach ($days[$excursionId] as $dayId) {
+                    $attachData[$excursionId][] = [
+                        'excursion_day_id'  => $dayId,
+                        'excursion_time_id' => $times[$excursionId][$dayId] ?? null,
+                    ];
+                }
+            } else {
+                $attachData[$excursionId][] = [
+                    'excursion_day_id'  => null,
+                    'excursion_time_id' => null,
+                ];
+            }
         }
 
-        $offer->excursions()->sync($attachData);
+        foreach ($attachData as $excursionId => $daysTimesArray) {
+            foreach ($daysTimesArray as $pivotData) {
+                $offer->excursions()->attach($excursionId, $pivotData);
+            }
+        }
 
         return $offer;
     }

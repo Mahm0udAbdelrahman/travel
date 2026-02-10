@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.app')
 @section('title', __('Add Offer'))
+
 @push('styles')
     <style>
         .excursion-card {
@@ -15,6 +16,17 @@
 
         .excursion-checkbox {
             transform: scale(1.2);
+        }
+
+        /* ستايل ترتيب أيام وأوقات */
+        .day-time-pair {
+            gap: 0.5rem;
+        }
+        .day-time-pair input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .day-time-pair select {
+            min-width: 140px;
         }
     </style>
 @endpush
@@ -44,7 +56,7 @@
             <form method="POST" action="{{ route('Admin.offers.store') }}" enctype="multipart/form-data">
                 @csrf
 
-                {{-- Languages Tabs --}}
+                {{-- اللغات والحقول الأخرى هنا كما هي (اسم، وصف...) --}}
                 @php
                     $langs = [
                         'ar' => 'Arabic',
@@ -177,10 +189,7 @@
                 </div>
 
                 {{-- ================= Excursions ================= --}}
-                {{-- ================= Excursions Section ================= --}}
                 <div class="card shadow-sm border-0 mb-4">
-
-                    {{-- Header: أكثر ترتيباً واستجابة --}}
                     <div class="card-header bg-white py-3">
                         <div class="row align-items-center g-3">
                             <div class="col-md-4">
@@ -215,74 +224,66 @@
                         </div>
                     </div>
 
-                    {{-- Body: بطاقات محسنة --}}
+                    {{-- Body: بطاقات الرحلات --}}
                     <div class="card-body bg-light-alt" style="max-height: 550px; overflow-y:auto; overflow-x:hidden;">
                         <div class="row g-3">
                             @foreach ($excursions as $excursion)
                                 <div class="col-xl-4 col-md-6 excursion-item"
-                                    data-category="{{ $excursion->category_excursion_id }}">
+                                    data-category="{{ $excursion->category_excursion_id }}" data-excursion-id="{{ $excursion->id }}">
 
                                     <div class="card h-100 border-0 shadow-sm excursion-card-wrapper transition-all">
-                                        <label class="card-body p-0 cursor-pointer" for="excursion-{{ $excursion->id }}">
-                                            {{-- الجزء العلوي للبطاقة --}}
-                                            <div class="p-3">
-                                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <div style="max-width: 80%;">
-                                                        <h6 class="fw-bold mb-0 text-dark">
-                                                            {{ $excursion->name['en'] ?? '' }}</h6>
-                                                        <small class="text-muted"><i
-                                                                class="fas fa-location-arrow f-10"></i>
-                                                            {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input excursion-checkbox custom-check"
-                                                            type="checkbox" value="{{ $excursion->id }}"
-                                                            data-price="{{ $excursion->price }}" name="excursion_ids[]"
-                                                            id="excursion-{{ $excursion->id }}">
-                                                    </div>
+                                        <label class="card-body p-3 cursor-pointer" for="excursion-{{ $excursion->id }}">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div style="max-width: 80%;">
+                                                    <h6 class="fw-bold mb-0 text-dark">
+                                                        {{ $excursion->name['en'] ?? '' }}</h6>
+                                                    <small class="text-muted"><i
+                                                            class="fas fa-location-arrow f-10"></i>
+                                                        {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
                                                 </div>
-
-                                                <div class="d-flex gap-2 mt-2">
-                                                    <span class="badge bg-soft-primary text-primary px-2">
-                                                        <i class="far fa-clock me-1"></i>{{ $excursion->hours ?? '-' }}
-                                                        {{ __('Hrs') }}
-                                                    </span>
-                                                    <span class="badge bg-soft-success text-success px-2 font-weight-bold">
-                                                        ${{ number_format($excursion->price, 2) }}
-                                                    </span>
+                                                <div class="form-check">
+                                                    <input class="form-check-input excursion-checkbox custom-check"
+                                                        type="checkbox" value="{{ $excursion->id }}" name="excursion_ids[]"
+                                                        id="excursion-{{ $excursion->id }}">
                                                 </div>
                                             </div>
 
-                                            <hr class="my-0 opacity-10">
+                                            <div class="d-flex gap-2 mt-2">
+                                                <span class="badge bg-soft-primary text-primary px-2">
+                                                    <i class="far fa-clock me-1"></i>{{ $excursion->hours ?? '-' }}
+                                                    {{ __('Hrs') }}
+                                                </span>
+                                                <span class="badge bg-soft-success text-success px-2 font-weight-bold">
+                                                    ${{ number_format($excursion->price, 2) }}
+                                                </span>
+                                            </div>
 
-                                            {{-- خيارات اليوم والوقت (تظهر بشكل أوضح) --}}
-                                            <div class="p-3 bg-white selection-area">
-                                                <div class="row g-2">
-                                                    <div class="col-6">
-                                                        <label
-                                                            class="x-small fw-bold text-muted mb-1">{{ __('Day') }}</label>
-                                                        <select name="days[{{ $excursion->id }}]"
-                                                            id="day-{{ $excursion->id }}"
-                                                            class="form-select form-select-sm excursion-day-select border-dashed"
-                                                            data-excursion-id="{{ $excursion->id }}" disabled>
-                                                            <option value="">-- {{ __('Day') }} --</option>
-                                                            @foreach ($excursion->days as $day)
-                                                                <option value="{{ $day->id }}">{{ $day->day }}
+                                            <hr class="my-3 opacity-10">
+
+                                            {{-- اختيار أيام وأوقات متعددة --}}
+                                            <div id="days-times-{{ $excursion->id }}" class="excursion-days-times">
+                                                @foreach ($excursion->days as $day)
+                                                    <div class="day-time-pair d-flex align-items-center mb-2">
+                                                        <input type="checkbox"
+                                                            class="day-checkbox me-2"
+                                                            id="day-{{ $excursion->id }}-{{ $day->id }}"
+                                                            name="days[{{ $excursion->id }}][]"
+                                                            value="{{ $day->id }}" disabled>
+
+                                                        <label for="day-{{ $excursion->id }}-{{ $day->id }}"
+                                                            class="me-3 mb-0">{{ $day->day }}</label>
+
+                                                        <select name="times[{{ $excursion->id }}][{{ $day->id }}]"
+                                                            class="form-select form-select-sm excursion-time-select" disabled>
+                                                            <option value="">{{ __('Select Time') }}</option>
+                                                            @foreach ($day->times as $time)
+                                                                <option value="{{ $time->id }}">
+                                                                    {{ $time->from_time }} - {{ $time->to_time }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div class="col-6">
-                                                        <label
-                                                            class="x-small fw-bold text-muted mb-1">{{ __('Time') }}</label>
-                                                        <select name="times[{{ $excursion->id }}]"
-                                                            id="time-{{ $excursion->id }}"
-                                                            class="form-select form-select-sm excursion-time-select border-dashed"
-                                                            disabled>
-                                                            <option value="">-- {{ __('Time') }} --</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                @endforeach
                                             </div>
                                         </label>
                                     </div>
@@ -291,7 +292,7 @@
                         </div>
                     </div>
 
-                    {{-- Footer --}}
+                    {{--  Footer
                     <div class="card-footer bg-white py-3 border-top">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -304,75 +305,9 @@
                                 <span class="h3 fw-bold text-primary mb-0">$<span id="totalPrice">0.00</span></span>
                             </div>
                         </div>
-                    </div>
+                    </div>  --}}
                 </div>
 
-                <style>
-                    /* تحسينات التصميم */
-                    .bg-light-alt {
-                        background-color: #f8f9fa;
-                    }
-
-                    .bg-soft-primary {
-                        background-color: rgba(13, 110, 253, 0.1);
-                    }
-
-                    .bg-soft-success {
-                        background-color: rgba(25, 135, 84, 0.1);
-                    }
-
-                    .cursor-pointer {
-                        cursor: pointer;
-                    }
-
-                    .x-small {
-                        font-size: 11px;
-                    }
-
-                    .f-10 {
-                        font-size: 10px;
-                    }
-
-                    .border-dashed {
-                        border-style: dashed !important;
-                    }
-
-                    .excursion-card-wrapper {
-                        border: 2px solid transparent !important;
-                        transition: all 0.3s ease;
-                    }
-
-                    /* تأثير عند اختيار الرحلة */
-                    .excursion-card-wrapper.selected {
-                        border-color: #0d6efd !important;
-                        background-color: #fff;
-                        transform: translateY(-3px);
-                    }
-
-                    .custom-check {
-                        width: 1.4em;
-                        height: 1.4em;
-                        cursor: pointer;
-                    }
-
-                    .transition-all {
-                        transition: all 0.2s ease-in-out;
-                    }
-
-                    /* تحسين الـ Scrollbar */
-                    .card-body::-webkit-scrollbar {
-                        width: 5px;
-                    }
-
-                    .card-body::-webkit-scrollbar-track {
-                        background: #f1f1f1;
-                    }
-
-                    .card-body::-webkit-scrollbar-thumb {
-                        background: #ccc;
-                        border-radius: 10px;
-                    }
-                </style>
                 {{-- Submit --}}
                 <div class="text-end mb-5">
                     <button class="btn btn-primary px-5">
@@ -388,15 +323,12 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // كل العناصر
             const checkboxes = document.querySelectorAll('.excursion-checkbox');
             const excursionItems = document.querySelectorAll('.excursion-item');
             const totalPriceEl = document.getElementById('totalPrice');
 
-            // بيانات الرحلات مع الأيام والأوقات (محمّلة من السيرفر)
             const excursions = @json($excursions->load('days.times'));
 
-            // حساب السعر الكلي
             function calculate() {
                 let total = 0;
                 checkboxes.forEach(cb => {
@@ -405,56 +337,51 @@
                 totalPriceEl.innerText = total.toFixed(2);
             }
 
-            // تفعيل أو تعطيل اختيار اليوم والوقت بناء على Checkbox
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', function() {
                     const excursionId = this.value;
-                    const daySelect = document.getElementById(`day-${excursionId}`);
-                    const timeSelect = document.getElementById(`time-${excursionId}`);
+                    const daysTimesContainer = document.getElementById(`days-times-${excursionId}`);
 
                     if (this.checked) {
-                        daySelect.disabled = false;
+                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
+                            dayCb.disabled = false;
+                        });
+                        daysTimesContainer.querySelectorAll('select').forEach(sel => {
+                            sel.disabled = true;
+                            sel.value = '';
+                        });
                     } else {
-                        daySelect.value = '';
-                        daySelect.disabled = true;
-                        timeSelect.innerHTML = '<option value="">Select Time</option>';
-                        timeSelect.disabled = true;
+                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
+                            dayCb.checked = false;
+                            dayCb.disabled = true;
+                        });
+                        daysTimesContainer.querySelectorAll('select').forEach(sel => {
+                            sel.disabled = true;
+                            sel.value = '';
+                        });
                     }
 
                     calculate();
                 });
             });
 
-            // عند تغيير اليوم يتم تحديث قائمة الأوقات المتاحة لذلك اليوم
-            document.querySelectorAll('.excursion-day-select').forEach(daySelect => {
-                daySelect.addEventListener('change', function() {
-                    const excursionId = this.dataset.excursionId;
-                    const selectedDayId = this.value;
-                    const timeSelect = document.getElementById(`time-${excursionId}`);
+            document.querySelectorAll('.excursion-days-times').forEach(container => {
+                container.querySelectorAll('.day-checkbox').forEach(dayCb => {
+                    dayCb.addEventListener('change', function() {
+                        const excursionId = container.id.replace('days-times-', '');
+                        const dayId = this.value;
+                        const timeSelect = container.querySelector(`select[name='times[${excursionId}][${dayId}]']`);
 
-                    timeSelect.innerHTML = '<option value="">Select Time</option>';
-                    timeSelect.disabled = true;
-
-                    if (!selectedDayId) return;
-
-                    const excursion = excursions.find(e => e.id == excursionId);
-                    if (!excursion) return;
-
-                    const day = excursion.days.find(d => d.id == selectedDayId);
-                    if (!day || !day.times) return;
-
-                    day.times.forEach(time => {
-                        const option = document.createElement('option');
-                        option.value = time.id;
-                        option.textContent = `${time.from_time} - ${time.to_time}`;
-                        timeSelect.appendChild(option);
+                        if (this.checked) {
+                            timeSelect.disabled = false;
+                        } else {
+                            timeSelect.value = '';
+                            timeSelect.disabled = true;
+                        }
                     });
-
-                    timeSelect.disabled = false;
                 });
             });
 
-            // فلتر الفئة
             document.getElementById('categoryFilter').addEventListener('change', function() {
                 const val = this.value;
                 excursionItems.forEach(item => {
@@ -462,7 +389,6 @@
                 });
             });
 
-            // بحث نصي
             document.getElementById('excursionSearch').addEventListener('keyup', function() {
                 const key = this.value.toLowerCase();
                 excursionItems.forEach(item => {
@@ -471,32 +397,39 @@
                 });
             });
 
-            // تحديد الكل
             document.getElementById('selectAll').onclick = () => {
                 excursionItems.forEach(item => {
                     if (item.style.display !== 'none') {
                         const cb = item.querySelector('.excursion-checkbox');
                         cb.checked = true;
-                        document.getElementById(`day-${cb.value}`).disabled = false;
+
+                        const daysTimesContainer = document.getElementById(`days-times-${cb.value}`);
+                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
+                            dayCb.disabled = false;
+                        });
                     }
                 });
                 calculate();
             };
 
-            // إلغاء التحديد الكل
             document.getElementById('clearAll').onclick = () => {
                 checkboxes.forEach(cb => {
                     cb.checked = false;
-                    document.getElementById(`day-${cb.value}`).disabled = true;
-                    document.getElementById(`day-${cb.value}`).value = '';
-                    document.getElementById(`time-${cb.value}`).disabled = true;
-                    document.getElementById(`time-${cb.value}`).innerHTML =
-                        '<option value="">Select Time</option>';
+
+                    const daysTimesContainer = document.getElementById(`days-times-${cb.value}`);
+                    daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
+                        dayCb.checked = false;
+                        dayCb.disabled = true;
+                    });
+                    daysTimesContainer.querySelectorAll('select').forEach(sel => {
+                        sel.disabled = true;
+                        sel.value = '';
+                    });
                 });
                 calculate();
             };
 
-            calculate(); // حساب أولي للسعر عند تحميل الصفحة
+            calculate();
         });
     </script>
 @endpush
