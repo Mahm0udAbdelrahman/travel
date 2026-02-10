@@ -31,6 +31,9 @@ class User extends Authenticatable
         'fcm_token',
         'email_verified_at',
         'category_excursion_id',
+        'arrival_date',
+        'departure_date',
+        'language'
     ];
 
     /**

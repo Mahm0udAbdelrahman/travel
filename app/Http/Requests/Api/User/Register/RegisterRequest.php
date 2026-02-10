@@ -33,6 +33,10 @@ class RegisterRequest extends FormRequest
             'password'  => 'required|string|min:8|confirmed',
             'fcm_token' => 'required|string',
             'type'      => ['required', new Enum(\App\Enums\UserType::class)],
+            'arrival_date' => 'required|string|max:255',
+            'departure_date' => 'required|string|max:255',
+            'language' => 'required|string|max:255',
+
         ];
     }
 

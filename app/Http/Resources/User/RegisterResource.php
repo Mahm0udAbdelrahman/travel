@@ -21,6 +21,9 @@ class RegisterResource extends JsonResource
             'phone' => $this->phone,
             'image' => $this->image,
             'type' => $this->type,
+            'arrival_date' => $this->arrival_date,
+            'departure_date' => $this->departure_date,
+            'language' => $this->language,
         ];
     }
 }

@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('type')->default(\App\Enums\UserType::CUSTOMER->value);
             $table->foreignId('category_excursion_id')->nullable()->constrained('category_excursions','id')->nullOnDelete();
+            $table->string('arrival_date')->nullable();
+            $table->string('departure_date')->nullable();
+            $table->string('language')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('code')->nullable();
             $table->timestamp('expire_at')->nullable();
