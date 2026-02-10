@@ -10,10 +10,23 @@ class OrderService
     public function __construct(public Order $model)
     {}
 
-    public function index()
+    public function index($request)
     {
+        $query = $this->model->latest();
 
-        return $this->model->latest()->paginate(10);
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        return $query->paginate(10)->withQueryString();
     }
 
     public function store($data)

@@ -13,7 +13,8 @@ class OrderController extends Controller
     {}
     public function index(Request $request)
     {
-        $orders = $this->orderService->index();
+        $orders = $this->orderService->index($request);
+
         return view('dashboard.pages.orders.index', compact('orders'));
     }
     public function create()

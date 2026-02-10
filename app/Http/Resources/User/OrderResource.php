@@ -13,6 +13,15 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $map = [
+            'real_estate'        => \App\Models\RealEstate::class,
+            'event'              => \App\Models\Event::class,
+            'excursion'          => \App\Models\Excursion::class,
+            'offer'              => \App\Models\Offer::class,
+            'additional_service' => \App\Models\AdditionalService::class,
+        ];
+
+        $reverseMap = array_flip($map);
         return [
             'id'                => $this->id,
             'user_id'           => $this->user_id,
@@ -25,7 +34,7 @@ class OrderResource extends JsonResource
             'image'             => $this->orderable->image ?? null,
             'room_number'       => $this->room_number,
             'orderable_id'      => $this->orderable_id,
-            'orderable_type'    => $this->orderable_type,
+            'orderable_type'    => $reverseMap[$this->orderable_type] ?? $this->orderable_type,
             'quantity'          => $this->quantity,
             'order_number'      => $this->order_number,
             'date'              => $this->date,
