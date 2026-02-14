@@ -59,6 +59,10 @@ class HotelService
             'ordersByPeriod' => $ordersByPeriod,
         ];
     }
+    public function edit($id)
+    {
+        return Hotel::with('tourLeaders', 'orders')->findOrFail($id);
+    }
 
     public function update($id, $data)
     {

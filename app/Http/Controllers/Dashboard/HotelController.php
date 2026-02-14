@@ -39,7 +39,7 @@ class HotelController extends Controller
 
     public function edit($id)
     {
-         $hotel = $this->hotelService->show($id);
+         $hotel = $this->hotelService->edit($id);
         $tourLeaders = $this->hotelService->getTourLeaders();
         return view('dashboard.pages.hotels.edit', compact('hotel', 'tourLeaders'));
     }
