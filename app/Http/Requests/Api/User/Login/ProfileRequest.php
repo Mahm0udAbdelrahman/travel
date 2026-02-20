@@ -30,6 +30,12 @@ class ProfileRequest extends FormRequest
             'email' => 'nullable|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|unique:users,phone,' . $user->id,
             'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'arrival_date' => 'nullable|string|max:255',
+            'departure_date' => 'nullable|string|max:255',
+            'language' => 'nullable|string|max:255',
+            'city_id' => 'nullable|exists:cities,id',
+            'hotel_id' => 'nullable|exists:hotels,id',
+            'fcm_token' => 'nullable|string',
         ];
     }
     protected function failedValidation(Validator $validator)
