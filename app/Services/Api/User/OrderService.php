@@ -1,8 +1,10 @@
 <?php
-
 namespace App\Services\Api\User;
 
+use App\Enums\UserType;
+use App\Helpers\SendNotificationHelper;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stripe\Checkout\Session as StripeSession;
@@ -27,7 +29,7 @@ class OrderService
             'additional_service' => \App\Models\AdditionalService::class,
         ];
 
-        if (!isset($map[$data['type_model']])) {
+        if (! isset($map[$data['type_model']])) {
             return ['success' => false, 'message' => 'نوع المنتج غير صالح'];
         }
 
@@ -37,16 +39,16 @@ class OrderService
         $price      = $item->price ?? 1;
         $totalPrice = $price * $quantity;
 
-        $date              = null;
-        $timeString        = null;
-        $excursionTimeId   = null;
-        $excursionDayId    = null;
+        $date            = null;
+        $timeString      = null;
+        $excursionTimeId = null;
+        $excursionDayId  = null;
 
         if ($data['type_model'] === 'excursion') {
 
             $timeModel = \App\Models\ExcursionTime::with('day')->findOrFail($data['time_id']);
 
-            if (!$timeModel->day || $timeModel->day->excursion_id != $item->id) {
+            if (! $timeModel->day || $timeModel->day->excursion_id != $item->id) {
                 abort(422, 'الوقت غير تابع لهذه الرحلة');
             }
 
@@ -56,7 +58,7 @@ class OrderService
             $excursionDayId  = $timeModel->excursion_day_id;
         }
 
-        return $this->model->create([
+        $order = $this->model->create([
             'user_id'           => $user->id,
             'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
 
@@ -78,13 +80,37 @@ class OrderService
             'excursion_time_id' => $excursionTimeId,
             'excursion_day_id'  => $excursionDayId,
         ]);
+
+        $notificationData = [
+            'title_en' => 'New Order Received',
+            'body_en'  => "You have a new order for {$item->name['en'] ?? 'a product'}",
+            'title_ar' => 'تم استلام طلب جديد',
+            'body_ar'  => "لديك طلب جديد لـ {$item->name['ar'] ?? 'منتج'}",
+            'order_id' => $order->id,
+        ];
+
+        User::where('type', UserType::SUPPLIER)
+            ->where('category_excursion_id', $item->category_excursion_id)
+            ->chunk(100, function ($users) use ($notificationData) {
+                $sendNotificationHelper = new SendNotificationHelper();
+                foreach ($users as $user) {
+                    if (! empty($user->fcm_token)) {
+                        $sendNotificationHelper->sendNotification(
+                            $notificationData,
+                            [$user->fcm_token]
+                        );
+                    }
+                }
+            });
+
+        return $order;
     }
 
     public function store(array $data)
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'المستخدم غير موجود',
@@ -99,7 +125,7 @@ class OrderService
             'additional_service' => \App\Models\AdditionalService::class,
         ];
 
-        if (!isset($map[$data['type_model']])) {
+        if (! isset($map[$data['type_model']])) {
             return response()->json(['success' => false, 'message' => 'نوع المنتج غير صالح'], 422);
         }
 
@@ -114,7 +140,6 @@ class OrderService
         $excursionTimeId = null;
         $excursionDayId  = null;
 
-
         if ($data['type_model'] === 'excursion') {
 
             if (empty($data['time_id']) || empty($data['date'])) {
@@ -126,7 +151,7 @@ class OrderService
 
             $timeModel = \App\Models\ExcursionTime::with('day')->findOrFail($data['time_id']);
 
-            if (!$timeModel->day || $timeModel->day->excursion_id != $item->id) {
+            if (! $timeModel->day || $timeModel->day->excursion_id != $item->id) {
                 return response()->json([
                     'success' => false,
                     'message' => 'الوقت غير تابع لهذه الرحلة',
@@ -138,7 +163,6 @@ class OrderService
             $excursionTimeId = $timeModel->id;
             $excursionDayId  = $timeModel->excursion_day_id;
         }
-
 
         if (in_array($data['type_model'], ['real_estate'])) {
 
@@ -163,31 +187,30 @@ class OrderService
             ]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'تم التسجيل بنجاح',
+                'success'      => true,
+                'message'      => 'تم التسجيل بنجاح',
                 'order_number' => $order->order_number,
             ]);
         }
-
 
         try {
 
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
-                'mode' => 'payment',
-                'customer_email' => $user->email,
-                'line_items' => [[
+                'mode'                 => 'payment',
+                'customer_email'       => $user->email,
+                'line_items'           => [[
                     'price_data' => [
-                        'currency' => 'usd',
+                        'currency'     => 'usd',
                         'product_data' => [
                             'name' => $item->name['en'] ?? 'Product',
                         ],
-                        'unit_amount' => (int) ($price * 100),
+                        'unit_amount'  => (int) ($price * 100),
                     ],
-                    'quantity' => $quantity,
+                    'quantity'   => $quantity,
                 ]],
-                'success_url' => url('/payment/success?session_id={CHECKOUT_SESSION_ID}'),
-                'cancel_url'  => url('/payment/cancel'),
+                'success_url'          => url('/payment/success?session_id={CHECKOUT_SESSION_ID}'),
+                'cancel_url'           => url('/payment/cancel'),
             ]);
 
             $order = $this->model->create([
@@ -214,7 +237,7 @@ class OrderService
             ]);
 
             return response()->json([
-                'success' => true,
+                'success'      => true,
                 'order_number' => $order->order_number,
                 'redirect_url' => $session->url,
             ]);
