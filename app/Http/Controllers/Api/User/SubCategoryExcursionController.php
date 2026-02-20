@@ -14,7 +14,7 @@ class SubCategoryExcursionController extends Controller
     public function __construct(public SubCategoryExcursionService $subcategoryExcursionService) {}
     public function index(Request $request)
     {
-        $subcategoryExcursions = $this->subcategoryExcursionService->index();
+        $subcategoryExcursions = $this->subcategoryExcursionService->index($request->query('category_excursion_id'));
         return $this->paginatedResponse($subcategoryExcursions, CategoryResource::class);
     }
 }
