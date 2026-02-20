@@ -37,6 +37,7 @@ class RegisterRequest extends FormRequest
             'departure_date' => 'required|string|max:255',
             'language' => 'required|string|max:255',
             'city_id' => 'required|exists:cities,id',
+            'hotel_id' => 'required|exists:hotels,id',
 
         ];
     }

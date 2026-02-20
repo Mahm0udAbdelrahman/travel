@@ -34,7 +34,8 @@ class User extends Authenticatable
         'arrival_date',
         'departure_date',
         'language',
-        'city_id'
+        'city_id',
+        'hotel_id'
     ];
 
     /**

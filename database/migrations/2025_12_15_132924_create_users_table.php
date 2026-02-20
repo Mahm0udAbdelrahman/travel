@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('type')->default(\App\Enums\UserType::CUSTOMER->value);
             $table->foreignId('city_id')->nullable()->constrained('cities','id')->nullOnDelete();
+            $table->foreignId('hotel_id')->nullable()->constrained('hotels','id')->nullOnDelete();
             $table->foreignId('category_excursion_id')->nullable()->constrained('category_excursions','id')->nullOnDelete();
             $table->string('arrival_date')->nullable();
             $table->string('departure_date')->nullable();
