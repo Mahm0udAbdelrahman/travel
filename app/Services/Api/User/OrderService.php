@@ -236,6 +236,29 @@ class OrderService
                 'excursion_day_id'  => $excursionDayId,
             ]);
 
+
+        $notificationData = [
+            'title_en' => 'New Order Received',
+            'body_en'  => "You have a new order for {$item->name['en'] ?? 'a product'}",
+            'title_ar' => 'تم استلام طلب جديد',
+            'body_ar'  => "لديك طلب جديد لـ {$item->name['ar'] ?? 'منتج'}",
+            'order_id' => $order->id,
+        ];
+
+        User::where('type', UserType::SUPPLIER)
+            ->where('category_excursion_id', $item->category_excursion_id)
+            ->chunk(100, function ($users) use ($notificationData) {
+                $sendNotificationHelper = new SendNotificationHelper();
+                foreach ($users as $user) {
+                    if (! empty($user->fcm_token)) {
+                        $sendNotificationHelper->sendNotification(
+                            $notificationData,
+                            [$user->fcm_token]
+                        );
+                    }
+                }
+            });
+
             return response()->json([
                 'success'      => true,
                 'order_number' => $order->order_number,
