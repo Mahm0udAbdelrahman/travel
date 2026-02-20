@@ -33,7 +33,8 @@ class User extends Authenticatable
         'category_excursion_id',
         'arrival_date',
         'departure_date',
-        'language'
+        'language',
+        'city_id'
     ];
 
     /**
