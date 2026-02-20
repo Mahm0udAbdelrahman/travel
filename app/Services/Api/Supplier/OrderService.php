@@ -56,13 +56,15 @@ class OrderService
                 'status' => $data['status'],
             ]
         );
-
+        $supplierName = $order->orderStatuses()->where('status', 'accepted')->first()->user->name ?? 'المورد';
         if ($data['status'] === 'accepted') {
             $notificationData = [
                 'title_en' => 'Order Approved',
-                'body_en'  => "Your order for " . auth()->user()->name . " has been approved by the supplier.",
-                'title_ar' => 'تمت الموافقة على الطلب',
-                'body_ar'  => "تم قبول طلبك لـ " . auth()->user()->name . " من قبل المورّد.",
+                'body_en'  => "Your trip has been approved by {$supplierName}.",
+
+                'title_ar' => 'تمت الموافقة على الرحلة',
+                'body_ar'  => "تمّت الموافقة على رحلتك من قبل {$supplierName}.",
+
             ];
 
             $sendNotificationHelper = new SendNotificationHelper();
