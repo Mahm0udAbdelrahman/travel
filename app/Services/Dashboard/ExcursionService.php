@@ -33,56 +33,117 @@ class ExcursionService
         return City::active()->get();
     }
 
+    // public function store($data)
+    // {
+    //     if (isset($data['image'])) {
+    //         $data['image'] = $this->saveImage($data['image'], 'excursion');
+    //     }
+    //     $days = $data['days'] ?? [];
+    //     unset($data['days']);
+
+    //     $excursion = $this->model->create($data);
+
+    //     foreach ($days as $dayData) {
+
+    //         $times = $dayData['times'] ?? [];
+    //         unset($dayData['times']);
+
+    //         $day = $excursion->days()->create($dayData);
+
+    //         foreach ($times as $time) {
+    //             $day->times()->create($time);
+    //         }
+    //     }
+
+    //     $orderData = [
+    //         'excursion_id'      => $excursion->id,
+    //         'user_id'           => $data['user_id'],
+    //         'supplier_id'       => $data['supplier_id'] ?? null,
+    //         'representative_id' => $data['representative_id'] ?? null,
+    //         'status'            => 'completed',
+    //         'price'             => $data['price'],
+    //         'date'              => $data['date'],
+    //         'created_at'        => now(),
+    //     ];
+    //     $db = app('firebase.firestore')->database();
+
+    //     $orderRef = $db->collection('orders')->add($orderData);
+    //     $orderId  = $orderRef->id();
+
+    //     $db->collection('users')
+    //         ->document($data['user_id'])
+    //         ->collection('orders')
+    //         ->document($orderId)
+    //         ->set([
+    //             'order_id' => $orderId,
+    //             'status'   => $data['status'],
+    //             'price'    => $data['price'],
+    //             'date'     => $data['date'],
+    //         ]);
+
+    //     return $excursion->load('days.times');
+    // }
+
+
+
     public function store($data)
-    {
-        if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'excursion');
+{
+    if (isset($data['image'])) {
+        $data['image'] = $this->saveImage($data['image'], 'excursion');
+    }
+
+    $days = $data['days'] ?? [];
+    unset($data['days']);
+
+    // إنشاء الـ excursion
+    $excursion = $this->model->create($data);
+
+    // إنشاء الأيام والأوقات
+    foreach ($days as $dayData) {
+        $times = $dayData['times'] ?? [];
+        unset($dayData['times']);
+
+        $day = $excursion->days()->create($dayData);
+
+        foreach ($times as $time) {
+            $day->times()->create($time);
         }
-        $days = $data['days'] ?? [];
-        unset($data['days']);
+    }
 
-        $excursion = $this->model->create($data);
+    $customers = \App\Models\User::where('type', 'customer')->get();
 
-        foreach ($days as $dayData) {
+    $db = app('firebase.firestore')->database();
 
-            $times = $dayData['times'] ?? [];
-            unset($dayData['times']);
-
-            $day = $excursion->days()->create($dayData);
-
-            foreach ($times as $time) {
-                $day->times()->create($time);
-            }
-        }
+    foreach ($customers as $user) {
 
         $orderData = [
             'excursion_id'      => $excursion->id,
-            'user_id'           => $data['user_id'],
+            'user_id'           => $user->id,
             'supplier_id'       => $data['supplier_id'] ?? null,
             'representative_id' => $data['representative_id'] ?? null,
             'status'            => 'completed',
-            'price'             => $data['price'],
-            'date'              => $data['date'],
+            'price'             => $data['price'] ?? 0,
+            'date'              => $data['date'] ?? now(),
             'created_at'        => now(),
         ];
-        $db = app('firebase.firestore')->database();
 
         $orderRef = $db->collection('orders')->add($orderData);
         $orderId  = $orderRef->id();
 
         $db->collection('users')
-            ->document($data['user_id'])
+            ->document($user->id)
             ->collection('orders')
             ->document($orderId)
             ->set([
                 'order_id' => $orderId,
-                'status'   => $data['status'],
-                'price'    => $data['price'],
-                'date'     => $data['date'],
+                'status'   => 'completed',
+                'price'    => $data['price'] ?? 0,
+                'date'     => $data['date'] ?? now(),
             ]);
-
-        return $excursion->load('days.times');
     }
+
+    return $excursion->load('days.times');
+}
 
     public function show($id)
     {
