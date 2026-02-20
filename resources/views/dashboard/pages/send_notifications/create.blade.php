@@ -37,6 +37,8 @@
                                         <select class="form-select" name="topic" id="topic">
                                             <option value="" {{ old('topic') === null ? 'selected' : '' }}>
                                                 {{ __('Choose topic...') }}</option>
+                                            <option value="all" {{ old('topic') === 'all' ? 'selected' : '' }}>
+                                                {{ __('All') }}</option>
                                             <option value="customer" {{ old('topic') === 'customer' ? 'selected' : '' }}>
                                                 {{ __('Customer') }}</option>
                                             <option value="supplier" {{ old('topic') === 'supplier' ? 'selected' : '' }}>
