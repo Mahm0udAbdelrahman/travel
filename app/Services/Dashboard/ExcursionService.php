@@ -55,6 +55,32 @@ class ExcursionService
             }
         }
 
+        $orderData = [
+            'excursion_id'      => $excursion->id,
+            'user_id'           => $data['user_id'],
+            'supplier_id'       => $data['supplier_id'] ?? null,
+            'representative_id' => $data['representative_id'] ?? null,
+            'status'            => 'completed',
+            'price'             => $data['price'],
+            'date'              => $data['date'],
+            'created_at'        => now(),
+        ];
+        $db = app('firebase.firestore')->database();
+
+        $orderRef = $db->collection('orders')->add($orderData);
+        $orderId  = $orderRef->id();
+
+        $db->collection('users')
+            ->document($data['user_id'])
+            ->collection('orders')
+            ->document($orderId)
+            ->set([
+                'order_id' => $orderId,
+                'status'   => $data['status'],
+                'price'    => $data['price'],
+                'date'     => $data['date'],
+            ]);
+
         return $excursion->load('days.times');
     }
 
