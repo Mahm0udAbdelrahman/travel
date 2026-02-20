@@ -83,9 +83,9 @@ class OrderService
 
         $notificationData = [
             'title_en' => 'New Order Received',
-            'body_en'  => "You have a new order for {$item->name['en'] ?? 'a product'}",
+            'body_en'  => "You have a new order for $item->name['en'] ",
             'title_ar' => 'تم استلام طلب جديد',
-            'body_ar'  => "لديك طلب جديد لـ {$item->name['ar'] ?? 'منتج'}",
+            'body_ar'  => "لديك طلب جديد لـ $item->name['ar']",
             'order_id' => $order->id,
         ];
 
@@ -239,9 +239,9 @@ class OrderService
 
         $notificationData = [
             'title_en' => 'New Order Received',
-            'body_en'  => "You have a new order for {$item->name['en'] ?? 'a product'}",
+            'body_en'  => "You have a new order for $item->name['en']",
             'title_ar' => 'تم استلام طلب جديد',
-            'body_ar'  => "لديك طلب جديد لـ {$item->name['ar'] ?? 'منتج'}",
+            'body_ar'  => "لديك طلب جديد لـ $item->name['ar']",
             'order_id' => $order->id,
         ];
 
