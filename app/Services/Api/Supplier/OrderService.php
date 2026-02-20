@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Api\Supplier;
 
+use App\Helpers\SendNotificationHelper;
 use App\Models\Excursion;
 use App\Models\Order;
 
@@ -55,6 +56,18 @@ class OrderService
                 'status' => $data['status'],
             ]
         );
+
+        if ($data['status'] === 'accepted') {
+            $notificationData = [
+                'title_en' => 'Order Approved',
+                'body_en'  => "Your order for " . auth()->user()->name . " has been approved by the supplier.",
+                'title_ar' => 'تمت الموافقة على الطلب',
+                'body_ar'  => "تم قبول طلبك لـ " . auth()->user()->name . " من قبل المورّد.",
+            ];
+
+            $sendNotificationHelper = new SendNotificationHelper();
+            $sendNotificationHelper->sendNotification($notificationData, [$order->user->fcm_token ?? null]);
+        }
 
         return $order;
     }
