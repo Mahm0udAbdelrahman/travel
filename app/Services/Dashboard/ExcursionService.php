@@ -84,66 +84,64 @@ class ExcursionService
     //     return $excursion->load('days.times');
     // }
 
-
-
     public function store($data)
-{
-    if (isset($data['image'])) {
-        $data['image'] = $this->saveImage($data['image'], 'excursion');
-    }
-
-    $days = $data['days'] ?? [];
-    unset($data['days']);
-
-    // إنشاء الـ excursion
-    $excursion = $this->model->create($data);
-
-    // إنشاء الأيام والأوقات
-    foreach ($days as $dayData) {
-        $times = $dayData['times'] ?? [];
-        unset($dayData['times']);
-
-        $day = $excursion->days()->create($dayData);
-
-        foreach ($times as $time) {
-            $day->times()->create($time);
+    {
+        if (isset($data['image'])) {
+            $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
-    }
 
-    $customers = \App\Models\User::where('type', 'customer')->get();
+        $days = $data['days'] ?? [];
+        unset($data['days']);
 
-    $db = app('firebase.firestore')->database();
+        // إنشاء الـ excursion
+        $excursion = $this->model->create($data);
 
-    foreach ($customers as $user) {
+        // إنشاء الأيام والأوقات
+        foreach ($days as $dayData) {
+            $times = $dayData['times'] ?? [];
+            unset($dayData['times']);
 
-        $orderData = [
-            'excursion_id'      => $excursion->id,
-            'user_id'           => $user->id,
-            'supplier_id'       => $data['supplier_id'] ?? null,
-            'representative_id' => $data['representative_id'] ?? null,
-            'status'            => 'completed',
-            'price'             => $data['price'] ?? 0,
-            'date'              => $data['date'] ?? now(),
-            'created_at'        => now(),
-        ];
+            $day = $excursion->days()->create($dayData);
 
-        $orderRef = $db->collection('orders')->add($orderData);
-        $orderId  = $orderRef->id();
+            foreach ($times as $time) {
+                $day->times()->create($time);
+            }
+        }
 
-        $db->collection('users')
-            ->document($user->id)
-            ->collection('orders')
-            ->document($orderId)
-            ->set([
-                'order_id' => $orderId,
-                'status'   => 'completed',
-                'price'    => $data['price'] ?? 0,
-                'date'     => $data['date'] ?? now(),
+        $customers = \App\Models\User::where('type', 'customer')->get();
+
+        $factory = (new \Kreait\Firebase\Factory)
+            ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+
+        $db = $factory->createFirestore()->database();
+
+        $customers = \App\Models\User::where('type', 'customer')->get();
+
+        foreach ($customers as $user) {
+            $orderRef = $db->collection('orders')->add([
+                'excursion_id' => $excursion->id,
+                'user_id'      => $user->id,
+                'status'       => 'completed',
+                'price'        => $data['price'] ?? 0,
+                'date'         => $data['date'] ?? now(),
             ]);
-    }
 
-    return $excursion->load('days.times');
-}
+            $orderId = $orderRef->id();
+
+            $db->collection('users')
+                ->document($user->id)
+                ->collection('orders')
+                ->document($orderId)
+                ->set([
+                    'order_id' => $orderId,
+                    'status'   => 'completed',
+                    'price'    => $data['price'] ?? 0,
+                    'date'     => $data['date'] ?? now(),
+                ]);
+        }
+
+        return $excursion->load('days.times');
+    }
 
     public function show($id)
     {
