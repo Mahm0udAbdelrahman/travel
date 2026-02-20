@@ -81,11 +81,27 @@ class OrderService
             'excursion_day_id'  => $excursionDayId,
         ]);
 
+        $itemNameEn = '';
+        $itemNameAr = '';
+
+        if (isset($item->name)) {
+            if (is_array($item->name)) {
+                $itemNameEn = $item->name['en'] ?? reset($item->name);
+                $itemNameAr = $item->name['ar'] ?? reset($item->name);
+            } else {
+                $itemNameEn = $item->name;
+                $itemNameAr = $item->name;
+            }
+        } else {
+            $itemNameEn = 'a product';
+            $itemNameAr = 'منتج';
+        }
+
         $notificationData = [
             'title_en' => 'New Order Received',
-            'body_en'  => "You have a new order for $item->name['en'] ",
+            'body_en'  => "You have a new order for {$itemNameEn} ",
             'title_ar' => 'تم استلام طلب جديد',
-            'body_ar'  => "لديك طلب جديد لـ $item->name['ar']",
+            'body_ar'  => "لديك طلب جديد لـ {$itemNameAr}",
             'order_id' => $order->id,
         ];
 
@@ -236,28 +252,43 @@ class OrderService
                 'excursion_day_id'  => $excursionDayId,
             ]);
 
+            $itemNameEn = '';
+            $itemNameAr = '';
 
-        $notificationData = [
-            'title_en' => 'New Order Received',
-            'body_en'  => "You have a new order for $item->name['en']",
-            'title_ar' => 'تم استلام طلب جديد',
-            'body_ar'  => "لديك طلب جديد لـ $item->name['ar']",
-            'order_id' => $order->id,
-        ];
-
-        User::where('type', UserType::SUPPLIER)
-            ->where('category_excursion_id', $item->category_excursion_id)
-            ->chunk(100, function ($users) use ($notificationData) {
-                $sendNotificationHelper = new SendNotificationHelper();
-                foreach ($users as $user) {
-                    if (! empty($user->fcm_token)) {
-                        $sendNotificationHelper->sendNotification(
-                            $notificationData,
-                            [$user->fcm_token]
-                        );
-                    }
+            if (isset($item->name)) {
+                if (is_array($item->name)) {
+                    $itemNameEn = $item->name['en'] ?? reset($item->name);
+                    $itemNameAr = $item->name['ar'] ?? reset($item->name);
+                } else {
+                    $itemNameEn = $item->name;
+                    $itemNameAr = $item->name;
                 }
-            });
+            } else {
+                $itemNameEn = 'a product';
+                $itemNameAr = 'منتج';
+            }
+
+            $notificationData = [
+                'title_en' => 'New Order Received',
+                'body_en'  => "You have a new order for {$itemNameEn} ",
+                'title_ar' => 'تم استلام طلب جديد',
+                'body_ar'  => "لديك طلب جديد لـ {$itemNameAr}",
+                'order_id' => $order->id,
+            ];
+
+            User::where('type', UserType::SUPPLIER)
+                ->where('category_excursion_id', $item->category_excursion_id)
+                ->chunk(100, function ($users) use ($notificationData) {
+                    $sendNotificationHelper = new SendNotificationHelper();
+                    foreach ($users as $user) {
+                        if (! empty($user->fcm_token)) {
+                            $sendNotificationHelper->sendNotification(
+                                $notificationData,
+                                [$user->fcm_token]
+                            );
+                        }
+                    }
+                });
 
             return response()->json([
                 'success'      => true,
