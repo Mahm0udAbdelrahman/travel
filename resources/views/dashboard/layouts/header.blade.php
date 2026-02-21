@@ -128,20 +128,6 @@
                     </div>
                 </li>
 
-                <script>
-                    setInterval(() => {
-                        fetch("{{ route('notifications.count') }}")
-                            .then(response => response.json())
-                            .then(data => {
-                                const counter = document.getElementById('notificationsIconCounter');
-                                const currentCount = counter ? parseInt(counter.textContent) : 0;
-
-                                if (data.unread_count > currentCount) {
-                                    location.reload();
-                                }
-                            });
-                    }, 10000);
-                </script>
 
                 <li class="dropdown pc-h-item">
                     <a class="pc-head-link dropdown-toggle me-0 position-relative d-flex align-items-center gap-2"
@@ -242,3 +228,17 @@
         </div>
     </div>
 </header>
+<script>
+    setInterval(() => {
+        fetch("{{ route('notifications.count') }}")
+            .then(response => response.json())
+            .then(data => {
+                const counter = document.getElementById('notificationsIconCounter');
+                const currentCount = counter ? parseInt(counter.textContent) : 0;
+
+                if (data.unread_count > currentCount) {
+                    location.reload();
+                }
+            });
+    }, 10000);
+</script>
