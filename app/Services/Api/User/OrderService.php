@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Kreait\Firebase\Factory;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
 
@@ -105,17 +106,60 @@ class OrderService
             'order_id' => $order->id,
         ];
 
+        // User::where('type', UserType::SUPPLIER)
+        //     ->where('category_excursion_id', $item->category_excursion_id)
+        //     ->chunk(100, function ($users) use ($notificationData) {
+        //         $sendNotificationHelper = new SendNotificationHelper();
+        //         foreach ($users as $user) {
+        //             if (! empty($user->fcm_token)) {
+        //                 $sendNotificationHelper->sendNotification(
+        //                     $notificationData,
+        //                     [$user->fcm_token]
+        //                 );
+        //             }
+        //         }
+        //     });
+
+        // إعداد Firestore
+        $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+        $db      = $factory->createFirestore()->database();
+
+        // جلب الموردين حسب الفئة
         User::where('type', UserType::SUPPLIER)
             ->where('category_excursion_id', $item->category_excursion_id)
-            ->chunk(100, function ($users) use ($notificationData) {
+            ->chunk(100, function ($users) use ($notificationData, $db, $order, $item, $data) {
                 $sendNotificationHelper = new SendNotificationHelper();
+
                 foreach ($users as $user) {
+                    // إرسال إشعار FCM إذا كان موجود
                     if (! empty($user->fcm_token)) {
                         $sendNotificationHelper->sendNotification(
                             $notificationData,
                             [$user->fcm_token]
                         );
                     }
+
+                    // حفظ الطلب في Firestore لكل مورد
+                    $orderRef = $db->collection('orders')->add([
+                        'excursion_id' => $item->id,
+                        'user_id'      => $user->id,
+                        'status'       => 'completed',
+                        'price'        => $data['price'] ?? $item->price,
+                        'date'         => $data['date'] ?? now(),
+                    ]);
+
+                    $orderId = $orderRef->id();
+
+                    $db->collection('supplier')
+                        ->document($user->id)
+                        ->collection('orders')
+                        ->document($orderId)
+                        ->set([
+                            'order_id' => $orderId,
+                            'status'   => 'completed',
+                            'price'    => $data['price'] ?? $item->price,
+                            'date'     => $data['date'] ?? now(),
+                        ]);
                 }
             });
 
