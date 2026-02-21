@@ -363,7 +363,6 @@ class OrderService
                 $sendNotificationHelper = new SendNotificationHelper();
 
                 foreach ($users as $user) {
-                    // إرسال إشعار FCM إذا كان موجود
                     if (! empty($user->fcm_token)) {
                         $sendNotificationHelper->sendNotification(
                             $notificationData,
