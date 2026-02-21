@@ -5,7 +5,9 @@ use App\Enums\UserType;
 use App\Helpers\SendNotificationHelper;
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\DashboardNotification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Kreait\Firebase\Factory;
 use Stripe\Checkout\Session as StripeSession;
@@ -375,7 +377,13 @@ class OrderService
                         ->set($firestoreOrderData);
                 }
             });
-
+        $adminUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+        Notification::send(
+            $adminUsers,
+            new DashboardNotification($order->id, $order->user->name, $order->price, 'order')
+        );
         return $order;
     }
 
@@ -649,6 +657,14 @@ class OrderService
                             ->set($firestoreOrderData);
                     }
                 });
+
+                $adminUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+        Notification::send(
+            $adminUsers,
+            new DashboardNotification($order->id, $order->user->name, $order->price, 'order')
+        );
 
             return response()->json([
                 'success'      => true,

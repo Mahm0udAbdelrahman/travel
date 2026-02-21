@@ -84,7 +84,7 @@
                         <i data-feather="bell"></i>
                         @if (Auth::user()->unreadNotifications()->count())
                             <span class="badge bg-danger text-black rounded-full z-10 absolute right-0 top-0"
-                                style="font-size: 10px; min-width: 18px; height: 18px; line-height: 18px; text-align: center;">
+                                style="font-size: 10px; min-width: 18px; height: 18px; line-height: 18px; text-align: center;" id="notificationsIconCounter">
                                 {{ Auth::user()->unreadNotifications()->count() }}
                             </span>
                         @endif
@@ -126,6 +126,22 @@
                         </div>
                     </div>
                 </li>
+
+                  <script>
+                setInterval(() => {
+                    fetch("{{ route('notifications.count') }}")
+                        .then(response => response.json())
+                        .then(data => {
+                            const counter = document.getElementById('notificationsIconCounter');
+                            const currentCount = counter ? parseInt(counter.textContent) : 0;
+
+                            if (data.unread_count > currentCount) {
+                                // لو في إشعار جديد reload
+                                location.reload();
+                            }
+                        });
+                }, 10000); // كل 10 ثواني
+            </script>
 
                 <li class="dropdown pc-h-item">
                     <a class="pc-head-link dropdown-toggle me-0 position-relative d-flex align-items-center gap-2"

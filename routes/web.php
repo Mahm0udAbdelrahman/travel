@@ -147,3 +147,8 @@ Route::group(
     Route::get('/payment/cancel', function () {
         return view('payment.cancel');
     })->name('payment.cancel');
+Route::get('/notifications/count', function () {
+    return response()->json([
+        'unread_count' => auth()->user()->unreadNotifications()->count(),
+    ]);
+})->name('notifications.count');
