@@ -120,11 +120,9 @@ class OrderService
         //         }
         //     });
 
-        // إعداد Firestore
         $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
         $db      = $factory->createFirestore()->database();
 
-        // جلب الموردين حسب الفئة
         User::where('type', UserType::SUPPLIER)
             ->where('category_excursion_id', $item->category_excursion_id)
             ->chunk(100, function ($users) use ($notificationData, $db, $order, $item, $data) {
@@ -139,7 +137,6 @@ class OrderService
                         );
                     }
 
-                    // حفظ الطلب في Firestore لكل مورد
                     $orderRef = $db->collection('orders')->add([
                         'excursion_id' => $item->id,
                         'user_id'      => $user->id,
@@ -150,16 +147,39 @@ class OrderService
 
                     $orderId = $orderRef->id();
 
+                    $orderDataForFirestore = [
+                        'id'                => $order->id,
+                        'user_id'           => $user->id,
+                        'user_name'         => $user->name,
+                        'user_phone'        => $user->phone,
+                        'hotel_id'          => $data['hotel_id'] ?? null,
+                        'hotel_name'        => $data['hotel_name'] ?? null,
+                        'category_name'     => $item->category?->name ?? null,
+                        'sub_category_name' => $item->subCategory?->name ?? null,
+                        'image'             => $item->image ?? null,
+                        'room_number'       => $data['room_number'] ?? null,
+                        'orderable_id'      => $item->id,
+                        'orderable_type'    => $data['type_model'] ?? 'other',
+                        'quantity'          => $data['quantity'] ?? 1,
+                        'order_number'      => $order->order_number,
+                        'date'              => $data['date'] ?? now(),
+                        'time'              => $timeString ?? null,
+                        'type'              => $data['type'] ?? 'normal',
+                        'notes'             => $data['notes'] ?? null,
+                        'price'             => $data['price'] ?? $item->price,
+                        'status'            => 'completed',
+                        'payment_method'    => 'cash',
+                        'payment_status'    => 'paid',
+                        'is_tour_leader'    => $data['is_tour_leader'] ?? 0,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ];
+
                     $db->collection('supplier')
                         ->document($user->id)
                         ->collection('orders')
                         ->document($orderId)
-                        ->set([
-                            'order_id' => $orderId,
-                            'status'   => 'completed',
-                            'price'    => $data['price'] ?? $item->price,
-                            'date'     => $data['date'] ?? now(),
-                        ]);
+                        ->set($orderDataForFirestore);
                 }
             });
 
@@ -320,19 +340,82 @@ class OrderService
                 'order_id' => $order->id,
             ];
 
-            User::where('type', UserType::SUPPLIER)
-                ->where('category_excursion_id', $item->category_excursion_id)
-                ->chunk(100, function ($users) use ($notificationData) {
-                    $sendNotificationHelper = new SendNotificationHelper();
-                    foreach ($users as $user) {
-                        if (! empty($user->fcm_token)) {
-                            $sendNotificationHelper->sendNotification(
-                                $notificationData,
-                                [$user->fcm_token]
-                            );
-                        }
+            // User::where('type', UserType::SUPPLIER)
+            //     ->where('category_excursion_id', $item->category_excursion_id)
+            //     ->chunk(100, function ($users) use ($notificationData) {
+            //         $sendNotificationHelper = new SendNotificationHelper();
+            //         foreach ($users as $user) {
+            //             if (! empty($user->fcm_token)) {
+            //                 $sendNotificationHelper->sendNotification(
+            //                     $notificationData,
+            //                     [$user->fcm_token]
+            //                 );
+            //             }
+            //         }
+            //     });
+
+             $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+        $db      = $factory->createFirestore()->database();
+
+        User::where('type', UserType::SUPPLIER)
+            ->where('category_excursion_id', $item->category_excursion_id)
+            ->chunk(100, function ($users) use ($notificationData, $db, $order, $item, $data) {
+                $sendNotificationHelper = new SendNotificationHelper();
+
+                foreach ($users as $user) {
+                    // إرسال إشعار FCM إذا كان موجود
+                    if (! empty($user->fcm_token)) {
+                        $sendNotificationHelper->sendNotification(
+                            $notificationData,
+                            [$user->fcm_token]
+                        );
                     }
-                });
+
+                    $orderRef = $db->collection('orders')->add([
+                        'excursion_id' => $item->id,
+                        'user_id'      => $user->id,
+                        'status'       => 'completed',
+                        'price'        => $data['price'] ?? $item->price,
+                        'date'         => $data['date'] ?? now(),
+                    ]);
+
+                    $orderId = $orderRef->id();
+
+                    $orderDataForFirestore = [
+                        'id'                => $order->id,
+                        'user_id'           => $user->id,
+                        'user_name'         => $user->name,
+                        'user_phone'        => $user->phone,
+                        'hotel_id'          => $data['hotel_id'] ?? null,
+                        'hotel_name'        => $data['hotel_name'] ?? null,
+                        'category_name'     => $item->category?->name ?? null,
+                        'sub_category_name' => $item->subCategory?->name ?? null,
+                        'image'             => $item->image ?? null,
+                        'room_number'       => $data['room_number'] ?? null,
+                        'orderable_id'      => $item->id,
+                        'orderable_type'    => $data['type_model'] ?? 'other',
+                        'quantity'          => $data['quantity'] ?? 1,
+                        'order_number'      => $order->order_number,
+                        'date'              => $data['date'] ?? now(),
+                        'time'              => $timeString ?? null,
+                        'type'              => $data['type'] ?? 'normal',
+                        'notes'             => $data['notes'] ?? null,
+                        'price'             => $data['price'] ?? $item->price,
+                        'status'            => 'pending',
+                        'payment_method'    => 'card',
+                        'payment_status'    => 'paid',
+                        'is_tour_leader'    => $data['is_tour_leader'] ?? 0,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ];
+
+                    $db->collection('supplier')
+                        ->document($user->id)
+                        ->collection('orders')
+                        ->document($orderId)
+                        ->set($orderDataForFirestore);
+                }
+            });
 
             return response()->json([
                 'success'      => true,
