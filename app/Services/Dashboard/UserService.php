@@ -13,10 +13,24 @@ class UserService
     public function __construct(public User $user)
     {}
 
-    public function index()
+    public function index($request)
     {
 
-        return $this->user->whereNot('id', auth()->user()->id)->latest()->paginate(10);
+
+         $query = $this->user->whereNot('id', auth()->user()->id)->latest();
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('phone')) {
+            $query->where('phone', 'like', '%' . $request->phone . '%');
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        return $query->paginate(10)->withQueryString();
     }
 
     public function create()

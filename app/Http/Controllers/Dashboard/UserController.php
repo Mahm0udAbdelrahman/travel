@@ -17,7 +17,7 @@ class UserController extends Controller
     use HasImage;
     public function index(Request $request)
     {
-        $users = $this->userService->index();
+        $users = $this->userService->index($request);
         return view('dashboard.pages.users.index', compact('users'));
     }
     public function create()

@@ -34,12 +34,45 @@
                                 </a>
                             @endcan
                         </div>
+                        <div class="card-body border-bottom">
+                            <form action="{{ route('Admin.users.index') }}" method="GET" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ __('Name') }}</label>
+                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
+                                        placeholder="{{ __('Search by name') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ __('Phone') }}</label>
+                                    <input type="text" name="phone" class="form-control"
+                                        value="{{ request('phone') }}" placeholder="{{ __('Search by phone') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ __('Status') }}</label>
+                                    <select name="status" class="form-control">
+                                        <option value="">{{ __('All Status') }}</option>
+                                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>
+                                            {{ __('Active') }}</option>
+                                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>
+                                            {{ __('Inactive') }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="fas fa-search"></i> {{ __('Filter') }}
+                                    </button>
+                                    <a href="{{ route('Admin.users.index') }}" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> {{ __('Reset') }}
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
                         <!-- Table -->
                         <div class="card-body">
                             <div class="table-responsive text-center">
                                 <table id="example2" class="table table-striped table-bordered">
 
-                                    <form action="{{ route('Admin.users.bulkDelete') }}" method="post" id="bulkDeleteForm">
+                                    <form action="{{ route('Admin.users.bulkDelete') }}" method="post"
+                                        id="bulkDeleteForm">
                                         @csrf
 
                                         <thead>
