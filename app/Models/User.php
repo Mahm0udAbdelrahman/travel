@@ -93,4 +93,26 @@ class User extends Authenticatable
         return $this->hasMany(OrderStatus::class, 'user_id', 'id');
     }
 
+
+
+public function getRelevantOrders()
+{
+
+    if ($this->type->value === 'representative') {
+        $hotelIds = $this->hotels()->pluck('hotels.id');
+
+        return \App\Models\Order::whereIn('hotel_id', $hotelIds)
+            ->with('status')
+            ->latest()
+            ->get();
+    }
+
+    if ($this->type->value === 'supplier') {
+        return $this->OrderStatus()->with('order')->latest()->get()->map(function($os) {
+            return $os->order;
+        });
+    }
+    return collect();
+}
+
 }
