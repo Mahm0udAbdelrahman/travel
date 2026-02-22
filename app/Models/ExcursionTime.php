@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 class ExcursionTime extends Model
 {
     protected $fillable = [
-        'excursion_day_id',
+        'excursion_id',
         'from_time',
         'to_time',
     ];
-    public function day()
+    public function excursion()
     {
-        return $this->belongsTo(ExcursionDay::class, 'excursion_day_id');
+        return $this->belongsTo(Excursion::class, 'excursion_id');
     }
 
 }

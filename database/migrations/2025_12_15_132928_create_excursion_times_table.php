@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('excursion_times', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('excursion_day_id')->constrained('excursion_days')->cascadeOnDelete();
+            $table->foreignId('excursion_id')->constrained('excursions')->cascadeOnDelete();
             $table->time('from_time');
             $table->time('to_time');
             $table->timestamps();
