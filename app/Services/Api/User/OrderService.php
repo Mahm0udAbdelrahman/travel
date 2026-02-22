@@ -24,7 +24,8 @@ class OrderService
     {
         $authUser = auth()->user();
 
-        $tourLeader = $authUser->where('type', UserType::REPRESENTATIVE)->first();
+        $isTourLeader = $authUser->type === UserType::REPRESENTATIVE ? 1 : 0;
+
 
         $map = [
             'real_estate'        => \App\Models\RealEstate::class,
@@ -81,7 +82,7 @@ class OrderService
             'excursion_time_id' => $excursionTimeId,
             'excursion_day_id'  => $excursionDayId,
             'notes'             => $data['notes'] ?? null,
-            'is_tour_leader'    => $tourLeader ? 1 : 0,
+            'is_tour_leader'    => $isTourLeader,
         ]);
 
         $factory = (new Factory)
