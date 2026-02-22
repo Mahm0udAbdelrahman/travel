@@ -22,7 +22,7 @@
         </div>
 
         <div class="row">
-            {{-- الجانب الأيسر: معلومات المستخدم --}}
+            {{-- الجانب الأيسر: معلومات المستخدم الشخصية --}}
             <div class="col-lg-4">
                 <div class="card border-0 shadow-sm text-center p-4 mb-4">
                     <div class="card-body">
@@ -71,10 +71,10 @@
                 @endif
             </div>
 
-            {{-- الجانب الأيمن: الجدولة والطلبات --}}
+            {{-- الجانب الأيمن: الجدولة الزمنية للطلبات --}}
             <div class="col-lg-8">
 
-                {{-- عرض المناديب --}}
+                {{-- حالة المستخدم: مندوب (Representative) --}}
                 @if($user->type->value == 'representative')
                     <div class="tab-content" id="hotel-tabs-main">
                         @foreach($user->hotels as $hotel)
@@ -120,7 +120,36 @@
                                                 <div class="tab-pane fade @if($loop->first) show active @endif" id="date-content-{{ $hotel->id }}-{{ $date }}" role="tabpanel">
                                                     <div class="row g-3">
                                                         @foreach($orders as $order)
-                                                            @include('dashboard.users.partials.order_card', ['order' => $order])
+                                                            <div class="col-md-6">
+                                                                <div class="card border shadow-none trip-card h-100 mb-0">
+                                                                    <div class="card-body p-3">
+                                                                        <div class="d-flex justify-content-between mb-3">
+                                                                            <div class="avtar avtar-s {{ $order->status == 'completed' ? 'bg-light-success text-success' : 'bg-light-warning text-warning' }} rounded-circle">
+                                                                                <i class="fas {{ $order->orderable_type == 'App\Models\Excursion' ? 'fa-shuttle-van' : 'fa-clipboard-list' }}"></i>
+                                                                            </div>
+                                                                            <span class="badge {{ $order->status == 'completed' ? 'bg-success' : 'bg-warning' }} f-10 h-25">
+                                                                                {{ strtoupper($order->status) }}
+                                                                            </span>
+                                                                        </div>
+                                                                        <h6 class="mb-1 fw-bold text-primary">{{ $order->orderable->name[app()->getLocale()] ?? 'N/A' }}</h6>
+                                                                        <p class="text-muted small mb-3">#{{ $order->order_number }}</p>
+                                                                        <div class="bg-light p-2 rounded mb-3">
+                                                                            <div class="d-flex justify-content-between small mb-1">
+                                                                                <span class="text-muted">{{ __('Guest') }}:</span>
+                                                                                <span class="fw-bold">{{ $order->user->name }}</span>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-between small">
+                                                                                <span class="text-muted">{{ __('Room') }}:</span>
+                                                                                <span class="fw-bold">{{ $order->room_number }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-between align-items-center f-10 text-muted border-top pt-2">
+                                                                            <span><i class="fas fa-users me-1"></i> {{ $order->quantity }}</span>
+                                                                            <span><i class="far fa-clock me-1"></i> {{ \Carbon\Carbon::parse($order->date)->format('h:i A') }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @endforeach
                                                     </div>
                                                 </div>
@@ -132,9 +161,10 @@
                         @endforeach
                     </div>
 
-                {{-- عرض الموردين --}}
+                {{-- حالة المستخدم: مورد (Supplier) --}}
                 @elseif($user->type->value == 'supplier')
                     @php
+                        // استخراج الطلبات من علاقة OrderStatus وتجميعها بالتواريخ
                         $supplierOrdersByDate = $user->OrderStatus->map(function($os) {
                             return $os->order;
                         })->filter()->sortBy('date')->groupBy(function($order) {
@@ -149,6 +179,7 @@
                                 <span class="badge bg-primary-subtle text-primary border">{{ __('Task Calendar') }}</span>
                             </div>
 
+                            {{-- شريط التواريخ الأفقي للمورد --}}
                             <div class="nav nav-pills d-flex flex-nowrap overflow-auto scrollbar-hidden pb-3 gap-3" role="tablist">
                                 @forelse($supplierOrdersByDate as $date => $orders)
                                     @php $carbonDate = \Carbon\Carbon::parse($date); @endphp
@@ -173,7 +204,7 @@
                                     <div class="tab-pane fade @if($loop->first) show active @endif" id="sup-date-content-{{ $date }}" role="tabpanel">
                                         <div class="row g-3">
                                             @foreach($orders as $order)
-                                                <div class="col-md-6 col-xxl-6">
+                                                <div class="col-md-6">
                                                     <div class="card border shadow-none trip-card h-100 mb-0">
                                                         <div class="card-body p-3">
                                                             <div class="d-flex justify-content-between mb-3">
@@ -230,14 +261,14 @@
     .scrollbar-hidden::-webkit-scrollbar { display: none; }
     .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* تنسيق قائمة الفنادق */
+    /* تنسيق قائمة الفنادق (للمندوب) */
     .list-group-item-action.active {
         background-color: #0d6efd10 !important;
         color: #0d6efd !important;
         border-left: 4px solid #0d6efd !important;
     }
 
-    /* تنسيق التقويم */
+    /* تنسيق مربعات التقويم الأفقي */
     .date-item {
         min-width: 70px;
         height: 90px;
@@ -254,6 +285,7 @@
         transform: translateY(-3px);
     }
 
+    /* تنسيق بطاقة الطلب */
     .trip-card { transition: 0.2s; border-radius: 12px; }
     .trip-card:hover { border-color: #0d6efd; transform: translateY(-3px); }
     .bg-light-gray-soft { background-color: #f8f9fa; }
