@@ -1,19 +1,21 @@
 <?php
-
 namespace App\Http\Controllers\Dashboard;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Session;
-use App\Http\Requests\Dashboard\Hotel\{StoreHotelRequest, UpdateHotelRequest};
+use App\Http\Requests\Dashboard\Hotel\StoreHotelRequest;
+use App\Http\Requests\Dashboard\Hotel\UpdateHotelRequest;
+use App\Models\Hotel;
 use App\Services\Dashboard\HotelService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class HotelController extends Controller
 {
-    public function __construct(public HotelService $hotelService) {}
+    public function __construct(public HotelService $hotelService)
+    {}
     public function index(Request $request)
     {
-        $hotels  = $this->hotelService->index();
+        $hotels = $this->hotelService->index();
         return view('dashboard.pages.hotels.index', compact('hotels'));
     }
     public function create()
@@ -31,15 +33,24 @@ class HotelController extends Controller
         return redirect()->route('Admin.hotels.index');
     }
 
-    public function show($id)
+    // public function show($id)
+    // {
+    //     $data = $this->hotelService->show($id);
+    //     return view('dashboard.pages.hotels.show', $data);
+    // }
+
+    public function show(Hotel $hotel)
     {
-        $data = $this->hotelService->show($id);
-        return view('dashboard.pages.hotels.show', $data);
+        $tourLeaders = $hotel->tourLeaders;
+
+        $allOrders = $hotel->orders()->with(['user', 'orderable'])->orderBy('date', 'desc')->get();
+
+        return view('dashboard.hotels.show', compact('hotel', 'tourLeaders', 'allOrders'));
     }
 
     public function edit($id)
     {
-         $hotel = $this->hotelService->edit($id);
+        $hotel       = $this->hotelService->edit($id);
         $tourLeaders = $this->hotelService->getTourLeaders();
         return view('dashboard.pages.hotels.edit', compact('hotel', 'tourLeaders'));
     }
