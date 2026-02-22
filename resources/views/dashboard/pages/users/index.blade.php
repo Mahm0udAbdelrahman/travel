@@ -34,35 +34,39 @@
                                 </a>
                             @endcan
                         </div>
-                        <div class="card-body border-bottom">
-                            <form action="{{ route('Admin.users.index') }}" method="GET" class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">{{ __('Name') }}</label>
-                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
-                                        placeholder="{{ __('Search by name') }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">{{ __('Phone') }}</label>
-                                    <input type="text" name="phone" class="form-control"
-                                        value="{{ request('phone') }}" placeholder="{{ __('Search by phone') }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">{{ __('Status') }}</label>
-                                    <select name="status" class="form-control">
-                                        <option value="">{{ __('All Status') }}</option>
-                                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>
-                                            {{ __('Active') }}</option>
-                                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>
-                                            {{ __('Inactive') }}</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary me-2">
-                                        <i class="fas fa-search"></i> {{ __('Filter') }}
-                                    </button>
-                                    <a href="{{ route('Admin.users.index') }}" class="btn btn-secondary">
-                                        <i class="fas fa-redo"></i> {{ __('Reset') }}
-                                    </a>
+                        <div class="card-body border-bottom bg-light">
+                            <form action="{{ route('Admin.users.index') }}" method="GET">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <input type="text" name="name" class="form-control"
+                                            value="{{ request('name') }}" placeholder="{{ __('Search by Name') }}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <input type="text" name="phone" class="form-control"
+                                            value="{{ request('phone') }}" placeholder="{{ __('Search by Phone') }}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <select name="type" class="form-control">
+                                            <option value="">{{ __('All Types') }}</option>
+                                            @foreach (\App\Enums\UserType::options() as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ request('type') == $value ? 'selected' : '' }}>
+                                                    {{ __($label) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                        <a href="{{ route('Admin.users.index') }}" class="btn btn-secondary">
+                                            <i class="fas fa-redo"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </form>
                         </div>

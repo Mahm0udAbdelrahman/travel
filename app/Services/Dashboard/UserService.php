@@ -26,8 +26,8 @@ class UserService
         if ($request->filled('phone')) {
             $query->where('phone', 'like', '%' . $request->phone . '%');
         }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
         }
 
         return $query->paginate(10)->withQueryString();
