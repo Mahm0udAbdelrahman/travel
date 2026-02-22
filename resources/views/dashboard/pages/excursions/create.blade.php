@@ -261,31 +261,25 @@
             const wrapper = document.getElementById('times-wrapper');
 
             let html = `
+<div class="row g-2 mb-2 align-items-end time-block">
 
-            <div class="row g-2 mb-2 time-block">
-                 <label class="form-label">{{ __('From Time') }}</label>
-                <div class="col-md-3">
-                    <input type="time"
-                           name="times[${timeIndex}][from_time]"
-                           class="form-control"
-                           required>
-                </div>
-            <label class="form-label">{{ __('To Time') }}</label>
-                <div class="col-md-3">
-                    <input type="time"
-                           name="times[${timeIndex}][to_time]"
-                           class="form-control"
-                           required>
-                </div>
+    <div class="col-md-6">
+        <label class="form-label">{{ __('Time Range') }}</label>
+        <div class="d-flex gap-2">
+            <input type="time" name="times[${timeIndex}][from_time]" class="form-control" required>
+            <input type="time" name="times[${timeIndex}][to_time]" class="form-control" required>
+        </div>
+    </div>
 
-                <div class="col-md-2">
-                    <button type="button"
-                            class="btn btn-danger w-100"
-                            onclick="this.closest('.time-block').remove()">
-                        X
-                    </button>
-                </div>
-            </div>
+    <div class="col-md-2">
+        <button type="button"
+                class="btn btn-danger w-100 mt-4"
+                onclick="this.closest('.time-block').remove()">
+            X
+        </button>
+    </div>
+
+</div>
         `;
 
             wrapper.insertAdjacentHTML('beforeend', html);
