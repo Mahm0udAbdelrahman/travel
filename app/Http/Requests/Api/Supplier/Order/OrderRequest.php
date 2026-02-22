@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:accepted,rejected',
+            'status' => 'required|in:accepted,rejected,completed',
         ];
     }
     protected function failedValidation(Validator $validator)

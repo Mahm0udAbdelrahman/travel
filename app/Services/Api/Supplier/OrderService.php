@@ -101,7 +101,11 @@ class OrderService
             ]
         );
 
-        $order->update(['status' => 'confirmed']);
+        $order->update(['status' => $data['status']]);
+
+        if ($data['status'] === 'completed') {
+            $this->removeOrderFromFirestore($order);
+        }
 
         $supplierName = auth()->user()->name ?? 'المورد';
 
@@ -164,5 +168,44 @@ class OrderService
         }
 
         return $order;
+    }
+
+    private function removeOrderFromFirestore(Order $order): void
+    {
+        $factory = (new Factory)
+            ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+
+        $db = $factory->createFirestore()->database();
+
+        /* =======================
+     |  1️⃣ Remove from Supplier
+     ======================= */
+        $db->collection('supplier')
+            ->document((string) auth()->id())
+            ->collection('orders')
+            ->document((string) $order->id)
+            ->delete();
+
+        /* =======================
+     |  2️⃣ Remove from Customer
+     ======================= */
+        $db->collection('customers')
+            ->document((string) $order->user_id)
+            ->collection('orders')
+            ->document((string) $order->id)
+            ->delete();
+
+        /* =======================
+     |  3️⃣ Remove from Tour Leaders
+     ======================= */
+        $tourLeaders = $order->hotel?->tourLeaders ?? collect();
+
+        foreach ($tourLeaders as $tourLeader) {
+            $db->collection('tour_leaders')
+                ->document((string) $tourLeader->id)
+                ->collection('orders')
+                ->document((string) $order->id)
+                ->delete();
+        }
     }
 }
