@@ -148,7 +148,7 @@ class OrderService
                 'type'              => $order->type ?? 'normal',
                 'notes'             => $order->notes ?? null,
                 'price'             => $order->price,
-                'status'            => 'accepted',
+                'status'            => $order->status,
                 'payment_method'    => $order->payment_method,
                 'payment_status'    => $order->payment_status,
                 'is_tour_leader'    => $order->is_tour_leader ?? 0,
