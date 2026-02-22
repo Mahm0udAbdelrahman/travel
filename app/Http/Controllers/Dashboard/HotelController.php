@@ -45,7 +45,7 @@ class HotelController extends Controller
 
         $allOrders = $hotel->orders()->with(['user', 'orderable'])->orderBy('date', 'desc')->get();
 
-        return view('dashboard.hotels.show', compact('hotel', 'tourLeaders', 'allOrders'));
+        return view('dashboard.pages.hotels.show', compact('hotel', 'tourLeaders', 'allOrders'));
     }
 
     public function edit($id)
