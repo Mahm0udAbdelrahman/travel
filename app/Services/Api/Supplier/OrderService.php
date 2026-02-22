@@ -34,48 +34,6 @@ class OrderService
         return $orders;
     }
 
-    // public function updateOrderStatus($id, $data)
-    // {
-    //     $order = $this->model->findOrFail($id);
-
-    //     $exists = $order->orderStatuses()
-    //         ->where('user_id', auth()->id())
-    //         ->where('status', $data['status'])
-    //         ->exists();
-
-    //     if ($exists) {
-    //         return response()->json([
-    //             'status'  => 'exists',
-    //             'message' => 'أنت بالفعل وافقت على هذا الطلب.',
-    //         ]);
-    //     }
-
-    //     $order->orderStatuses()->updateOrCreate(
-    //         [
-    //             'user_id' => auth()->id(),
-    //         ], [
-    //             'status' => $data['status'],
-    //         ]
-    //     );
-    //     $supplierName = $order->orderStatuses()->where('status', 'accepted')->first()->user->name ?? 'المورد';
-    //     if ($data['status'] === 'accepted') {
-    //         $notificationData = [
-    //             'title_en' => 'Order Approved',
-    //             'body_en'  => "Your trip has been approved by {$supplierName}.",
-
-    //             'title_ar' => 'تمت الموافقة على الرحلة',
-    //             'body_ar'  => "تمّت الموافقة على رحلتك من قبل {$supplierName}.",
-
-    //         ];
-
-    //         $sendNotificationHelper = new SendNotificationHelper();
-    //         $sendNotificationHelper->sendNotification($notificationData, [$order->user->fcm_token ?? null]);
-
-    //     }
-
-    //     return $order;
-    // }
-
     public function updateOrderStatus($id, $data)
     {
         $order = $this->model->with(['user', 'orderable'])->findOrFail($id);
@@ -177,27 +135,18 @@ class OrderService
 
         $db = $factory->createFirestore()->database();
 
-        /* =======================
-     |  1️⃣ Remove from Supplier
-     ======================= */
         $db->collection('supplier')
             ->document((string) auth()->id())
             ->collection('orders')
             ->document((string) $order->id)
             ->delete();
 
-        /* =======================
-     |  2️⃣ Remove from Customer
-     ======================= */
         $db->collection('customers')
             ->document((string) $order->user_id)
             ->collection('orders')
             ->document((string) $order->id)
             ->delete();
 
-        /* =======================
-     |  3️⃣ Remove from Tour Leaders
-     ======================= */
         $tourLeaders = $order->hotel?->tourLeaders ?? collect();
 
         foreach ($tourLeaders as $tourLeader) {

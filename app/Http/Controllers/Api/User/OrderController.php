@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use Stripe\Webhook;
+use App\Enums\UserType;
+use App\Helpers\SendNotificationHelper;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\User\Order\OrderRequest;
+use App\Http\Requests\Api\User\Order\OrderUpdateRequest;
+use App\Http\Resources\User\OrderResource;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\DashboardNotification;
+use App\Services\Api\User\OrderService;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
-use App\Services\Api\User\OrderService;
-use App\Http\Resources\User\OrderResource;
-use App\Http\Requests\Api\User\Order\OrderRequest;
+use Illuminate\Support\Facades\Notification;
 use Stripe\Exception\SignatureVerificationException;
-use App\Http\Requests\Api\User\Order\OrderUpdateRequest;
-
+use Stripe\Webhook;
+use Kreait\Firebase\Factory;
 class OrderController extends Controller
 {
     use HttpResponse;
@@ -67,6 +72,106 @@ class OrderController extends Controller
                     'status'         => 'completed',
                 ]);
             }
+
+
+            $factory = (new Factory)
+                ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+
+            $db = $factory->createFirestore()->database();
+
+            $sendNotificationHelper = new SendNotificationHelper();
+
+            $firestoreOrderData = [
+                'id'                => $order->id,
+                'order_number'      => $order->order_number,
+                'customer_id'       => $order->user->id,
+                'customer_name'     => $order->user->name,
+                'customer_phone'    => $order->user->phone,
+                'hotel_id'          => $order->hotel_id,
+                'hotel_name'        => $order->hotel?->name[app()->getLocale()] ?? null,
+                'category_name'     => $order->orderable?->categoryExcursion?->name[app()->getLocale()] ?? null,
+                'sub_category_name' => $order->orderable?->subcategoryExcursion?->name[app()->getLocale()] ?? null,
+                'image'             => $order->orderable?->image ?? null,
+                'room_number'       => $order->room_number,
+                'orderable_id'      => $order->orderable?->id,
+                'orderable_type'    => $order->orderable_type,
+                'quantity'          => $order->quantity,
+                'date'              => $order->date ?? now(),
+                'excursion_name'    => $order->orderable?->name[app()->getLocale()] ?? null,
+                'time'              => $order->time,
+                'type'              => $order->type ?? 'normal',
+                'notes'             => $order->notes,
+                'price'             => $order->price,
+                'is_tour_leader'    => $order->is_tour_leader,
+                'status'            => 'pending',
+                'payment_method'    => 'card',
+                'payment_status'    => 'paid',
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ];
+
+            $db->collection('customers')
+                ->document($order->user->id)
+                ->collection('orders')
+                ->document((string) $order->id)
+                ->set($firestoreOrderData);
+
+            $tourLeaders = $order->hotel?->tourLeaders ?? collect();
+
+            foreach ($tourLeaders as $tourLeader) {
+
+                if (! empty($tourLeader->fcm_token)) {
+                    $sendNotificationHelper->sendNotification([
+                        'title_en' => 'New Order',
+                        'body_en'  => 'A new order assigned to your hotel',
+                        'title_ar' => 'طلب جديد',
+                        'body_ar'  => 'تم إضافة طلب جديد مرتبط بالفندق',
+                        'order_id' => $order->id,
+                    ], [$tourLeader->fcm_token]);
+                }
+
+                $db->collection('tour_leaders')
+                    ->document($tourLeader->id)
+                    ->collection('orders')
+                    ->document((string) $order->id)
+                    ->set($firestoreOrderData);
+            }
+
+            User::where('type', UserType::SUPPLIER)
+                ->where('category_excursion_id', $item->category_excursion_id ?? null)
+                ->chunk(100, function ($suppliers) use (
+                    $firestoreOrderData,
+                    $db,
+                    $sendNotificationHelper,
+                    $order
+                ) {
+                    foreach ($suppliers as $supplier) {
+
+                        if (! empty($supplier->fcm_token)) {
+                            $sendNotificationHelper->sendNotification([
+                                'title_en' => 'New Order Received',
+                                'body_en'  => 'You have a new order',
+                                'title_ar' => 'طلب جديد',
+                                'body_ar'  => 'لديك طلب جديد',
+                                'order_id' => $order->id,
+                            ], [$supplier->fcm_token]);
+                        }
+
+                        $db->collection('supplier')
+                            ->document($supplier->id)
+                            ->collection('orders')
+                            ->document((string) $order->id)
+                            ->set($firestoreOrderData);
+                    }
+                });
+
+            $adminUsers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'admin');
+            })->get();
+            Notification::send(
+                $adminUsers,
+                new DashboardNotification($order->id, $order->user->name, $order->price, 'order')
+            );
         }
 
         if ($event->type === 'payment_intent.payment_failed') {
