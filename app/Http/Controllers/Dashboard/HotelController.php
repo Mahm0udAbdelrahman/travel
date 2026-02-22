@@ -43,9 +43,15 @@ class HotelController extends Controller
     {
         $tourLeaders = $hotel->tourLeaders;
 
-        $allOrders = $hotel->orders()->with(['user', 'orderable'])->orderBy('date', 'desc')->get();
+        $ordersByDate = $hotel->orders()
+            ->with(['user', 'orderable'])
+            ->orderBy('date', 'asc')
+            ->get()
+            ->groupBy(function ($item) {
+                return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+            });
 
-        return view('dashboard.pages.hotels.show', compact('hotel', 'tourLeaders', 'allOrders'));
+        return view('dashboard.pages.hotels.show', compact('hotel', 'tourLeaders', 'ordersByDate'));
     }
 
     public function edit($id)
