@@ -101,6 +101,8 @@ class OrderService
             ]
         );
 
+        $order->update(['status' => 'confirmed']);
+
         $supplierName = auth()->user()->name ?? 'المورد';
 
         if ($data['status'] === 'accepted') {
