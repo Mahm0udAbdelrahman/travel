@@ -204,6 +204,8 @@ class OrderService
     {
         $authUser = auth()->user();
 
+        $tourLeader = $authUser->where('type', UserType::REPRESENTATIVE)->first();
+
         /* =======================
      |  Resolve Model Type
      ======================= */
@@ -271,7 +273,7 @@ class OrderService
             'excursion_time_id' => $excursionTimeId,
             'excursion_day_id'  => $excursionDayId,
             'notes'             => $data['notes'] ?? null,
-            'is_tour_leader'    => $data['is_tour_leader'] ?? 0,
+            'is_tour_leader'    => $tourLeader ? 1 : 0,
         ]);
 
         /* =======================
@@ -307,6 +309,7 @@ class OrderService
             'type'              => $data['type'] ?? 'normal',
             'notes'             => $order->notes,
             'price'             => $order->price,
+            'is_tour_leader'    => $order->is_tour_leader,
             'status'            => 'pending',
             'payment_method'    => 'cash',
             'payment_status'    => 'pending',
@@ -587,6 +590,7 @@ class OrderService
                 'type'              => $data['type'] ?? 'normal',
                 'notes'             => $order->notes,
                 'price'             => $order->price,
+                'is_tour_leader'             => $order->is_tour_leader,
                 'status'            => 'pending',
                 'payment_method'    => 'card',
                 'payment_status'    => 'paid',
