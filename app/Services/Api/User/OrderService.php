@@ -283,7 +283,7 @@ class OrderService
         $db = $factory->createFirestore()->database();
 
         $sendNotificationHelper = new SendNotificationHelper();
-            dd($item->category?->name[app()->getLocale()] ?? null);
+
         /* =======================
      |  Order Payload (Shared)
      ======================= */
@@ -295,8 +295,8 @@ class OrderService
             'customer_phone'    => $order->user->phone,
             'hotel_id'          => $order->hotel_id,
             'hotel_name'        => $order->hotel?->name[app()->getLocale()] ?? null,
-            'category_name'     => $item->category?->name[app()->getLocale()] ?? null,
-            'sub_category_name' => $item->subCategory?->name[app()->getLocale()] ?? null,
+            'category_name'     => $item->categoryExcursion?->name[app()->getLocale()] ?? null,
+            'sub_category_name' => $item->subcategoryExcursion?->name[app()->getLocale()] ?? null,
             'image'             => $item->image ?? null,
             'room_number'       => $order->room_number,
             'orderable_id'      => $item->id,
@@ -575,8 +575,8 @@ class OrderService
                 'customer_phone'    => $order->user->phone,
                 'hotel_id'          => $order->hotel_id,
                 'hotel_name'        => $order->hotel?->name[app()->getLocale()] ?? null,
-                'category_name'     => $item->category?->name[app()->getLocale()] ?? null,
-                'sub_category_name' => $item->subCategory?->name[app()->getLocale()] ?? null,
+                'category_name'     => $item->categoryExcursion?->name[app()->getLocale()] ?? null,
+                'sub_category_name' => $item->subcategoryExcursion?->name[app()->getLocale()] ?? null,
                 'image'             => $item->image ?? null,
                 'room_number'       => $order->room_number,
                 'orderable_id'      => $item->id,
