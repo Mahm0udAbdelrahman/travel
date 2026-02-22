@@ -323,7 +323,9 @@
             let toVal = data?.to_time ?? '';
 
             let html = `
+
             <div class="row g-2 mb-2 time-block">
+                <label class="form-label">{{ __('From Time') }}</label>
                 <div class="col-md-5">
                     <input type="time"
                            name="times[${timeIndex}][from_time]"
@@ -331,7 +333,7 @@
                            value="${fromVal}"
                            required>
                 </div>
-
+              <label class="form-label">{{ __('To Time') }}</label>
                 <div class="col-md-5">
                     <input type="time"
                            name="times[${timeIndex}][to_time]"

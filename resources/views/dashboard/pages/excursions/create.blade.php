@@ -261,6 +261,7 @@
             const wrapper = document.getElementById('times-wrapper');
 
             let html = `
+             <label class="form-label">{{ __('From Time') }}</label>
             <div class="row g-2 mb-2 time-block">
                 <div class="col-md-5">
                     <input type="time"
@@ -268,7 +269,7 @@
                            class="form-control"
                            required>
                 </div>
-
+            <label class="form-label">{{ __('To Time') }}</label>
                 <div class="col-md-5">
                     <input type="time"
                            name="times[${timeIndex}][to_time]"
