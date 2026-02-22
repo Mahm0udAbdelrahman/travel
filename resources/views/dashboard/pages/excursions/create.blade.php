@@ -264,7 +264,7 @@
 
            <div class="row g-2 mb-2 align-items-end time-block">
 
-    <div class="col-md-3">
+    <div class="col-md-5">
         <label class="form-label">{{ __('From Time') }}</label>
         <input type="time"
                name="times[${timeIndex}][from_time]"
@@ -272,7 +272,7 @@
                required>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-5">
         <label class="form-label">{{ __('To Time') }}</label>
         <input type="time"
                name="times[${timeIndex}][to_time]"
