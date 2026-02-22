@@ -51,6 +51,8 @@ class HotelController extends Controller
                 return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
             });
 
+        $ordersByDate = $ordersByDate->sortKeys();
+
         return view('dashboard.pages.hotels.show', compact('hotel', 'tourLeaders', 'ordersByDate'));
     }
 
