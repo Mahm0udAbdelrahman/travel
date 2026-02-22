@@ -261,19 +261,29 @@
             const wrapper = document.getElementById('times-wrapper');
 
             let html = `
-<div class="row g-2 mb-2 align-items-end time-block">
 
-    <div class="col-md-6">
-        <label class="form-label">{{ __('Time Range') }}</label>
-        <div class="d-flex gap-2">
-            <input type="time" name="times[${timeIndex}][from_time]" class="form-control" required>
-            <input type="time" name="times[${timeIndex}][to_time]" class="form-control" required>
-        </div>
+           <div class="row g-2 mb-2 align-items-end time-block">
+
+    <div class="col-md-3">
+        <label class="form-label">{{ __('From Time') }}</label>
+        <input type="time"
+               name="times[${timeIndex}][from_time]"
+               class="form-control"
+               required>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">{{ __('To Time') }}</label>
+        <input type="time"
+               name="times[${timeIndex}][to_time]"
+               class="form-control"
+               required>
     </div>
 
     <div class="col-md-2">
+        <label class="form-label d-block">&nbsp;</label>
         <button type="button"
-                class="btn btn-danger w-100 mt-4"
+                class="btn btn-danger w-100"
                 onclick="this.closest('.time-block').remove()">
             X
         </button>
