@@ -261,7 +261,7 @@ class OrderService
             'quantity'          => $quantity,
             'status'            => 'pending',
             'payment_method'    => 'cash',
-            'payment_status'    => 'paid',
+            'payment_status'    => 'pending',
             'orderable_id'      => $item->id,
             'orderable_type'    => get_class($item),
             'hotel_id'          => $data['hotel_id'] ?? null,
@@ -283,7 +283,7 @@ class OrderService
         $db = $factory->createFirestore()->database();
 
         $sendNotificationHelper = new SendNotificationHelper();
-
+            dd($item->category?->name[app()->getLocale()] ?? null);
         /* =======================
      |  Order Payload (Shared)
      ======================= */
@@ -309,7 +309,7 @@ class OrderService
             'price'             => $order->price,
             'status'            => 'pending',
             'payment_method'    => 'cash',
-            'payment_status'    => 'paid',
+            'payment_status'    => 'pending',
             'created_at'        => now(),
             'updated_at'        => now(),
         ];
