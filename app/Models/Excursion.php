@@ -60,4 +60,9 @@ class Excursion extends Model
         return $this->hasMany(ExcursionDay::class);
     }
 
+    public function times()
+    {
+        return $this->hasMany(ExcursionTime::class);
+    }
+
 }

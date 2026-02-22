@@ -200,18 +200,18 @@
 
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-light d-flex justify-content-between">
-                            <h6 class="mb-0">{{ __('Days & Times') }}</h6>
-                            <button type="button" class="btn btn-sm btn-primary" onclick="addDay()">
-                                + {{ __('Add Day') }}
+                            <h6 class="mb-0">{{ __('Times') }}</h6>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="addTime()">
+                                + {{ __('Add Time') }}
                             </button>
                         </div>
 
-                        <div class="card-body" id="days-wrapper">
+                        <div class="card-body" id="times-wrapper">
                         </div>
                     </div>
                 </div>
 
-                
+
                 <div class="text-end mb-5">
                     <button class="btn btn-primary px-5">
                         <i class="ti ti-device-floppy"></i> {{ __('Save Excursion') }}
@@ -255,64 +255,39 @@
         });
     </script>
     <script>
-        let dayIndex = 0;
+        let timeIndex = 0;
 
-        function addDay() {
-            const wrapper = document.getElementById('days-wrapper');
+        function addTime() {
+            const wrapper = document.getElementById('times-wrapper');
 
             let html = `
-    <div class="border rounded p-3 mb-3 day-block">
-        <div class="d-flex justify-content-between mb-2">
-            <strong>Day</strong>
-            <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.day-block').remove()">Remove</button>
-        </div>
+            <div class="row g-2 mb-2 time-block">
+                <div class="col-md-5">
+                    <input type="time"
+                           name="times[${timeIndex}][from_time]"
+                           class="form-control"
+                           required>
+                </div>
 
-        <div class="mb-3">
-            <select name="days[${dayIndex}][day]" class="form-select">
-                <option value="">Choose day</option>
-                <option>Saturday</option>
-                <option>Sunday</option>
-                <option>Monday</option>
-                <option>Tuesday</option>
-                <option>Wednesday</option>
-                <option>Thursday</option>
-                <option>Friday</option>
-            </select>
-        </div>
+                <div class="col-md-5">
+                    <input type="time"
+                           name="times[${timeIndex}][to_time]"
+                           class="form-control"
+                           required>
+                </div>
 
-        <div class="times-wrapper"></div>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="addTime(this, ${dayIndex})">
-            + Add Time
-        </button>
-    </div>
-    `;
+                <div class="col-md-2">
+                    <button type="button"
+                            class="btn btn-danger w-100"
+                            onclick="this.closest('.time-block').remove()">
+                        X
+                    </button>
+                </div>
+            </div>
+        `;
 
             wrapper.insertAdjacentHTML('beforeend', html);
-            dayIndex++;
-        }
-
-        function addTime(btn, dIndex) {
-            const timesWrapper = btn.parentElement.querySelector('.times-wrapper');
-            let tIndex = timesWrapper.children.length;
-
-            let html = `
-    <div class="row g-2 mb-2">
-        <div class="col-md-5">
-            <input type="time" name="days[${dIndex}][times][${tIndex}][from_time]" class="form-control" required>
-        </div>
-
-        <div class="col-md-5">
-            <input type="time" name="days[${dIndex}][times][${tIndex}][to_time]" class="form-control" required>
-        </div>
-
-        <div class="col-md-2">
-            <button type="button" class="btn btn-danger w-100" onclick="this.closest('.row').remove()">X</button>
-        </div>
-    </div>
-    `;
-
-            timesWrapper.insertAdjacentHTML('beforeend', html);
+            timeIndex++;
         }
     </script>
 @endpush

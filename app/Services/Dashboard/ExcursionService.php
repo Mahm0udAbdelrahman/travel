@@ -38,24 +38,17 @@ class ExcursionService
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'excursion');
         }
-        $days = $data['days'] ?? [];
-        unset($data['days']);
+
+        $times = $data['times'] ?? [];
+        unset($data['times']);
 
         $excursion = $this->model->create($data);
 
-        foreach ($days as $dayData) {
-
-            $times = $dayData['times'] ?? [];
-            unset($dayData['times']);
-
-            $day = $excursion->days()->create($dayData);
-
-            foreach ($times as $time) {
-                $day->times()->create($time);
-            }
+        foreach ($times as $time) {
+            $excursion->times()->create($time);
         }
 
-        return $excursion->load('days.times');
+        return $excursion->load('times');
     }
 
     public function show($id)
@@ -73,26 +66,18 @@ class ExcursionService
                 $data['image'] = $this->saveImage($data['image'], 'excursion');
             }
 
-            $days = $data['days'] ?? [];
-            unset($data['days']);
+            $times = $data['times'] ?? [];
+            unset($data['times']);
 
             $excursion->update($data);
 
-            $excursion->days()->delete();
+            $excursion->times()->delete();
 
-            foreach ($days as $dayData) {
-
-                $times = $dayData['times'] ?? [];
-                unset($dayData['times']);
-
-                $day = $excursion->days()->create($dayData);
-
-                foreach ($times as $time) {
-                    $day->times()->create($time);
-                }
+            foreach ($times as $time) {
+                $excursion->times()->create($time);
             }
 
-            return $excursion->load('days.times');
+            return $excursion->load('times');
         });
     }
 
