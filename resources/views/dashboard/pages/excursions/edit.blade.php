@@ -315,38 +315,45 @@
         function addTime(data = null) {
             const wrapper = document.getElementById('times-wrapper');
 
-            let fromVal = data?.from_time ?? '';
-            let toVal = data?.to_time ?? '';
+            function to24Hour(time12h) {
+                if (!time12h) return '';
+                const [time, modifier] = time12h.split(' ');
+                let [hours, minutes] = time.split(':');
+                if (modifier === 'PM' && hours !== '12') hours = parseInt(hours) + 12;
+                if (modifier === 'AM' && hours === '12') hours = '00';
+                return `${hours.toString().padStart(2,'0')}:${minutes}`;
+            }
+
+            let fromVal = to24Hour(data?.from_time ?? '');
+            let toVal = to24Hour(data?.to_time ?? '');
 
             let html = `
-<div class="row g-2 mb-2 align-items-end time-block">
-    <div class="col-md-5">
-        <label class="form-label">From Time</label>
-        <input type="time"
-               name="times[${timeIndex}][from_time]"
-               class="form-control"
-               value="${fromVal}"
-               required>
+    <div class="row g-2 mb-2 align-items-end time-block">
+        <div class="col-md-5">
+            <label class="form-label">From Time</label>
+            <input type="time"
+                   name="times[${timeIndex}][from_time]"
+                   class="form-control"
+                   value="${fromVal}"
+                   required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">To Time</label>
+            <input type="time"
+                   name="times[${timeIndex}][to_time]"
+                   class="form-control"
+                   value="${toVal}"
+                   required>
+        </div>
+        <div class="col-md-2 d-flex justify-content-end">
+            <button type="button"
+                    class="btn btn-danger w-100"
+                    onclick="this.closest('.time-block').remove()">
+                X
+            </button>
+        </div>
     </div>
-
-    <div class="col-md-5">
-        <label class="form-label">To Time</label>
-        <input type="time"
-               name="times[${timeIndex}][to_time]"
-               class="form-control"
-               value="${toVal}"
-               required>
-    </div>
-
-    <div class="col-md-2 d-flex justify-content-end">
-        <button type="button"
-                class="btn btn-danger w-100"
-                onclick="this.closest('.time-block').remove()">
-            X
-        </button>
-    </div>
-</div>
-`;
+    `;
 
             wrapper.insertAdjacentHTML('beforeend', html);
             timeIndex++;
