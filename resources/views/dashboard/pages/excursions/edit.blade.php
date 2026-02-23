@@ -300,10 +300,6 @@
             }
 
 
-            {{--  const oldDays = @json($preparedDays);
-            const daysWrapper = document.getElementById('days-wrapper');
-
-            oldDays.forEach(day => addDay(day));  --}}
         });
 
         let timeIndex = 0;
@@ -323,34 +319,34 @@
             let toVal = data?.to_time ?? '';
 
             let html = `
+<div class="row g-2 mb-2 align-items-end time-block">
+    <div class="col-md-5">
+        <label class="form-label">From Time</label>
+        <input type="time"
+               name="times[${timeIndex}][from_time]"
+               class="form-control"
+               value="${fromVal}"
+               required>
+    </div>
 
-            <div class="row g-2 mb-2 time-block">
-                <label class="form-label">{{ __('From Time') }}</label>
-                <div class="col-md-5">
-                    <input type="time"
-                           name="times[${timeIndex}][from_time]"
-                           class="form-control"
-                           value="${fromVal}"
-                           required>
-                </div>
-              <label class="form-label">{{ __('To Time') }}</label>
-                <div class="col-md-5">
-                    <input type="time"
-                           name="times[${timeIndex}][to_time]"
-                           class="form-control"
-                           value="${toVal}"
-                           required>
-                </div>
+    <div class="col-md-5">
+        <label class="form-label">To Time</label>
+        <input type="time"
+               name="times[${timeIndex}][to_time]"
+               class="form-control"
+               value="${toVal}"
+               required>
+    </div>
 
-                <div class="col-md-2">
-                    <button type="button"
-                            class="btn btn-danger w-100"
-                            onclick="this.closest('.time-block').remove()">
-                        X
-                    </button>
-                </div>
-            </div>
-        `;
+    <div class="col-md-2 d-flex justify-content-end">
+        <button type="button"
+                class="btn btn-danger w-100"
+                onclick="this.closest('.time-block').remove()">
+            X
+        </button>
+    </div>
+</div>
+`;
 
             wrapper.insertAdjacentHTML('beforeend', html);
             timeIndex++;
