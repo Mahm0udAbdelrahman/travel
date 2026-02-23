@@ -43,10 +43,15 @@ class ExcursionService
         unset($data['times']);
 
         $excursion = $this->model->create($data);
-        
 
         foreach ($times as $time) {
-            $excursion->times()->create($time);
+            $from_time = \Carbon\Carbon::createFromFormat('H:i', $time['from_time'])->format('h:i A');
+            $to_time   = \Carbon\Carbon::createFromFormat('H:i', $time['to_time'])->format('h:i A');
+
+            $excursion->times()->create([
+                'from_time' => $from_time,
+                'to_time'   => $to_time,
+            ]);
         }
 
         return $excursion->load('times');
@@ -75,7 +80,13 @@ class ExcursionService
             $excursion->times()->delete();
 
             foreach ($times as $time) {
-                $excursion->times()->create($time);
+                  $from_time = \Carbon\Carbon::createFromFormat('H:i', $time['from_time'])->format('h:i A');
+            $to_time   = \Carbon\Carbon::createFromFormat('H:i', $time['to_time'])->format('h:i A');
+
+            $excursion->times()->create([
+                'from_time' => $from_time,
+                'to_time'   => $to_time,
+            ]);
             }
 
             return $excursion->load('times');
