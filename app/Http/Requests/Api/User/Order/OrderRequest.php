@@ -55,9 +55,14 @@ class OrderRequest extends FormRequest
 
             'payment_method' => 'nullable|in:card,wallet,cash',
 
-            'time_id' => [
+            'excursion_time_id' => [
                 Rule::requiredIf(request('type_model') === 'excursion'),
                 'exists:excursion_times,id'
+            ],
+
+            'offer_time_id' => [
+                Rule::requiredIf(request('type_model') === 'offer'),
+                'exists:offer_times,id'
             ],
 
         ];

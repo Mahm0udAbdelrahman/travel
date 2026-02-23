@@ -25,6 +25,7 @@ class Order extends Model
         'is_tour_leader',
         'excursion_day_id',
         'excursion_time_id',
+        'offer_time_id',
     ];
 
     public function orderable()
@@ -55,6 +56,11 @@ class Order extends Model
     public function excursionTime()
     {
         return $this->belongsTo(ExcursionTime::class, 'excursion_time_id', 'id');
+    }
+
+    public function offerTime()
+    {
+        return $this->belongsTo(OfferTime::class, 'offer_time_id', 'id');
     }
 
     public function statuses()

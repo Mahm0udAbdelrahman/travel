@@ -6,10 +6,9 @@ use App\Helpers\SendNotificationHelper;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\DashboardNotification;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-use Kreait\Firebase\Factory;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
 
@@ -20,259 +19,249 @@ class OrderService
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
-    public function cashOrder($data)
+    public function cashOrder(array $data)
     {
-        $authUser = auth()->user();
+        return DB::transaction(function () use ($data) {
 
-        $isTourLeader = $authUser->type === UserType::REPRESENTATIVE ? 1 : 0;
+            $user = auth()->user();
 
+            $modelMap = [
+                'real_estate'        => \App\Models\RealEstate::class,
+                'event'              => \App\Models\Event::class,
+                'excursion'          => \App\Models\Excursion::class,
+                'offer'              => \App\Models\Offer::class,
+                'additional_service' => \App\Models\AdditionalService::class,
+            ];
 
-        $map = [
-            'real_estate'        => \App\Models\RealEstate::class,
-            'event'              => \App\Models\Event::class,
-            'excursion'          => \App\Models\Excursion::class,
-            'offer'              => \App\Models\Offer::class,
-            'additional_service' => \App\Models\AdditionalService::class,
-        ];
-
-        if (! isset($map[$data['type_model']])) {
-            return ['success' => false, 'message' => 'نوع المنتج غير صالح'];
-        }
-
-        $item = $map[$data['type_model']]::findOrFail($data['id']);
-
-        $quantity   = $data['quantity'] ?? 1;
-        $price      = $item->price ?? 1;
-        $totalPrice = $price * $quantity;
-
-        $date            = null;
-        $timeString      = null;
-        $excursionTimeId = null;
-        $excursionDayId  = null;
-
-        if ($data['type_model'] === 'excursion') {
-
-            $timeModel = \App\Models\ExcursionTime::with('day')
-                ->findOrFail($data['time_id']);
-
-            if (! $timeModel->day || $timeModel->day->excursion_id != $item->id) {
-                abort(422, 'الوقت غير تابع لهذه الرحلة');
+            if (! isset($modelMap[$data['type_model']])) {
+                abort(422, 'نوع المنتج غير صالح');
             }
 
-            $date            = $data['date'];
-            $timeString      = $timeModel->from_time . '-' . $timeModel->to_time;
-            $excursionTimeId = $timeModel->id;
-            $excursionDayId  = $timeModel->excursion_day_id;
-        }
+            $item = $modelMap[$data['type_model']]::findOrFail($data['id']);
 
-        $order = $this->model->create([
-            'user_id'           => $authUser->id,
-            'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
-            'price'             => $totalPrice,
-            'quantity'          => $quantity,
-            'status'            => 'pending',
-            'payment_method'    => 'cash',
-            'payment_status'    => 'pending',
-            'orderable_id'      => $item->id,
-            'orderable_type'    => get_class($item),
-            'hotel_id'          => $data['hotel_id'] ?? null,
-            'room_number'       => $data['room_number'] ?? null,
-            'date'              => $date,
-            'time'              => $timeString,
-            'excursion_time_id' => $excursionTimeId,
-            'excursion_day_id'  => $excursionDayId,
-            'notes'             => $data['notes'] ?? null,
-            'is_tour_leader'    => $isTourLeader,
-        ]);
+            $quantity = $data['quantity'] ?? 1;
+            $price    = $item->price ?? 0;
 
-        $factory = (new Factory)
-            ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+            $date            = null;
+            $timeString      = null;
+            $excursionTimeId = null;
+            $offerTimeId     = null;
 
-        $db = $factory->createFirestore()->database();
+            if ($data['type_model'] === 'excursion') {
 
-        $sendNotificationHelper = new SendNotificationHelper();
+                $time = \App\Models\ExcursionTime::where('id', $data['excursion_time_id'] ?? null)
+                    ->where('excursion_id', $item->id)
+                    ->firstOrFail();
 
-        $firestoreOrderData = [
-            'id'                => $order->id,
-            'order_number'      => $order->order_number,
-            'customer_id'       => $order->user->id,
-            'customer_name'     => $order->user->name,
-            'customer_phone'    => $order->user->phone,
-            'hotel_id'          => $order->hotel_id,
-            'hotel_name'        => $order->hotel?->name[app()->getLocale()] ?? null,
-            'category_name'     => $item->categoryExcursion?->name[app()->getLocale()] ?? null,
-            'sub_category_name' => $item->subcategoryExcursion?->name[app()->getLocale()] ?? null,
-            'excursion_name'    => $item->name[app()->getLocale()] ?? null,
-            'image'             => $item->image ?? null,
-            'room_number'       => $order->room_number,
-            'orderable_id'      => $item->id,
-            'orderable_type'    => $data['type_model'],
-            'quantity'          => $order->quantity,
-            'date'              => $order->date ?? now(),
-            'time'              => $order->time,
-            'type'              => $data['type'] ?? 'normal',
-            'notes'             => $order->notes,
-            'price'             => $order->price,
-            'is_tour_leader'    => $order->is_tour_leader,
-            'status'            => 'pending',
-            'payment_method'    => 'cash',
-            'payment_status'    => 'pending',
-            'created_at'        => now(),
-            'updated_at'        => now(),
-        ];
-
-        $db->collection('customers')
-            ->document($order->user->id)
-            ->collection('orders')
-            ->document((string) $order->id)
-            ->set($firestoreOrderData);
-
-        $tourLeaders = $order->hotel?->tourLeaders ?? collect();
-
-        foreach ($tourLeaders as $tourLeader) {
-
-            if (! empty($tourLeader->fcm_token)) {
-                $sendNotificationHelper->sendNotification([
-                    'title_en' => 'New Order',
-                    'body_en'  => 'A new order assigned to your hotel',
-                    'title_ar' => 'طلب جديد',
-                    'body_ar'  => 'تم إضافة طلب جديد مرتبط بالفندق',
-                    'order_id' => $order->id,
-                ], [$tourLeader->fcm_token]);
+                $date            = $data['date'] ?? abort(422, 'التاريخ مطلوب');
+                $timeString      = "{$time->from_time}-{$time->to_time}";
+                $excursionTimeId = $time->id;
             }
 
-            $db->collection('tour_leaders')
-                ->document($tourLeader->id)
+            if ($data['type_model'] === 'offer') {
+
+                $time = \App\Models\OfferTime::where('id', $data['offer_time_id'] ?? null)
+                    ->where('offer_id', $item->id)
+                    ->firstOrFail();
+
+                $date        = $data['date'] ?? abort(422, 'التاريخ مطلوب');
+                $timeString  = "{$time->from_time}-{$time->to_time}";
+                $offerTimeId = $time->id;
+            }
+
+            $order = $this->model->create([
+                'user_id'           => $user->id,
+                'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
+                'price'             => $price * $quantity,
+                'quantity'          => $quantity,
+                'status'            => 'pending',
+                'payment_method'    => 'cash',
+                'payment_status'    => 'pending',
+                'orderable_id'      => $item->id,
+                'orderable_type'    => get_class($item),
+                'hotel_id'          => $data['hotel_id'] ?? null,
+                'room_number'       => $data['room_number'] ?? null,
+                'date'              => $date,
+                'time'              => $timeString,
+                'excursion_time_id' => $excursionTimeId,
+                'offer_time_id'     => $offerTimeId,
+                'notes'             => $data['notes'] ?? null,
+                'is_tour_leader'    => $user->type === UserType::REPRESENTATIVE,
+            ]);
+
+            $firestoreData = [
+                'id'             => $order->id,
+                'order_number'   => $order->order_number,
+                'customer_id'    => $user->id,
+                'customer_name'  => $user->name,
+                'customer_phone' => $user->phone,
+                'hotel_id'       => $order->hotel_id,
+                'hotel_name'     => $order->hotel?->name[app()->getLocale()] ?? null,
+                'name'           => is_array($item->name ?? null)
+                    ? $item->name[app()->getLocale()] ?? null
+                    : $item->name ?? null,
+                'image'          => $item->image ?? null,
+                'room_number'    => $order->room_number,
+                'quantity'       => $order->quantity,
+                'date'           => $order->date,
+                'time'           => $order->time,
+                'notes'          => $order->notes,
+                'price'          => $order->price,
+                'status'         => 'pending',
+                'payment_method' => 'cash',
+                'created_at'     => now()->toDateTimeString(),
+            ];
+
+            $firebase = app('firebase.firestore')->database();
+
+            $firebase->collection('customers')
+                ->document((string) $user->id)
                 ->collection('orders')
                 ->document((string) $order->id)
-                ->set($firestoreOrderData);
-        }
+                ->set($firestoreData);
 
-        User::where('type', UserType::SUPPLIER)
-            ->where('category_excursion_id', $item->category_excursion_id ?? null)
-            ->chunk(100, function ($suppliers) use (
-                $firestoreOrderData,
-                $db,
-                $sendNotificationHelper,
-                $order
-            ) {
-                foreach ($suppliers as $supplier) {
+            $notifier = new SendNotificationHelper();
 
-                    if (! empty($supplier->fcm_token)) {
-                        $sendNotificationHelper->sendNotification([
-                            'title_en' => 'New Order Received',
-                            'body_en'  => 'You have a new order',
-                            'title_ar' => 'طلب جديد',
-                            'body_ar'  => 'لديك طلب جديد',
-                            'order_id' => $order->id,
-                        ], [$supplier->fcm_token]);
-                    }
+            foreach ($order->hotel?->tourLeaders ?? [] as $leader) {
 
-                    $db->collection('supplier')
-                        ->document($supplier->id)
-                        ->collection('orders')
-                        ->document((string) $order->id)
-                        ->set($firestoreOrderData);
+                if ($leader->fcm_token) {
+                    $notifier->sendNotification([
+                        'title_en' => 'New Order',
+                        'body_en'  => 'A new order assigned to your hotel',
+                        'title_ar' => 'طلب جديد',
+                        'body_ar'  => 'تم إضافة طلب جديد مرتبط بالفندق',
+                        'order_id' => $order->id,
+                    ], [$leader->fcm_token]);
                 }
-            });
-        $adminUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'admin');
-        })->get();
-        Notification::send(
-            $adminUsers,
-            new DashboardNotification($order->id, $order->user->name, $order->price, 'order')
-        );
-        return $order;
-    }
 
+                $firebase->collection('tour_leaders')
+                    ->document((string) $leader->id)
+                    ->collection('orders')
+                    ->document((string) $order->id)
+                    ->set($firestoreData);
+            }
+
+            User::where('type', UserType::SUPPLIER)
+                ->where('category_excursion_id', $item->category_excursion_id ?? null)
+                ->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
+
+                    foreach ($suppliers as $supplier) {
+
+                        if ($supplier->fcm_token) {
+                            $notifier->sendNotification([
+                                'title_en' => 'New Order Received',
+                                'body_en'  => 'You have a new order',
+                                'title_ar' => 'طلب جديد',
+                                'body_ar'  => 'لديك طلب جديد',
+                                'order_id' => $order->id,
+                            ], [$supplier->fcm_token]);
+                        }
+
+                        $firebase->collection('suppliers')
+                            ->document((string) $supplier->id)
+                            ->collection('orders')
+                            ->document((string) $order->id)
+                            ->set($firestoreData);
+                    }
+                });
+
+            /**
+             * Notify Admin Dashboard
+             */
+            $admins = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->get();
+
+            Notification::send(
+                $admins,
+                new DashboardNotification(
+                    $order->id,
+                    $user->name,
+                    $order->price,
+                    'order'
+                )
+            );
+
+            return $order;
+        });
+    }
     public function store(array $data)
     {
         $user = auth()->user();
 
         if (! $user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'المستخدم غير موجود',
-            ], 401);
+            return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
         }
 
-        $map = [
-            'real_estate'        => \App\Models\RealEstate::class,
-            'event'              => \App\Models\Event::class,
-            'excursion'          => \App\Models\Excursion::class,
-            'offer'              => \App\Models\Offer::class,
-            'additional_service' => \App\Models\AdditionalService::class,
-        ];
+        return DB::transaction(function () use ($data, $user) {
 
-        if (! isset($map[$data['type_model']])) {
-            return response()->json(['success' => false, 'message' => 'نوع المنتج غير صالح'], 422);
-        }
+            $modelMap = [
+                'real_estate'        => \App\Models\RealEstate::class,
+                'event'              => \App\Models\Event::class,
+                'excursion'          => \App\Models\Excursion::class,
+                'offer'              => \App\Models\Offer::class,
+                'additional_service' => \App\Models\AdditionalService::class,
+            ];
 
-        $item = $map[$data['type_model']]::findOrFail($data['id']);
-
-        $quantity   = $data['quantity'] ?? 1;
-        $price      = $item->price ?? 1;
-        $totalPrice = $price * $quantity;
-
-        $date            = null;
-        $timeString      = null;
-        $excursionTimeId = null;
-        $excursionDayId  = null;
-
-        if ($data['type_model'] === 'excursion') {
-
-            if (empty($data['time_id']) || empty($data['date'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'يجب اختيار اليوم والوقت',
-                ], 422);
+            if (! isset($modelMap[$data['type_model']])) {
+                abort(422, 'نوع المنتج غير صالح');
             }
 
-            $timeModel = \App\Models\ExcursionTime::with('day')->findOrFail($data['time_id']);
+            $item = $modelMap[$data['type_model']]::findOrFail($data['id']);
 
-            if (! $timeModel->day || $timeModel->day->excursion_id != $item->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'الوقت غير تابع لهذه الرحلة',
-                ], 422);
+            $quantity = $data['quantity'] ?? 1;
+            $price    = $item->price ?? 0;
+
+            $date            = null;
+            $timeString      = null;
+            $excursionTimeId = null;
+            $offerTimeId     = null;
+
+            if ($data['type_model'] === 'excursion') {
+
+                if (empty($data['excursion_time_id']) || empty($data['date'])) {
+                    abort(422, 'يجب اختيار اليوم والوقت');
+                }
+
+                $time = \App\Models\ExcursionTime::where('id', $data['excursion_time_id'])
+                    ->where('excursion_id', $item->id)
+                    ->firstOrFail();
+
+                $date            = $data['date'];
+                $timeString      = "{$time->from_time}-{$time->to_time}";
+                $excursionTimeId = $time->id;
             }
 
-            $date            = $data['date'];
-            $timeString      = $timeModel->from_time . '-' . $timeModel->to_time;
-            $excursionTimeId = $timeModel->id;
-            $excursionDayId  = $timeModel->excursion_day_id;
-        }
+            if ($data['type_model'] === 'offer') {
 
-        if (in_array($data['type_model'], ['real_estate'])) {
+                if (empty($data['offer_time_id']) || empty($data['date'])) {
+                    abort(422, 'يجب اختيار اليوم والوقت');
+                }
 
-            $order = $this->model->create([
-                'user_id'        => $user->id,
-                'order_number'   => 'ORD-' . strtoupper(Str::random(10)),
-                'price'          => $totalPrice,
-                'currency'       => 'USD',
-                'quantity'       => $quantity,
-                'status'         => 'pending',
-                'payment_method' => 'free',
-                'payment_status' => 'paid',
+                $time = \App\Models\OfferTime::where('id', $data['offer_time_id'])
+                    ->where('offer_id', $item->id)
+                    ->firstOrFail();
 
-                'orderable_id'   => $item->id,
-                'orderable_type' => get_class($item),
+                $date        = $data['date'];
+                $timeString  = "{$time->from_time}-{$time->to_time}";
+                $offerTimeId = $time->id;
+            }
 
-                'hotel_id'       => $data['hotel_id'] ?? null,
-                'room_number'    => $data['room_number'] ?? null,
+            /** Free Order (Real Estate) */
+            if ($data['type_model'] === 'real_estate') {
 
-                'date'           => $date,
-                'time'           => $timeString,
-            ]);
+                $order = $this->createOrder($user, $item, $data, [
+                    'payment_method'    => 'free',
+                    'payment_status'    => 'paid',
+                    'date'              => $date,
+                    'time'              => $timeString,
+                    'excursion_time_id' => $excursionTimeId,
+                    'offer_time_id'     => $offerTimeId,
+                ]);
 
-            return response()->json([
-                'success'      => true,
-                'message'      => 'تم التسجيل بنجاح',
-                'order_number' => $order->order_number,
-            ]);
-        }
-
-        try {
+                return response()->json([
+                    'success'      => true,
+                    'order_number' => $order->order_number,
+                ]);
+            }
 
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
@@ -282,7 +271,7 @@ class OrderService
                     'price_data' => [
                         'currency'     => 'usd',
                         'product_data' => [
-                            'name' => $item->name['en'] ?? 'Product',
+                            'name' => is_array($item->name) ? ($item->name['en'] ?? 'Product') : $item->name,
                         ],
                         'unit_amount'  => (int) ($price * 100),
                     ],
@@ -292,84 +281,38 @@ class OrderService
                 'cancel_url'           => url('/payment/cancel'),
             ]);
 
-            $order = $this->model->create([
-                'user_id'           => $user->id,
-                'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
-                'price'             => $totalPrice,
-                'currency'          => 'USD',
-                'quantity'          => $quantity,
-
-                'status'            => 'pending',
-                'payment_method'    => $data['payment_method'] ?? 'stripe',
+            $order = $this->createOrder($user, $item, $data, [
+                'payment_method'    => 'stripe',
+                'payment_status'    => 'pending',
                 'payment_id'        => $session->id,
-
-                'orderable_id'      => $item->id,
-                'orderable_type'    => get_class($item),
-
-                'hotel_id'          => $data['hotel_id'] ?? null,
-                'room_number'       => $data['room_number'] ?? null,
-
                 'date'              => $date,
                 'time'              => $timeString,
                 'excursion_time_id' => $excursionTimeId,
-                'excursion_day_id'  => $excursionDayId,
+                'offer_time_id'     => $offerTimeId,
             ]);
-
-            $itemNameEn = '';
-            $itemNameAr = '';
-
-            if (isset($item->name)) {
-                if (is_array($item->name)) {
-                    $itemNameEn = $item->name['en'] ?? reset($item->name);
-                    $itemNameAr = $item->name['ar'] ?? reset($item->name);
-                } else {
-                    $itemNameEn = $item->name;
-                    $itemNameAr = $item->name;
-                }
-            } else {
-                $itemNameEn = 'a product';
-                $itemNameAr = 'منتج';
-            }
-
-            $notificationData = [
-                'title_en' => 'New Order Received',
-                'body_en'  => "You have a new order for {$itemNameEn} ",
-                'title_ar' => 'تم استلام طلب جديد',
-                'body_ar'  => "لديك طلب جديد لـ {$itemNameAr}",
-                'order_id' => $order->id,
-            ];
-
-            // User::where('type', UserType::SUPPLIER)
-            //     ->where('category_excursion_id', $item->category_excursion_id)
-            //     ->chunk(100, function ($users) use ($notificationData) {
-            //         $sendNotificationHelper = new SendNotificationHelper();
-            //         foreach ($users as $user) {
-            //             if (! empty($user->fcm_token)) {
-            //                 $sendNotificationHelper->sendNotification(
-            //                     $notificationData,
-            //                     [$user->fcm_token]
-            //                 );
-            //             }
-            //         }
-            //     });
-
-
 
             return response()->json([
                 'success'      => true,
                 'order_number' => $order->order_number,
                 'redirect_url' => $session->url,
             ]);
+        });
+    }
 
-        } catch (\Exception $e) {
-
-            Log::error('Stripe Error', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'فشل إنشاء عملية الدفع',
-            ], 500);
-        }
+    private function createOrder($user, $item, array $data, array $extra = [])
+    {
+        return $this->model->create(array_merge([
+            'user_id'        => $user->id,
+            'order_number'   => 'ORD-' . strtoupper(Str::random(10)),
+            'price'          => ($item->price ?? 0) * ($data['quantity'] ?? 1),
+            'currency'       => 'USD',
+            'quantity'       => $data['quantity'] ?? 1,
+            'status'         => 'pending',
+            'orderable_id'   => $item->id,
+            'orderable_type' => get_class($item),
+            'hotel_id'       => $data['hotel_id'] ?? null,
+            'room_number'    => $data['room_number'] ?? null,
+        ], $extra));
     }
 
     public function update($id, $data)
