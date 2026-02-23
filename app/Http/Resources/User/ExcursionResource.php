@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources\User;
 
 use Illuminate\Http\Request;
@@ -28,21 +27,16 @@ class ExcursionResource extends JsonResource
             'hours'                     => $this->hours,
             'city'                      => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
 
-                    'days' => $this->whenLoaded('days', function () {
-            return $this->days->map(function ($day) {
-                return [
-                    'id'   => $day->id,
-                    'day'  => $day->day,
-                    'times' => $day->times->map(function ($time) {
-                        return [
-                            'id'        => $time->id,
-                            'from_time' => $time->from_time,
-                            'to_time'   => $time->to_time,
-                        ];
-                    })->values(),
-                ];
-            })->values();
-        }),
+            'times'                     => $this->whenLoaded('times', function () {
+                return $this->times->map(function ($time) {
+                    return [
+                        'id'        => $time->id,
+                        'from_time' => $time->from_time,
+                        'to_time'   => $time->to_time,
+                    ];
+                })->values();
+            }),
+
         ];
     }
 }
