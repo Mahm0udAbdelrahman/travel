@@ -48,11 +48,9 @@ class StoreOfferRequest extends FormRequest
             'is_active'       => ['required', 'boolean'],
             'excursion_ids'   => ['required', 'array'],
             'excursion_ids.*' => ['integer', 'exists:excursions,id'],
-            // 'days'            => ['nullable', 'array'],
-            // 'days.*'          => ['array'],
-            // 'days.*.*'        => ['integer', 'exists:excursion_days,id'],
             'times'           => ['nullable', 'array'],
-            'times.*'         => ['integer', 'exists:excursion_times,id'],
+            'times.*'         => ['array'], // كل رحلة فيها مصفوفة أوقات
+            'times.*.*'       => ['integer', 'exists:excursion_times,id'],
         ];
     }
 
