@@ -246,7 +246,8 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input excursion-checkbox custom-check"
                                                         type="checkbox" value="{{ $excursion->id }}"
-                                                        name="excursion_ids[]" id="excursion-{{ $excursion->id }}" data-price="{{ $excursion->price }}">
+                                                        name="excursion_ids[]" id="excursion-{{ $excursion->id }}"
+                                                        data-price="{{ $excursion->price }}">
                                                 </div>
                                             </div>
 
@@ -260,9 +261,9 @@
                                                 </span>
                                             </div>
 
-                                            <hr class="my-3 opacity-10">
+                                            {{--  <hr class="my-3 opacity-10">  --}}
 
-                                            <div id="excursion-times-{{ $excursion->id }}" class="excursion-times mt-2">
+                                            {{--  <div id="excursion-times-{{ $excursion->id }}" class="excursion-times mt-2">
                                                 <select name="times[{{ $excursion->id }}][]"
                                                     class="form-select form-select-sm" multiple disabled>
                                                     <option value="">{{ __('Select Time') }}</option>
@@ -272,7 +273,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div>  --}}
                                         </label>
                                     </div>
                                 </div>
@@ -294,7 +295,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-light d-flex justify-content-between">
+                            <h6 class="mb-0">{{ __('Times') }}</h6>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="addTime()">
+                                + {{ __('Add Time') }}
+                            </button>
+                        </div>
+
+                        <div class="card-body" id="times-wrapper">
+                        </div>
+                    </div>
                 </div>
+
+
 
                 {{-- Submit --}}
                 <div class="text-end mb-5">
@@ -383,5 +397,48 @@
 
             calculate();
         });
+    </script>
+
+    <script>
+        let timeIndex = 0;
+
+        function addTime() {
+            const wrapper = document.getElementById('times-wrapper');
+
+            let html = `
+
+           <div class="row g-2 mb-2 align-items-end time-block">
+
+    <div class="col-md-5">
+        <label class="form-label">{{ __('From Time') }}</label>
+        <input type="time"
+               name="times[${timeIndex}][from_time]"
+               class="form-control"
+               required>
+    </div>
+
+    <div class="col-md-5">
+        <label class="form-label">{{ __('To Time') }}</label>
+        <input type="time"
+               name="times[${timeIndex}][to_time]"
+               class="form-control"
+               required>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label d-block">&nbsp;</label>
+        <button type="button"
+                class="btn btn-danger w-100"
+                onclick="this.closest('.time-block').remove()">
+            X
+        </button>
+    </div>
+
+</div>
+        `;
+
+            wrapper.insertAdjacentHTML('beforeend', html);
+            timeIndex++;
+        }
     </script>
 @endpush

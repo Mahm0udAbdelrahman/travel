@@ -60,10 +60,7 @@
                         'ru' => 'Russian',
                         'fr' => 'French',
                     ];
-                    $selectedExcursions = $offer
-                        ->excursions()
-                        ->withPivot('excursion_day_id', 'excursion_time_id')
-                        ->get();
+                    $selectedExcursions = $offer->excursions()->withPivot('excursion_time_id')->get();
                 @endphp
 
                 {{-- translations --}}
@@ -129,12 +126,14 @@
                                 <div class="col-md-6">
                                     <label>{{ __('Start Date') }}</label>
                                     <input type="date" name="start_date"
-                                        value="{{ old('start_date', $offer->start_date) }}" class="form-control">
+                                        value="{{ old('start_date', optional($offer->start_date)->format('Y-m-d')) }}"
+                                        class="form-control">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label>{{ __('End Date') }}</label>
-                                    <input type="date" name="end_date" value="{{ old('end_date', $offer->end_date) }}"
+                                    <input type="date" name="end_date"
+                                        value="{{ old('end_date', optional($offer->end_date)->format('Y-m-d')) }}"
                                         class="form-control">
                                 </div>
 
@@ -201,22 +200,42 @@
                                                 class="badge bg-success">${{ number_format($excursion->price, 2) }}</span>
                                         </div>
 
-                                        <select name="times[{{ $excursion->id }}]" id="time-{{ $excursion->id }}"
-                                            class="form-select form-select-sm mt-2">
-                                            <option value="">Time</option>
+                                        {{--  <select name="times[{{ $excursion->id }}][]" id="time-{{ $excursion->id }}"
+                                            class="form-select form-select-sm mt-2" multiple
+                                            {{ $pivot ? '' : 'disabled' }}>
+
                                             @foreach ($excursion->times as $time)
                                                 <option value="{{ $time->id }}"
-                                                    {{ $selectedTime == $time->id ? 'selected' : '' }}>
+                                                    {{ in_array(
+                                                        $time->id,
+                                                        old(
+                                                            "times.$excursion->id",
+                                                            $selectedExcursions->where('id', $excursion->id)->pluck('pivot.excursion_time_id')->toArray(),
+                                                        ),
+                                                    )
+                                                        ? 'selected'
+                                                        : '' }}>
                                                     {{ $time->from_time }} - {{ $time->to_time }}
                                                 </option>
                                             @endforeach
-                                        </select>
+                                        </select>  --}}
 
                                     </div>
                                 </div>
                             @endforeach
 
                         </div>
+
+                         <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{ __('Times') }}</h6>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="addTime()">
+                                + {{ __('Add Time') }}
+                            </button>
+                        </div>
+
+                        <div class="card-body" id="times-wrapper"></div>
+                    </div>
                     </div>
 
                     <div class="card-footer text-end">
@@ -239,55 +258,86 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            const excursions = @json($excursions->load('days.times'));
-            const selectedTimes = @json($selectedExcursions->mapWithKeys(fn($e) => [$e->id => $e->pivot->excursion_time_id]));
-
             function calc() {
-                let t = 0;
+                let total = 0;
                 document.querySelectorAll('.excursion-checkbox:checked')
-                    .forEach(c => t += parseFloat(c.dataset.price));
-                document.getElementById('totalPrice').innerText = t.toFixed(2);
-            }
-
-            function fillTimes(excId, dayId, select) {
-                select.innerHTML = '<option value="">Time</option>';
-                let ex = excursions.find(e => e.id == excId);
-                let day = ex?.days.find(d => d.id == dayId);
-                day?.times.forEach(time => {
-                    let o = document.createElement('option');
-                    o.value = time.id;
-                    o.textContent = time.from_time + ' - ' + time.to_time;
-                    select.appendChild(o);
-                });
-                if (selectedTimes[excId]) select.value = selectedTimes[excId];
+                    .forEach(cb => total += parseFloat(cb.dataset.price));
+                document.getElementById('totalPrice').innerText = total.toFixed(2);
             }
 
             document.querySelectorAll('.excursion-checkbox').forEach(cb => {
-                let id = cb.value;
-                let daySel = document.getElementById('day-' + id);
-                let timeSel = document.getElementById('time-' + id);
+                const id = cb.value;
+                const timeSelect = document.getElementById('time-' + id);
 
-                cb.addEventListener('change', () => {
-                    daySel.disabled = !cb.checked;
-                    if (!cb.checked) {
-                        daySel.value = '';
-                        timeSel.innerHTML = '<option value="">Time</option>';
-                        timeSel.disabled = true;
+                timeSelect.disabled = !cb.checked;
+
+                cb.addEventListener('change', function() {
+                    timeSelect.disabled = !this.checked;
+                    if (!this.checked) {
+                        [...timeSelect.options].forEach(o => o.selected = false);
                     }
                     calc();
                 });
             });
 
-            document.querySelectorAll('.excursion-day-select').forEach(sel => {
-                sel.addEventListener('change', function() {
-                    let id = this.dataset.excursionId;
-                    let timeSel = document.getElementById('time-' + id);
-                    timeSel.disabled = false;
-                    fillTimes(id, this.value, timeSel);
-                });
-            });
-
             calc();
         });
+
+        let timeIndex = 0;
+
+        {{--  document.addEventListener('DOMContentLoaded', function() {
+            const oldTimes = @json($preparedTimes);
+
+            oldTimes.forEach(time => {
+                addTime(time);
+            });
+        });  --}}
+
+        function addTime(data = null) {
+            const wrapper = document.getElementById('times-wrapper');
+
+            function to24Hour(time12h) {
+                if (!time12h) return '';
+                const [time, modifier] = time12h.split(' ');
+                let [hours, minutes] = time.split(':');
+                if (modifier === 'PM' && hours !== '12') hours = parseInt(hours) + 12;
+                if (modifier === 'AM' && hours === '12') hours = '00';
+                return `${hours.toString().padStart(2,'0')}:${minutes}`;
+            }
+
+            let fromVal = to24Hour(data?.from_time ?? '');
+            let toVal = to24Hour(data?.to_time ?? '');
+
+            let html = `
+    <div class="row g-2 mb-2 align-items-end time-block">
+        <div class="col-md-5">
+            <label class="form-label">From Time</label>
+            <input type="time"
+                   name="times[${timeIndex}][from_time]"
+                   class="form-control"
+                   value="${fromVal}"
+                   required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">To Time</label>
+            <input type="time"
+                   name="times[${timeIndex}][to_time]"
+                   class="form-control"
+                   value="${toVal}"
+                   required>
+        </div>
+        <div class="col-md-2 d-flex justify-content-end">
+            <button type="button"
+                    class="btn btn-danger w-100"
+                    onclick="this.closest('.time-block').remove()">
+                X
+            </button>
+        </div>
+    </div>
+    `;
+
+            wrapper.insertAdjacentHTML('beforeend', html);
+            timeIndex++;
+        }
     </script>
 @endpush

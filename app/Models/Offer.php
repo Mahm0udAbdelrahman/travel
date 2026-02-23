@@ -46,4 +46,9 @@ class Offer extends Model
     {
         return $this->morphMany(Favorite::class, 'favoritable');
     }
+
+    public function offerTimes()
+    {
+        return $this->hasMany(OfferTime::class, 'offer_id');
+    }
 }
