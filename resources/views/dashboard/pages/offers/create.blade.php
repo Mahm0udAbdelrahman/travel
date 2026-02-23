@@ -262,7 +262,7 @@
 
                                             <hr class="my-3 opacity-10">
 
-                                            <div id="excursion-times-{{ $excursion->id }}" class="excursion-times">
+                                            <div id="excursion-times-{{ $excursion->id }}" class="excursion-times mt-2">
                                                 <select name="times[{{ $excursion->id }}]"
                                                     class="form-select form-select-sm" disabled>
                                                     <option value="">{{ __('Select Time') }}</option>
@@ -280,7 +280,7 @@
                         </div>
                     </div>
 
-                    {{--  Footer
+                    Footer
                     <div class="card-footer bg-white py-3 border-top">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -293,7 +293,7 @@
                                 <span class="h3 fw-bold text-primary mb-0">$<span id="totalPrice">0.00</span></span>
                             </div>
                         </div>
-                    </div>  --}}
+                    </div>
                 </div>
 
                 {{-- Submit --}}
@@ -315,12 +315,10 @@
             const excursionItems = document.querySelectorAll('.excursion-item');
             const totalPriceEl = document.getElementById('totalPrice');
 
-            const excursions = @json($excursions->load('times'));
-
             function calculate() {
                 let total = 0;
                 checkboxes.forEach(cb => {
-                    if (cb.checked) total += parseFloat(cb.dataset.price);
+                    if (cb.checked) total += parseFloat(cb.dataset.price) || 0;
                 });
                 totalPriceEl.innerText = total.toFixed(2);
             }
@@ -328,46 +326,17 @@
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', function() {
                     const excursionId = this.value;
-                    const daysTimesContainer = document.getElementById(`excursion-times-${excursionId}`);
+                    const timeSelect = document.querySelector(
+                        `#excursion-times-${excursionId} select`);
 
                     if (this.checked) {
-                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
-                            dayCb.disabled = false;
-                        });
-                        daysTimesContainer.querySelectorAll('select').forEach(sel => {
-                            sel.disabled = true;
-                            sel.value = '';
-                        });
+                        timeSelect.disabled = false;
                     } else {
-                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
-                            dayCb.checked = false;
-                            dayCb.disabled = true;
-                        });
-                        daysTimesContainer.querySelectorAll('select').forEach(sel => {
-                            sel.disabled = true;
-                            sel.value = '';
-                        });
+                        timeSelect.disabled = true;
+                        timeSelect.value = '';
                     }
 
                     calculate();
-                });
-            });
-
-            document.querySelectorAll('.excursion-excursion-times').forEach(container => {
-                container.querySelectorAll('.day-checkbox').forEach(dayCb => {
-                    dayCb.addEventListener('change', function() {
-                        const excursionId = container.id.replace('excursion-times-', '');
-                        const dayId = this.value;
-                        const timeSelect = container.querySelector(
-                            `select[name='times[${excursionId}][${dayId}]']`);
-
-                        if (this.checked) {
-                            timeSelect.disabled = false;
-                        } else {
-                            timeSelect.value = '';
-                            timeSelect.disabled = true;
-                        }
-                    });
                 });
             });
 
@@ -381,45 +350,35 @@
             document.getElementById('excursionSearch').addEventListener('keyup', function() {
                 const key = this.value.toLowerCase();
                 excursionItems.forEach(item => {
-                    item.style.display = item.innerText.toLowerCase().includes(key) ?
-                        'block' : 'none';
+                    item.style.display = item.innerText.toLowerCase().includes(key) ? 'block' :
+                        'none';
                 });
             });
 
-            document.getElementById('selectAll').onclick = () => {
+            document.getElementById('selectAll').addEventListener('click', () => {
                 excursionItems.forEach(item => {
                     if (item.style.display !== 'none') {
                         const cb = item.querySelector('.excursion-checkbox');
                         cb.checked = true;
 
-                        const daysTimesContainer = document.getElementById(`excursion-times-${cb.value}`);
-                        daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
-                            dayCb.disabled = false;
-                        });
+                        const timeSelect = document.querySelector(
+                            `#excursion-times-${cb.value} select`);
+                        timeSelect.disabled = false;
                     }
                 });
                 calculate();
-            };
+            });
 
-            document.getElementById('clearAll').onclick = () => {
+            document.getElementById('clearAll').addEventListener('click', () => {
                 checkboxes.forEach(cb => {
-                    cb.addEventListener('change', function() {
-                        const excursionId = this.value;
-                        const timeSelect = document.querySelector(
-                            `#excursion-times-${excursionId} select`);
-
-                        if (this.checked) {
-                            timeSelect.disabled = false;
-                        } else {
-                            timeSelect.disabled = true;
-                            timeSelect.value = '';
-                        }
-
-                        calculate();
-                    });
+                    cb.checked = false;
+                    const timeSelect = document.querySelector(
+                        `#excursion-times-${cb.value} select`);
+                    timeSelect.disabled = true;
+                    timeSelect.value = '';
                 });
                 calculate();
-            };
+            });
 
             calculate();
         });
