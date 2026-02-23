@@ -263,8 +263,8 @@
                                             <hr class="my-3 opacity-10">
 
                                             <div id="excursion-times-{{ $excursion->id }}" class="excursion-times mt-2">
-                                                <select name="times[{{ $excursion->id }}]"
-                                                    class="form-select form-select-sm" disabled>
+                                                <select name="times[{{ $excursion->id }}][]"
+                                                    class="form-select form-select-sm" multiple disabled>
                                                     <option value="">{{ __('Select Time') }}</option>
                                                     @foreach ($excursion->times as $time)
                                                         <option value="{{ $time->id }}">
@@ -334,6 +334,7 @@
                     } else {
                         timeSelect.disabled = true;
                         timeSelect.value = '';
+                        timeSelect.selectedIndex = -1;
                     }
 
                     calculate();

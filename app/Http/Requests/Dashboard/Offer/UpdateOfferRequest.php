@@ -52,8 +52,7 @@ class UpdateOfferRequest extends FormRequest
             'days.*'          => ['array'],
             'days.*.*'        => ['integer', 'exists:excursion_days,id'],
             'times'           => ['nullable', 'array'],
-            'times.*'         => ['array'],
-            'times.*.*'       => ['integer', 'exists:excursion_times,id'],
+            'times.*'         => ['integer', 'exists:excursion_times,id'],
 
         ];
     }
