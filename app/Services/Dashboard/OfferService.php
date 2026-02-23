@@ -46,11 +46,11 @@ class OfferService
         $excursionIds = $data['excursion_ids'] ?? [];
         $times        = $data['times'] ?? [];
 
-        foreach ($excursionIds as $excursionId) {
-            $attachData[$excursionId][] = [
-                'excursion_time_id' => $times[$excursionId] ?? null,
-            ];
-        }
+ foreach ($excursionIds as $excursionId) {
+    $offer->excursions()->attach($excursionId, [
+        'excursion_time_id' => $times[$excursionId] ?? null,
+    ]);
+}
 
         foreach ($attachData as $excursionId => $pivotDataArray) {
             foreach ($pivotDataArray as $pivotData) {

@@ -263,16 +263,15 @@
                                             <hr class="my-3 opacity-10">
 
                                             <div id="excursion-times-{{ $excursion->id }}" class="excursion-times">
-                                                @foreach ($excursion->times as $time)
-                                                    <div class="time-block d-flex align-items-center mb-2">
-                                                        <select name="times[{{ $excursion->id }}][]"
-                                                            class="form-select form-select-sm" disabled>
-                                                            <option value="{{ $time->id }}">
-                                                                {{ $time->from_time }} - {{ $time->to_time }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                @endforeach
+                                                <select name="times[{{ $excursion->id }}]"
+                                                    class="form-select form-select-sm" disabled>
+                                                    <option value="">{{ __('Select Time') }}</option>
+                                                    @foreach ($excursion->times as $time)
+                                                        <option value="{{ $time->id }}">
+                                                            {{ $time->from_time }} - {{ $time->to_time }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </label>
                                     </div>
@@ -316,7 +315,7 @@
             const excursionItems = document.querySelectorAll('.excursion-item');
             const totalPriceEl = document.getElementById('totalPrice');
 
-            const excursions = @json($excursions->load('days.times'));
+            const excursions = @json($excursions->load('times'));
 
             function calculate() {
                 let total = 0;
@@ -329,7 +328,7 @@
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', function() {
                     const excursionId = this.value;
-                    const daysTimesContainer = document.getElementById(`days-times-${excursionId}`);
+                    const daysTimesContainer = document.getElementById(`excursion-times-${excursionId}`);
 
                     if (this.checked) {
                         daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
@@ -354,10 +353,10 @@
                 });
             });
 
-            document.querySelectorAll('.excursion-days-times').forEach(container => {
+            document.querySelectorAll('.excursion-excursion-times').forEach(container => {
                 container.querySelectorAll('.day-checkbox').forEach(dayCb => {
                     dayCb.addEventListener('change', function() {
-                        const excursionId = container.id.replace('days-times-', '');
+                        const excursionId = container.id.replace('excursion-times-', '');
                         const dayId = this.value;
                         const timeSelect = container.querySelector(
                             `select[name='times[${excursionId}][${dayId}]']`);
@@ -393,7 +392,7 @@
                         const cb = item.querySelector('.excursion-checkbox');
                         cb.checked = true;
 
-                        const daysTimesContainer = document.getElementById(`days-times-${cb.value}`);
+                        const daysTimesContainer = document.getElementById(`excursion-times-${cb.value}`);
                         daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
                             dayCb.disabled = false;
                         });
@@ -404,16 +403,19 @@
 
             document.getElementById('clearAll').onclick = () => {
                 checkboxes.forEach(cb => {
-                    cb.checked = false;
+                    cb.addEventListener('change', function() {
+                        const excursionId = this.value;
+                        const timeSelect = document.querySelector(
+                            `#excursion-times-${excursionId} select`);
 
-                    const daysTimesContainer = document.getElementById(`days-times-${cb.value}`);
-                    daysTimesContainer.querySelectorAll('.day-checkbox').forEach(dayCb => {
-                        dayCb.checked = false;
-                        dayCb.disabled = true;
-                    });
-                    daysTimesContainer.querySelectorAll('select').forEach(sel => {
-                        sel.disabled = true;
-                        sel.value = '';
+                        if (this.checked) {
+                            timeSelect.disabled = false;
+                        } else {
+                            timeSelect.disabled = true;
+                            timeSelect.value = '';
+                        }
+
+                        calculate();
                     });
                 });
                 calculate();
