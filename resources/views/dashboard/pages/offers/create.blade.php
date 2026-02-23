@@ -246,7 +246,7 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input excursion-checkbox custom-check"
                                                         type="checkbox" value="{{ $excursion->id }}"
-                                                        name="excursion_ids[]" id="excursion-{{ $excursion->id }}">
+                                                        name="excursion_ids[]" id="excursion-{{ $excursion->id }}" data-price="{{ $excursion->price }}">
                                                 </div>
                                             </div>
 
@@ -280,7 +280,7 @@
                         </div>
                     </div>
 
-                    Footer
+                    {{--  Footer  --}}
                     <div class="card-footer bg-white py-3 border-top">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
