@@ -1,12 +1,12 @@
 <?php
-
 namespace App\Services\Api\User;
 
 use App\Models\Excursion;
 
 class ExcursionService
 {
-    public function __construct(public Excursion $model) {}
+    public function __construct(public Excursion $model)
+    {}
 
     public function index($categoryId = null, $subCategoryId = null)
     {
