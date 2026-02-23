@@ -197,32 +197,19 @@
 
                                         <div class="mt-2">
                                             <span class="badge bg-primary">{{ $excursion->hours }} Hrs</span>
-                                            <span class="badge bg-success">${{ number_format($excursion->price, 2) }}</span>
+                                            <span
+                                                class="badge bg-success">${{ number_format($excursion->price, 2) }}</span>
                                         </div>
 
-                                        <select name="days[{{ $excursion->id }}]" id="day-{{ $excursion->id }}"
-                                            class="form-select form-select-sm mt-2 excursion-day-select"
-                                            data-excursion-id="{{ $excursion->id }}" {{ $pivot ? '' : 'disabled' }}>
-                                            <option value="">Day</option>
-                                            @foreach ($excursion->days as $day)
-                                                <option value="{{ $day->id }}"
-                                                    {{ $selectedDay == $day->id ? 'selected' : '' }}>
-                                                    {{ $day->day }}
+                                        <select name="times[{{ $excursion->id }}]" id="time-{{ $excursion->id }}"
+                                            class="form-select form-select-sm mt-2">
+                                            <option value="">Time</option>
+                                            @foreach ($excursion->times as $time)
+                                                <option value="{{ $time->id }}"
+                                                    {{ $selectedTime == $time->id ? 'selected' : '' }}>
+                                                    {{ $time->from_time }} - {{ $time->to_time }}
                                                 </option>
                                             @endforeach
-                                        </select>
-
-                                        <select name="times[{{ $excursion->id }}]" id="time-{{ $excursion->id }}"
-                                            class="form-select form-select-sm mt-2" {{ $selectedDay ? '' : 'disabled' }}>
-                                            <option value="">Time</option>
-                                            @if ($selectedDay)
-                                                @foreach ($excursion->days->firstWhere('id', $selectedDay)?->times ?? [] as $time)
-                                                    <option value="{{ $time->id }}"
-                                                        {{ $selectedTime == $time->id ? 'selected' : '' }}>
-                                                        {{ $time->from_time }} - {{ $time->to_time }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
                                         </select>
 
                                     </div>

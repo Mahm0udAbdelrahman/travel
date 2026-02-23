@@ -22,9 +22,11 @@
         .day-time-pair {
             gap: 0.5rem;
         }
+
         .day-time-pair input[type="checkbox"] {
             cursor: pointer;
         }
+
         .day-time-pair select {
             min-width: 140px;
         }
@@ -229,7 +231,8 @@
                         <div class="row g-3">
                             @foreach ($excursions as $excursion)
                                 <div class="col-xl-4 col-md-6 excursion-item"
-                                    data-category="{{ $excursion->category_excursion_id }}" data-excursion-id="{{ $excursion->id }}">
+                                    data-category="{{ $excursion->category_excursion_id }}"
+                                    data-excursion-id="{{ $excursion->id }}">
 
                                     <div class="card h-100 border-0 shadow-sm excursion-card-wrapper transition-all">
                                         <label class="card-body p-3 cursor-pointer" for="excursion-{{ $excursion->id }}">
@@ -237,14 +240,13 @@
                                                 <div style="max-width: 80%;">
                                                     <h6 class="fw-bold mb-0 text-dark">
                                                         {{ $excursion->name['en'] ?? '' }}</h6>
-                                                    <small class="text-muted"><i
-                                                            class="fas fa-location-arrow f-10"></i>
+                                                    <small class="text-muted"><i class="fas fa-location-arrow f-10"></i>
                                                         {{ $excursion->city->name[app()->getLocale()] ?? '' }}</small>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input excursion-checkbox custom-check"
-                                                        type="checkbox" value="{{ $excursion->id }}" name="excursion_ids[]"
-                                                        id="excursion-{{ $excursion->id }}">
+                                                        type="checkbox" value="{{ $excursion->id }}"
+                                                        name="excursion_ids[]" id="excursion-{{ $excursion->id }}">
                                                 </div>
                                             </div>
 
@@ -260,27 +262,14 @@
 
                                             <hr class="my-3 opacity-10">
 
-                                            {{-- اختيار أيام وأوقات متعددة --}}
-                                            <div id="days-times-{{ $excursion->id }}" class="excursion-days-times">
-                                                @foreach ($excursion->days as $day)
-                                                    <div class="day-time-pair d-flex align-items-center mb-2">
-                                                        <input type="checkbox"
-                                                            class="day-checkbox me-2"
-                                                            id="day-{{ $excursion->id }}-{{ $day->id }}"
-                                                            name="days[{{ $excursion->id }}][]"
-                                                            value="{{ $day->id }}" disabled>
-
-                                                        <label for="day-{{ $excursion->id }}-{{ $day->id }}"
-                                                            class="me-3 mb-0">{{ $day->day }}</label>
-
-                                                        <select name="times[{{ $excursion->id }}][{{ $day->id }}]"
-                                                            class="form-select form-select-sm excursion-time-select" disabled>
-                                                            <option value="">{{ __('Select Time') }}</option>
-                                                            @foreach ($day->times as $time)
-                                                                <option value="{{ $time->id }}">
-                                                                    {{ $time->from_time }} - {{ $time->to_time }}
-                                                                </option>
-                                                            @endforeach
+                                            <div id="excursion-times-{{ $excursion->id }}" class="excursion-times">
+                                                @foreach ($excursion->times as $time)
+                                                    <div class="time-block d-flex align-items-center mb-2">
+                                                        <select name="times[{{ $excursion->id }}][]"
+                                                            class="form-select form-select-sm" disabled>
+                                                            <option value="{{ $time->id }}">
+                                                                {{ $time->from_time }} - {{ $time->to_time }}
+                                                            </option>
                                                         </select>
                                                     </div>
                                                 @endforeach
@@ -370,7 +359,8 @@
                     dayCb.addEventListener('change', function() {
                         const excursionId = container.id.replace('days-times-', '');
                         const dayId = this.value;
-                        const timeSelect = container.querySelector(`select[name='times[${excursionId}][${dayId}]']`);
+                        const timeSelect = container.querySelector(
+                            `select[name='times[${excursionId}][${dayId}]']`);
 
                         if (this.checked) {
                             timeSelect.disabled = false;

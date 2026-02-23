@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -19,21 +18,19 @@ class Offer extends Model
     ];
 
     protected $casts = [
-        'name'       => 'array',
+        'name'        => 'array',
         'description' => 'array',
         'is_active'   => 'boolean',
-         'start_date' => 'date',
-    'end_date' => 'date',
+        'start_date'  => 'date',
+        'end_date'    => 'date',
     ];
 
-
-
-  public function excursions()
-{
-    return $this->belongsToMany(Excursion::class, 'excursion_offers')
-                ->withPivot('excursion_day_id', 'excursion_time_id')
-                ->withTimestamps();
-}
+    public function excursions()
+    {
+        return $this->belongsToMany(Excursion::class, 'excursion_offers')
+            ->withPivot('excursion_time_id')
+            ->withTimestamps();
+    }
 
     public function scopeActive($query)
     {
