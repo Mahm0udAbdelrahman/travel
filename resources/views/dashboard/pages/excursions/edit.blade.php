@@ -300,10 +300,10 @@
             }
 
 
-            const oldDays = @json($preparedDays);
+            {{--  const oldDays = @json($preparedDays);
             const daysWrapper = document.getElementById('days-wrapper');
 
-            oldDays.forEach(day => addDay(day));
+            oldDays.forEach(day => addDay(day));  --}}
         });
 
         let timeIndex = 0;
