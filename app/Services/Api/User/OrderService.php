@@ -9,6 +9,7 @@ use App\Notifications\DashboardNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use Kreait\Firebase\Factory;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
 
@@ -112,7 +113,9 @@ class OrderService
                 'created_at'     => now()->toDateTimeString(),
             ];
 
-            $firebase = app('firebase.firestore')->database();
+            $factory = (new Factory)
+                ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+            $firebase = $factory->createFirestore()->database();
 
             $firebase->collection('customers')
                 ->document((string) $user->id)
