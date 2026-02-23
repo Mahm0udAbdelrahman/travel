@@ -10,7 +10,7 @@ class ExcursionService
 
     public function index($categoryId = null, $subCategoryId = null)
     {
-        return $this->model->with(['days.times', 'categoryExcursion', 'subcategoryExcursion', 'city'])
+        return $this->model->with(['times', 'categoryExcursion', 'subcategoryExcursion', 'city'])
             ->when($categoryId, function ($q) use ($categoryId) {
                 $q->where('category_excursion_id', $categoryId);
             })
