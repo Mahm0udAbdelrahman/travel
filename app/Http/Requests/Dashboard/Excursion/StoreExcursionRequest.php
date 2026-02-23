@@ -50,9 +50,9 @@ class StoreExcursionRequest extends FormRequest
             'is_active'                 => ['required', 'boolean'],
             'days'                      => 'nullable|array',
             'days.*.day'                => 'nullable|string',
-            'days.*.times'              => 'required|array',
-            'days.*.times.*.from_time'  => 'required',
-            'days.*.times.*.to_time'    => 'required',
+            'times'              => 'required|array',
+            'times.*.from_time'  => 'required',
+            'times.*.to_time'    => 'required',
 
         ];
     }
