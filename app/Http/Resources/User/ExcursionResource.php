@@ -28,13 +28,11 @@ class ExcursionResource extends JsonResource
             'city'                      => $this->city->name[app()->getLocale()] ?? $this->city->name['en'] ?? null,
 
             'times'                     => $this->whenLoaded('times', function () {
-                return $this->times->map(function ($time) {
-                    return [
-                        'id'        => $time->id,
-                        'from_time' => $time->from_time,
-                        'to_time'   => $time->to_time,
-                    ];
-                })->values();
+                return $this->times->map(fn($time) => [
+                    'id'        => $time->id,
+                    'from_time' => $time->from_time,
+                    'to_time'   => $time->to_time,
+                ])->values()->all();
             }),
 
         ];
