@@ -113,6 +113,24 @@ class OrderService
                 'created_at'     => now()->toDateTimeString(),
             ];
 
+            $categoryIds = collect();
+
+/**
+ * Determine supplier categories
+ */
+            if ($data['type_model'] === 'excursion') {
+
+                $categoryIds = collect([$item->category_excursion_id]);
+
+            } elseif ($data['type_model'] === 'offer') {
+
+                $categoryIds = \DB::table('excursion_offers')
+                    ->join('excursions', 'excursions.id', '=', 'excursion_offers.excursion_id')
+                    ->where('excursion_offers.offer_id', $item->id)
+                    ->pluck('excursions.category_excursion_id')
+                    ->unique();
+            }
+
             $factory = (new Factory)
                 ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
             $firebase = $factory->createFirestore()->database();
@@ -144,29 +162,32 @@ class OrderService
                     ->set($firestoreData);
             }
 
-            User::where('type', UserType::SUPPLIER)
-                ->where('category_excursion_id', $item->category_excursion_id ?? null)
-                ->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
+            if ($categoryIds->isNotEmpty()) {
 
-                    foreach ($suppliers as $supplier) {
+                User::where('type', UserType::SUPPLIER)
+                    ->whereIn('category_excursion_id', $categoryIds)
+                    ->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
 
-                        if ($supplier->fcm_token) {
-                            $notifier->sendNotification([
-                                'title_en' => 'New Order Received',
-                                'body_en'  => 'You have a new order',
-                                'title_ar' => 'طلب جديد',
-                                'body_ar'  => 'لديك طلب جديد',
-                                'order_id' => $order->id,
-                            ], [$supplier->fcm_token]);
+                        foreach ($suppliers as $supplier) {
+
+                            if ($supplier->fcm_token) {
+                                $notifier->sendNotification([
+                                    'title_en' => 'New Order Received',
+                                    'body_en'  => 'You have a new order',
+                                    'title_ar' => 'طلب جديد',
+                                    'body_ar'  => 'لديك طلب جديد',
+                                    'order_id' => $order->id,
+                                ], [$supplier->fcm_token]);
+                            }
+
+                            $firebase->collection('suppliers')
+                                ->document((string) $supplier->id)
+                                ->collection('orders')
+                                ->document((string) $order->id)
+                                ->set($firestoreData);
                         }
-
-                        $firebase->collection('suppliers')
-                            ->document((string) $supplier->id)
-                            ->collection('orders')
-                            ->document((string) $order->id)
-                            ->set($firestoreData);
-                    }
-                });
+                    });
+            }
 
             /**
              * Notify Admin Dashboard
