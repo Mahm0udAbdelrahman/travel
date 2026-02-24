@@ -68,54 +68,22 @@
             <form method="POST" action="{{ route('Admin.files.store') }}" enctype="multipart/form-data">
                 @csrf
 
-                {{-- Languages Tabs --}}
-                @php
-                    $langs = [
-                        'ar' => 'Arabic',
-                        'en' => 'English',
-                        'es' => 'Spanish',
-                        'it' => 'Italian',
-                        'de' => 'German',
-                        'ja' => 'Japanese',
-                        'zh' => 'Chinese',
-                        'ru' => 'Russian',
-                        'fr' => 'French',
-                    ];
-                @endphp
-
+                {{-- English Name Only --}}
                 <div class="card shadow-lg border-0 mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h6 class="mb-0">{{ __('Event Translations') }}</h6>
+                        <h6 class="mb-0">{{ __('File Name') }}</h6>
                     </div>
 
                     <div class="card-body">
-                        <ul class="nav nav-tabs mb-4" role="tablist">
-                            @foreach ($langs as $key => $lang)
-                                <li class="nav-item">
-                                    <button class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"
-                                        data-bs-target="#lang-{{ $key }}" type="button">
-                                        {{ $lang }}
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <div class="tab-content">
-                            @foreach ($langs as $key => $lang)
-                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
-                                    id="lang-{{ $key }}">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Name ({{ $lang }})</label>
-                                            <input type="text" name="name[{{ $key }}]"
-                                                value="{{ old("name.$key") }}" class="form-control">
-                                            @error("name.$key")
-                                                <small class="text-danger">{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Name (English)</label>
+                                <input type="text" name="name[en]" value="{{ old('name.en') }}" class="form-control"
+                                    placeholder="Enter file name">
+                                @error('name.en')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>

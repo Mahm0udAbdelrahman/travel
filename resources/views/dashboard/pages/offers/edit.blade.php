@@ -136,11 +136,14 @@
                                 <div class="col-md-3">
                                     <label class="form-label">{{ __('Start Date') }}</label>
                                     <input type="date" name="start_date"
-                                        value="{{ old('start_date', $offer->start_date) }}" class="form-control">
+                                        value="{{ old('start_date', optional($offer->start_date)->format('Y-m-d')) }}"
+                                        class="form-control">
                                 </div>
+
                                 <div class="col-md-3">
                                     <label class="form-label">{{ __('End Date') }}</label>
-                                    <input type="date" name="end_date" value="{{ old('end_date', $offer->end_date) }}"
+                                    <input type="date" name="end_date"
+                                        value="{{ old('end_date', optional($offer->end_date)->format('Y-m-d')) }}"
                                         class="form-control">
                                 </div>
                             </div>

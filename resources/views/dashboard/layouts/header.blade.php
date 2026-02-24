@@ -83,7 +83,7 @@
                         href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <i data-feather="bell"></i>
                         @if (Auth::user()->unreadNotifications()->count())
-                            <span class="badge bg-danger text-black rounded-full z-10 absolute right-0 top-0"
+                            <span class="badge bg-danger text-white rounded-full z-10 absolute right-0 top-0"
                                 style="font-size: 10px; min-width: 18px; height: 18px; line-height: 18px; text-align: center;"
                                 id="notificationsIconCounter">
                                 {{ Auth::user()->unreadNotifications()->count() }}

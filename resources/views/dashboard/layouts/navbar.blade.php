@@ -109,14 +109,14 @@
                     </li>
                 @endcan
 
-                @can('order_additional_services-index')
+                {{--  @can('order_additional_services-index')
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.order_additional_services.index') }}" class="pc-link">
                             <span class="pc-micon"><i data-feather="clipboard"></i></span>
                             <span class="pc-mtext">Order Additional Service</span>
                         </a>
                     </li>
-                @endcan
+                @endcan  --}}
 
                 @can('category_events-index')
                     <li class="pc-item pc-hasmenu">
@@ -186,7 +186,7 @@
                     <li class="pc-item pc-hasmenu">
                         <a href="{{ route('Admin.orders.index') }}" class="pc-link">
                             <span class="pc-micon"><i data-feather="send"></i></span>
-                            <span class="pc-mtext">Orders</span>
+                            <span class="pc-mtext">Reservation</span>
                         </a>
                     </li>
                 @endcan
