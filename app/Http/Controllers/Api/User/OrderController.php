@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\User;
 
 use App\Enums\UserType;
@@ -14,15 +13,18 @@ use App\Notifications\DashboardNotification;
 use App\Services\Api\User\OrderService;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Kreait\Firebase\Factory;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
-use Kreait\Firebase\Factory;
+
 class OrderController extends Controller
 {
     use HttpResponse;
-    public function __construct(public OrderService $orderService) {}
+    public function __construct(public OrderService $orderService)
+    {}
     public function store(OrderRequest $orderRequest)
     {
 
@@ -30,10 +32,10 @@ class OrderController extends Controller
         return $this->orderService->$method($orderRequest->validated());
     }
 
-    public function update($id,OrderUpdateRequest $orderUpdateRequest)
+    public function update($id, OrderUpdateRequest $orderUpdateRequest)
     {
-        $this->orderService->update($id,$orderUpdateRequest->validated());
-        return $this->okResponse([],'Update Order successfully');
+        $this->orderService->update($id, $orderUpdateRequest->validated());
+        return $this->okResponse([], 'Update Order successfully');
     }
 
     public function handle(Request $request)
@@ -73,6 +75,23 @@ class OrderController extends Controller
                 ]);
             }
 
+            $categoryIds = collect();
+
+/**
+ * Determine supplier categories
+ */
+            if ($order->orderable_type === 'App\Models\Excursion') {
+
+                $categoryIds = collect([$order->orderable->category_excursion_id]);
+
+            } elseif ($order->orderable_type === 'App\Models\Offer') {
+
+                $categoryIds = DB::table('excursion_offers')
+                    ->join('excursions', 'excursions.id', '=', 'excursion_offers.excursion_id')
+                    ->where('excursion_offers.offer_id', $order->orderable->id)
+                    ->pluck('excursions.category_excursion_id')
+                    ->unique();
+            }
 
             $factory = (new Factory)
                 ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
@@ -137,33 +156,32 @@ class OrderController extends Controller
                     ->set($firestoreOrderData);
             }
 
-            User::where('type', UserType::SUPPLIER)
-                ->where('category_excursion_id', $item->category_excursion_id ?? null)
-                ->chunk(100, function ($suppliers) use (
-                    $firestoreOrderData,
-                    $db,
-                    $sendNotificationHelper,
-                    $order
-                ) {
-                    foreach ($suppliers as $supplier) {
+            if ($categoryIds->isNotEmpty()) {
 
-                        if (! empty($supplier->fcm_token)) {
-                            $sendNotificationHelper->sendNotification([
-                                'title_en' => 'New Order Received',
-                                'body_en'  => 'You have a new order',
-                                'title_ar' => 'طلب جديد',
-                                'body_ar'  => 'لديك طلب جديد',
-                                'order_id' => $order->id,
-                            ], [$supplier->fcm_token]);
+                User::where('type', UserType::SUPPLIER)
+                    ->whereIn('category_excursion_id', $categoryIds)
+                    ->chunk(100, function ($suppliers) use ($db, $firestoreOrderData, $sendNotificationHelper, $order) {
+
+                        foreach ($suppliers as $supplier) {
+
+                            if ($supplier->fcm_token) {
+                                $sendNotificationHelper->sendNotification([
+                                    'title_en' => 'New Order Received',
+                                    'body_en'  => 'You have a new order',
+                                    'title_ar' => 'طلب جديد',
+                                    'body_ar'  => 'لديك طلب جديد',
+                                    'order_id' => $order->id,
+                                ], [$supplier->fcm_token]);
+                            }
+
+                            $db->collection('suppliers')
+                                ->document((string) $supplier->id)
+                                ->collection('orders')
+                                ->document((string) $order->id)
+                                ->set($firestoreOrderData);
                         }
-
-                        $db->collection('supplier')
-                            ->document($supplier->id)
-                            ->collection('orders')
-                            ->document((string) $order->id)
-                            ->set($firestoreOrderData);
-                    }
-                });
+                    });
+            }
 
             $adminUsers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'admin');
