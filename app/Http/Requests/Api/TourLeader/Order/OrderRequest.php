@@ -47,6 +47,16 @@ class OrderRequest extends FormRequest
 
             'notes'       => 'nullable|string',
 
+             'excursion_time_id' => [
+                Rule::requiredIf(request('type_model') === 'excursion'),
+                'exists:excursion_times,id'
+            ],
+
+            'offer_time_id' => [
+                Rule::requiredIf(request('type_model') === 'offer'),
+                'exists:offer_times,id'
+            ],
+
         ];
     }
     protected function failedValidation(Validator $validator)
