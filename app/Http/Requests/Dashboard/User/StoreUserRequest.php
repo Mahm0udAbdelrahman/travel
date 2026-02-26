@@ -38,6 +38,7 @@ class StoreUserRequest extends FormRequest
             'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             // 'category_excursion_id' => 'required_if:type,' . \App\Enums\UserType::SUPPLIER->value . '|exists:category_excursions,id',
             'category_excursion_id' => ['nullable', 'exists:category_excursions,id'],
+            'sub_category_excursion_id' => ['nullable', 'exists:sub_category_excursions,id'],
 
         ];
     }

@@ -43,7 +43,7 @@ class StoreEventRequest extends FormRequest
             'description.fr'    => ['nullable', 'string', 'max:255'],
             'image'             => ['nullable', 'image'],
             'date'              => ['required', 'date'],
-            'category_event_id' => ['required', 'exists:category_events,id'],
+            'category_event_id' => ['nullable', 'exists:category_events,id'],
             'city_id'           => ['required', 'exists:cities,id'],
             'price'             => ['required', 'string', 'max:255'],
             'is_active'         => ['required', 'boolean'],

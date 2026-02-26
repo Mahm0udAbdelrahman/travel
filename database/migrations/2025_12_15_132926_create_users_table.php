@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('city_id')->nullable()->constrained('cities','id')->nullOnDelete();
             $table->foreignId('hotel_id')->nullable()->constrained('hotels','id')->nullOnDelete();
             $table->foreignId('category_excursion_id')->nullable()->constrained('category_excursions','id')->nullOnDelete();
+            $table->foreignId('sub_category_excursion_id')->nullable()->constrained('sub_category_excursions','id')->nullOnDelete();
             $table->string('arrival_date')->nullable();
             $table->string('departure_date')->nullable();
             $table->string('language')->nullable();

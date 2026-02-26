@@ -35,7 +35,8 @@ class User extends Authenticatable
         'departure_date',
         'language',
         'city_id',
-        'hotel_id'
+        'hotel_id',
+        'sub_category_excursion_id'
     ];
 
     /**
@@ -86,6 +87,11 @@ class User extends Authenticatable
     public function categoryExcursion()
     {
         return $this->belongsTo(CategoryExcursion::class, 'category_excursion_id', 'id');
+    }
+
+    public function subCategoryExcursion()
+    {
+        return $this->belongsTo(SubCategoryExcursion::class, 'sub_category_excursion_id', 'id');
     }
 
     public function OrderStatus()

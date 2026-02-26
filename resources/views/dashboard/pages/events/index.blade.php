@@ -74,7 +74,7 @@
 
                                                     <td>{{ $event->date }}</td>
                                                     <td>{{ $event->city->name[app()->getLocale()] }}</td>
-                                                    <td>{{ $event->categoryEvent->name[app()->getLocale()] }}</td>
+                                                    {{-- <td>{{ $event->categoryEvent->name[app()->getLocale()] }}</td> --}}
                                                     <td>{{ $event->price }}</td>
                                                     <td>{{ $event->is_active == 1 ? 'Active' : 'Unactive' }}
                                                     </td>

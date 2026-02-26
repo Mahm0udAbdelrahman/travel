@@ -46,7 +46,7 @@
                                             <th>{{ __('ID') }}</th>
                                             <th>{{ __('Topic') }}</th>
                                             <th>{{ __('Title') }}</th>
-                                            <th>{{ __('Body') }}</th>
+                                            <th>{{ __('Description') }}</th>
                                             <th>{{ __('Actions') }}</th>
                                         </tr>
                                     </thead>

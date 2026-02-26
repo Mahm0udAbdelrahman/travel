@@ -106,7 +106,7 @@
                                 @error('date') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <label class="form-label">{{ __('Category') }}</label>
                                 <select name="category_event_id" class="form-select">
                                     <option value="">{{ __('Choose...') }}</option>
@@ -118,7 +118,7 @@
                                     @endforeach
                                 </select>
                                 @error('category_event_id') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('City') }}</label>

@@ -116,11 +116,24 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-6" id="sub_category_div" style="display: none;">
+                                        <label class="form-label">{{ __('Sub Category') }}</label>
+                                        <select name="sub_category_excursion_id" id="sub_category_excursion_id"
+                                            class="form-select">
+                                            <option value="">{{ __('Choose...') }}</option>
+                                        </select>
+
+                                        @error('sub_category_excursion_id')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
 
                                     <div class="col-md-6">
                                         <label for="password" class="form-label">{{ __('Password') }}</label>
-                                        <input type="password" name="password" value="{{ old('password') }}" id="password"
-                                            class="form-control" placeholder="{{ __('Enter the user password') }}">
+                                        <input type="password" name="password" value="{{ old('password') }}"
+                                            id="password" class="form-control"
+                                            placeholder="{{ __('Enter the user password') }}">
                                         @error('password')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -144,8 +157,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
         const typeSelect = document.getElementById('type');
         const categoryDiv = document.getElementById('category_div');
+        const categorySelect = document.querySelector('[name="category_excursion_id"]');
+
+        const subCategoryDiv = document.getElementById('sub_category_div');
+        const subCategorySelect = document.getElementById('sub_category_excursion_id');
 
         const supplierValue = 'supplier';
 
@@ -154,11 +172,42 @@
                 categoryDiv.style.display = 'block';
             } else {
                 categoryDiv.style.display = 'none';
+                subCategoryDiv.style.display = 'none';
+                categorySelect.value = '';
+                subCategorySelect.innerHTML = '<option value="">Choose...</option>';
             }
         }
 
         typeSelect.addEventListener('change', toggleCategory);
+        toggleCategory(); // مهم جداً عند reload مع old()
 
-        toggleCategory();
+        categorySelect.addEventListener('change', function() {
+            const categoryId = this.value;
+
+            subCategorySelect.innerHTML = '<option value="">Choose...</option>';
+
+            if (!categoryId) {
+                subCategoryDiv.style.display = 'none';
+                return;
+            }
+
+            fetch(`/admin/sub-categories/${categoryId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.id;
+                            option.textContent =
+                                item.name['{{ app()->getLocale() }}'] ?? item.name['en'];
+                            subCategorySelect.appendChild(option);
+                        });
+
+                        subCategoryDiv.style.display = 'block';
+                    } else {
+                        subCategoryDiv.style.display = 'none';
+                    }
+                });
+        });
     });
 </script>

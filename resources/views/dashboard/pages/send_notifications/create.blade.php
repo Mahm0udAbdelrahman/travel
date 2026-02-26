@@ -62,7 +62,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="body" class="form-label fw-semibold">{{ __('Body') }}</label>
+                                        <label for="body" class="form-label fw-semibold">{{ __('Description') }}</label>
                                         <textarea name="body" id="body" class="form-control" rows="4"
                                             placeholder="{{ __('Enter English Message') }}">{{ old('body') }}</textarea>
                                         @error('body')

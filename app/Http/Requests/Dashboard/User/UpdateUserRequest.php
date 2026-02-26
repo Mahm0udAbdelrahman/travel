@@ -35,6 +35,8 @@ class UpdateUserRequest extends FormRequest
             'is_active' => ['required', 'in:0,1'],
             'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'category_excursion_id' => ['nullable', 'exists:category_excursions,id'],   
+            'sub_category_excursion_id' => ['nullable', 'exists:sub_category_excursions,id'],
+
         ];
     }
 }

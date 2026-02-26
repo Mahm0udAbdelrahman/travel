@@ -62,12 +62,12 @@
                                             <p class="mb-0">{{ $event->date }}</p>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        {{-- <div class="col-md-6">
                                             <label class="fw-bold">{{ __('Category') }}</label>
                                             <p class="mb-0">
                                                 {{ data_get($event->categoryEvent->name, app()->getLocale(), $event->categoryEvent->name['en']) }}
                                             </p>
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-md-6">
                                             <label class="fw-bold">{{ __('City') }}</label>

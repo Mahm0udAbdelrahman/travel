@@ -152,3 +152,8 @@ Route::get('/notifications/count', function () {
         'unread_count' => auth()->user()->unreadNotifications()->count(),
     ]);
 })->name('notifications.count');
+Route::get('admin/sub-categories/{category}', function ($categoryId) {
+    return \App\Models\SubCategoryExcursion::where('category_excursion_id', $categoryId)
+        ->where('is_active', 1)
+        ->get();
+});

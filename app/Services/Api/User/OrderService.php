@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Api\User;
 
 use App\Enums\UserType;
@@ -19,6 +20,195 @@ class OrderService
     {
         Stripe::setApiKey(config('services.stripe.secret'));
     }
+
+    //     public function cashOrder(array $data)
+    //     {
+    //         return DB::transaction(function () use ($data) {
+
+    //             $user = auth()->user();
+
+    //             $modelMap = [
+    //                 'real_estate'        => \App\Models\RealEstate::class,
+    //                 'event'              => \App\Models\Event::class,
+    //                 'excursion'          => \App\Models\Excursion::class,
+    //                 'offer'              => \App\Models\Offer::class,
+    //                 'additional_service' => \App\Models\AdditionalService::class,
+    //             ];
+
+    //             if (! isset($modelMap[$data['type_model']])) {
+    //                 abort(422, 'نوع المنتج غير صالح');
+    //             }
+
+    //             $item = $modelMap[$data['type_model']]::findOrFail($data['id']);
+
+    //             $quantity = $data['quantity'] ?? 1;
+    //             $price    = $item->price ?? 0;
+
+    //             $date            = null;
+    //             $timeString      = null;
+    //             $excursionTimeId = null;
+    //             $offerTimeId     = null;
+
+    //             if ($data['type_model'] === 'excursion') {
+
+    //                 $time = \App\Models\ExcursionTime::where('id', $data['excursion_time_id'] ?? null)
+    //                     ->where('excursion_id', $item->id)
+    //                     ->firstOrFail();
+
+    //                 $date            = $data['date'] ?? abort(422, 'التاريخ مطلوب');
+    //                 $timeString      = "{$time->from_time}-{$time->to_time}";
+    //                 $excursionTimeId = $time->id;
+    //             }
+
+    //             if ($data['type_model'] === 'offer') {
+
+    //                 $time = \App\Models\OfferTime::where('id', $data['offer_time_id'] ?? null)
+    //                     ->where('offer_id', $item->id)
+    //                     ->firstOrFail();
+
+    //                 $date        = $data['date'] ?? abort(422, 'التاريخ مطلوب');
+    //                 $timeString  = "{$time->from_time}-{$time->to_time}";
+    //                 $offerTimeId = $time->id;
+    //             }
+
+    //             $order = $this->model->create([
+    //                 'user_id'           => $user->id,
+    //                 'order_number'      => 'ORD-' . strtoupper(Str::random(10)),
+    //                 'price'             => $price * $quantity,
+    //                 'quantity'          => $quantity,
+    //                 'status'            => 'pending',
+    //                 'payment_method'    => 'cash',
+    //                 'payment_status'    => 'pending',
+    //                 'orderable_id'      => $item->id,
+    //                 'orderable_type'    => get_class($item),
+    //                 'hotel_id'          => $data['hotel_id'] ?? null,
+    //                 'room_number'       => $data['room_number'] ?? null,
+    //                 'date'              => $date,
+    //                 'time'              => $timeString,
+    //                 'excursion_time_id' => $excursionTimeId,
+    //                 'offer_time_id'     => $offerTimeId,
+    //                 'notes'             => $data['notes'] ?? null,
+    //                 'is_tour_leader'    => $user->type === UserType::REPRESENTATIVE,
+    //             ]);
+
+    //             $firestoreData = [
+    //                 'id'             => $order->id,
+    //                 'order_number'   => $order->order_number,
+    //                 'customer_id'    => $user->id,
+    //                 'customer_name'  => $user->name,
+    //                 'customer_phone' => $user->phone,
+    //                 'hotel_id'       => $order->hotel_id,
+    //                 'hotel_name'     => $order->hotel?->name[app()->getLocale()] ?? null,
+    //                 'name'           => is_array($item->name ?? null)
+    //                     ? $item->name[app()->getLocale()] ?? null
+    //                     : $item->name ?? null,
+    //                 'image'          => $item->image ?? null,
+    //                 'room_number'    => $order->room_number,
+    //                 'quantity'       => $order->quantity,
+    //                 'date'           => $order->date,
+    //                 'time'           => $order->time,
+    //                 'notes'          => $order->notes,
+    //                 'price'          => $order->price,
+    //                 'status'         => 'pending',
+    //                 'payment_method' => 'cash',
+    //                 'created_at'     => now()->toDateTimeString(),
+    //             ];
+
+    //             $categoryIds = collect();
+
+    // /**
+    //  * Determine supplier categories
+    //  */
+    //             if ($data['type_model'] === 'excursion') {
+
+    //                 $categoryIds = collect([$item->category_excursion_id]);
+
+    //             } elseif ($data['type_model'] === 'offer') {
+
+    //                 $categoryIds = \DB::table('excursion_offers')
+    //                     ->join('excursions', 'excursions.id', '=', 'excursion_offers.excursion_id')
+    //                     ->where('excursion_offers.offer_id', $item->id)
+    //                     ->pluck('excursions.category_excursion_id')
+    //                     ->unique();
+    //             }
+
+    //             $factory = (new Factory)
+    //                 ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+    //             $firebase = $factory->createFirestore()->database();
+
+    //             $firebase->collection('customers')
+    //                 ->document((string) $user->id)
+    //                 ->collection('orders')
+    //                 ->document((string) $order->id)
+    //                 ->set($firestoreData);
+
+    //             $notifier = new SendNotificationHelper();
+
+    //             foreach ($order->hotel?->tourLeaders ?? [] as $leader) {
+
+    //                 if ($leader->fcm_token) {
+    //                     $notifier->sendNotification([
+    //                         'title_en' => 'New Order',
+    //                         'body_en'  => 'A new order assigned to your hotel',
+    //                         'title_ar' => 'طلب جديد',
+    //                         'body_ar'  => 'تم إضافة طلب جديد مرتبط بالفندق',
+    //                         'order_id' => $order->id,
+    //                     ], [$leader->fcm_token]);
+    //                 }
+
+    //                 $firebase->collection('tour_leaders')
+    //                     ->document((string) $leader->id)
+    //                     ->collection('orders')
+    //                     ->document((string) $order->id)
+    //                     ->set($firestoreData);
+    //             }
+
+    //             if ($categoryIds->isNotEmpty()) {
+
+    //                 User::where('type', UserType::SUPPLIER)
+    //                     ->whereIn('category_excursion_id', $categoryIds)
+    //                     ->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
+
+    //                         foreach ($suppliers as $supplier) {
+
+    //                             if ($supplier->fcm_token) {
+    //                                 $notifier->sendNotification([
+    //                                     'title_en' => 'New Order Received',
+    //                                     'body_en'  => 'You have a new order',
+    //                                     'title_ar' => 'طلب جديد',
+    //                                     'body_ar'  => 'لديك طلب جديد',
+    //                                     'order_id' => $order->id,
+    //                                 ], [$supplier->fcm_token]);
+    //                             }
+
+    //                             $firebase->collection('suppliers')
+    //                                 ->document((string) $supplier->id)
+    //                                 ->collection('orders')
+    //                                 ->document((string) $order->id)
+    //                                 ->set($firestoreData);
+    //                         }
+    //                     });
+    //             }
+
+    //             /**
+    //              * Notify Admin Dashboard
+    //              */
+    //             $admins = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->get();
+
+    //             Notification::send(
+    //                 $admins,
+    //                 new DashboardNotification(
+    //                     $order->id,
+    //                     $user->name,
+    //                     $order->price,
+    //                     'order'
+    //                 )
+    //             );
+
+    //             return $order;
+    //         });
+    //     }
+
 
     public function cashOrder(array $data)
     {
@@ -113,26 +303,35 @@ class OrderService
                 'created_at'     => now()->toDateTimeString(),
             ];
 
-            $categoryIds = collect();
+            /** ================== Categories ================== */
+            $categoryIds    = collect();
+            $subcategoryIds = collect();
 
-/**
- * Determine supplier categories
- */
             if ($data['type_model'] === 'excursion') {
 
-                $categoryIds = collect([$item->category_excursion_id]);
-
+                $categoryIds    = collect([$item->category_excursion_id])->filter();
+                $subcategoryIds = collect([$item->sub_category_excursion_id])->filter();
             } elseif ($data['type_model'] === 'offer') {
 
-                $categoryIds = \DB::table('excursion_offers')
+                $categoryIds = DB::table('excursion_offers')
                     ->join('excursions', 'excursions.id', '=', 'excursion_offers.excursion_id')
                     ->where('excursion_offers.offer_id', $item->id)
                     ->pluck('excursions.category_excursion_id')
+                    ->filter()
+                    ->unique();
+
+                $subcategoryIds = DB::table('excursion_offers')
+                    ->join('excursions', 'excursions.id', '=', 'excursion_offers.excursion_id')
+                    ->where('excursion_offers.offer_id', $item->id)
+                    ->pluck('excursions.sub_category_excursion_id')
+                    ->filter()
                     ->unique();
             }
 
+            /** ================== Firebase ================== */
             $factory = (new Factory)
                 ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
+
             $firebase = $factory->createFirestore()->database();
 
             $firebase->collection('customers')
@@ -143,6 +342,7 @@ class OrderService
 
             $notifier = new SendNotificationHelper();
 
+            /** ================== Tour Leaders ================== */
             foreach ($order->hotel?->tourLeaders ?? [] as $leader) {
 
                 if ($leader->fcm_token) {
@@ -162,36 +362,42 @@ class OrderService
                     ->set($firestoreData);
             }
 
+            /** ================== Suppliers ================== */
             if ($categoryIds->isNotEmpty()) {
 
-                User::where('type', UserType::SUPPLIER)
-                    ->whereIn('category_excursion_id', $categoryIds)
-                    ->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
+                $query = User::where('type', UserType::SUPPLIER)
+                    ->whereIn('category_excursion_id', $categoryIds);
 
-                        foreach ($suppliers as $supplier) {
+                if ($subcategoryIds->isNotEmpty()) {
+                    $query->whereIn('sub_category_excursion_id', $subcategoryIds);
+                }
 
-                            if ($supplier->fcm_token) {
-                                $notifier->sendNotification([
-                                    'title_en' => 'New Order Received',
-                                    'body_en'  => 'You have a new order',
-                                    'title_ar' => 'طلب جديد',
-                                    'body_ar'  => 'لديك طلب جديد',
-                                    'order_id' => $order->id,
-                                ], [$supplier->fcm_token]);
-                            }
+                $query->chunk(100, function ($suppliers) use ($firebase, $firestoreData, $notifier, $order) {
 
-                            $firebase->collection('suppliers')
-                                ->document((string) $supplier->id)
-                                ->collection('orders')
-                                ->document((string) $order->id)
-                                ->set($firestoreData);
+                    $suppliers = $suppliers->unique('id');
+
+                    foreach ($suppliers as $supplier) {
+
+                        if ($supplier->fcm_token) {
+                            $notifier->sendNotification([
+                                'title_en' => 'New Order Received',
+                                'body_en'  => 'You have a new order',
+                                'title_ar' => 'طلب جديد',
+                                'body_ar'  => 'لديك طلب جديد',
+                                'order_id' => $order->id,
+                            ], [$supplier->fcm_token]);
                         }
-                    });
+
+                        $firebase->collection('suppliers')
+                            ->document((string) $supplier->id)
+                            ->collection('orders')
+                            ->document((string) $order->id)
+                            ->set($firestoreData);
+                    }
+                });
             }
 
-            /**
-             * Notify Admin Dashboard
-             */
+            /** ================== Admin Notification ================== */
             $admins = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->get();
 
             Notification::send(
@@ -207,6 +413,14 @@ class OrderService
             return $order;
         });
     }
+
+
+
+
+
+
+
+
     public function store(array $data)
     {
         $user = auth()->user();
