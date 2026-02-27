@@ -192,6 +192,16 @@
                 @endcan
 
 
+                @can('reports-index')
+                    <li class="pc-item pc-hasmenu">
+                        <a href="{{ route('Admin.reports') }}" class="pc-link">
+                            <span class="pc-micon"><i data-feather="bar-chart-2"></i></span>
+                            <span class="pc-mtext">Reports</span>
+                        </a>
+                    </li>
+                @endcan
+
+
 
 
 

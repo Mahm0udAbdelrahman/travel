@@ -31,6 +31,7 @@ class PermissionSeeder extends Seeder
             'hotels-index', 'hotels-show', 'hotels-create', 'hotels-update', 'hotels-delete',
             'sub_category_excursions-index', 'sub_category_excursions-create', 'sub_category_excursions-update', 'sub_category_excursions-delete',
             'orders-index' , 'orders-show' , 'orders-create' , 'orders-update' , 'orders-delete',
+            'reports-index' , 'reports-show',
 
 
         ]
