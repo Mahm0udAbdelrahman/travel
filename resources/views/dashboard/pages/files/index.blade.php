@@ -60,7 +60,7 @@
                                             @forelse($files as $file)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $file->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $file->name['en'] }}</td>
                                                      <td>{{ count($file->tourLeaders) ?? 0 }}</td>
                                                     <td>{{ $file->is_active == 1 ? 'Active' : 'Unactive' }}
                                                     </td>

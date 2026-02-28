@@ -6,6 +6,7 @@ use App\Models\AdditionalService;
 use App\Models\CategoryExcursion;
 use App\Models\Event;
 use App\Models\Excursion;
+use App\Models\File;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\RealEstate;
@@ -95,6 +96,12 @@ class ReportController extends Controller
                 $q->whereDate('date', '<=', $request->to)
             )
 
+            ->when($request->file_id, function ($q) use ($request) {
+            $q->whereHas('hotel.tourLeaders.files', function ($fileQuery) use ($request) {
+                $fileQuery->where('files.id', $request->file_id);
+            });
+        })
+
             ->with(['user', 'hotel', 'orderable', 'lastStatus'])
             ->latest();
         if ($request->has('export')) {
@@ -106,6 +113,7 @@ class ReportController extends Controller
         return view('dashboard.pages.reports.index', [
             'orders'          => $orders,
             'hotels'          => Hotel::active()->get(),
+            'files'           => File::active()->get(),
             'categories'      => CategoryExcursion::active()->get(),
             'subCategories'   => SubCategoryExcursion::active()->get(),
             'suppliers'       => $suppliers,

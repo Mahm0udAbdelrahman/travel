@@ -11,15 +11,16 @@
                     <div class="row align-items-center">
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h4 class="mb-0 text-primary"><i
-                                        class="fas fa-chart-line me-2"></i>{{ __('Advanced Reports') }}</h4>
+                                <h4 class="mb-0 text-primary">
+                                    <i class="fas fa-chart-line me-2"></i>{{ __('Advanced Reports') }}
+                                </h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Statistics Cards (اختياري لكنه يعطي شكل فخم) --}}
+            {{-- Statistics Cards --}}
             <div class="row mb-4">
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm bg-primary text-white">
@@ -39,7 +40,7 @@
                 </div>
             </div>
 
-            {{-- Filters Section --}}
+
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white border-bottom-0 pt-4">
                     <h5 class="mb-0"><i class="fas fa-filter text-muted me-2"></i>{{ __('Filters') }}</h5>
@@ -54,6 +55,19 @@
                                 @foreach ($hotels as $hotel)
                                     <option value="{{ $hotel->id }}" @selected(request('hotel_id') == $hotel->id)>
                                         {{ $hotel->name['en'] ?? '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold text-primary">Representative File</label>
+                            <select name="file_id" class="form-control select2">
+                                <option value="">All Files</option>
+                                @foreach ($files as $file)
+                                    <option value="{{ $file->id }}" @selected(request('file_id') == $file->id)>
+                                        {{ is_array($file->name) ? ($file->name['en'] ?? $file->name['ar']) : $file->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -94,7 +108,6 @@
                             </select>
                         </div>
 
-                        {{-- Excursion Filters (Animated appearance) --}}
                         <div class="col-md-3" id="excursion_category_wrapper" style="display:none;">
                             <label class="form-label fw-bold text-primary">Category</label>
                             <select name="category_id" class="form-select border-primary-subtle">
@@ -121,14 +134,12 @@
 
                         <div class="col-md-3">
                             <label class="form-label fw-bold">From Date</label>
-                            <input type="date" name="from" class="form-control border-light-subtle"
-                                value="{{ request('from') }}">
+                            <input type="date" name="from" class="form-control border-light-subtle" value="{{ request('from') }}">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label fw-bold">To Date</label>
-                            <input type="date" name="to" class="form-control border-light-subtle"
-                                value="{{ request('to') }}">
+                            <input type="date" name="to" class="form-control border-light-subtle" value="{{ request('to') }}">
                         </div>
 
                         <div class="col-md-12 text-end mt-4">
@@ -144,7 +155,7 @@
                 </div>
             </div>
 
-            {{-- Table Section --}}
+
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -154,11 +165,11 @@
                                     <th class="ps-4">Order No</th>
                                     <th>User Info</th>
                                     <th>Hotel</th>
+                                    <th>File/Group</th>
                                     <th>Service</th>
                                     <th>Booking Date</th>
                                     <th>Amount</th>
                                     <th>Status</th>
-                                    <th class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -171,58 +182,55 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="ms-1">
                                                     <h6 class="mb-0">{{ $order->user?->name }}</h6>
-                                                    <small
-                                                        class="badge bg-light-info text-info">{{ $order->user?->type?->label() }}</small>
+                                                    <small class="badge bg-light-info text-info">
+                                                        {{ $order->user?->type?->label() ?? 'N/A' }}
+                                                    </small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td><span class="text-muted">{{ $order->hotel?->name['en'] ?? '-' }}</span></td>
+
+                                        {{-- عرض الملفات المرتبطة --}}
+                                        <td>
+                                            @php
+                                                // جلب أسماء الملفات الفريدة للممثلين التابعين لهذا الفندق
+                                                $assignedFiles = $order->hotel?->tourLeaders->flatMap->files->unique('id');
+                                            @endphp
+                                            @forelse($assignedFiles as $f)
+                                                <span class="badge bg-light-primary text-primary border border-primary-subtle mb-1">
+                                                    <i class="fas fa-folder-open me-1"></i>
+                                                    {{ is_array($f->name) ? ($f->name['en'] ?? $f->name['ar']) : $f->name }}
+                                                </span>
+                                            @empty
+                                                <span class="text-muted small italic">No File</span>
+                                            @endforelse
+                                        </td>
+
                                         <td>
                                             @php
                                                 $typeLabels = [
-                                                    \App\Models\Excursion::class => [
-                                                        'label' => 'Excursion',
-                                                        'class' => 'bg-light-primary text-primary',
-                                                    ],
-                                                    \App\Models\RealEstate::class => [
-                                                        'label' => 'Real Estate',
-                                                        'class' => 'bg-light-warning text-warning',
-                                                    ],
-                                                    \App\Models\Event::class => [
-                                                        'label' => 'Event',
-                                                        'class' => 'bg-light-danger text-danger',
-                                                    ],
-                                                    \App\Models\AdditionalService::class => [
-                                                        'label' => 'Service',
-                                                        'class' => 'bg-light-secondary text-secondary',
-                                                    ],
+                                                    \App\Models\Excursion::class => ['label' => 'Excursion', 'class' => 'bg-light-primary text-primary'],
+                                                    \App\Models\RealEstate::class => ['label' => 'Real Estate', 'class' => 'bg-light-warning text-warning'],
+                                                    \App\Models\Event::class => ['label' => 'Event', 'class' => 'bg-light-danger text-danger'],
+                                                    \App\Models\AdditionalService::class => ['label' => 'Service', 'class' => 'bg-light-secondary text-secondary'],
                                                 ];
-                                                $config = $typeLabels[$order->orderable_type] ?? [
-                                                    'label' => 'Other',
-                                                    'class' => 'bg-light-dark text-dark',
-                                                ];
+                                                $config = $typeLabels[$order->orderable_type] ?? ['label' => 'Other', 'class' => 'bg-light-dark text-dark'];
                                             @endphp
                                             <span class="badge {{ $config['class'] }} mb-1">{{ $config['label'] }}</span>
                                             <div class="small fw-bold">{{ $order->orderable?->name['en'] ?? '-' }}</div>
                                         </td>
                                         <td><i class="far fa-calendar-alt me-1 text-muted"></i> {{ $order->date }}</td>
-                                        <td><span class="fw-bold text-dark">${{ number_format($order->price, 2) }}</span>
-                                        </td>
+                                        <td><span class="fw-bold text-dark">${{ number_format($order->price, 2) }}</span></td>
                                         <td>
-                                            <span
-                                                class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">
+                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">
                                                 {{ $order->lastStatus?->status ?? '-' }}
                                             </span>
                                         </td>
-                                        {{--  <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-light-primary border-0"><i class="fas fa-eye"></i></button>
-                                    </td>  --}}
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center py-5">
-                                            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png"
-                                                style="width: 100px;" class="mb-3 opacity-25">
+                                            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 100px;" class="mb-3 opacity-25">
                                             <p class="text-muted">No orders found matching your criteria.</p>
                                         </td>
                                     </tr>
@@ -254,8 +262,8 @@
                     $(category).fadeIn();
                     $(subCategory).fadeIn();
                 } else {
-                    category.style.display = 'none';
-                    subCategory.style.display = 'none';
+                    $(category).hide();
+                    $(subCategory).hide();
                 }
             }
 
@@ -271,35 +279,20 @@
     </script>
 
     <style>
-        /* تحسينات بسيطة للـ CSS */
-        .card {
-            border-radius: 12px;
-        }
-
-        .form-select,
-        .form-control {
-            border-radius: 8px;
-            padding: 0.6rem 1rem;
-        }
-
+        .card { border-radius: 12px; }
+        .form-select, .form-control { border-radius: 8px; padding: 0.6rem 1rem; }
         .table thead th {
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #6c757d;
+            font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px;
+            text-transform: uppercase; color: #6c757d;
         }
-
-        .bg-light-info {
-            background-color: #e0f7fa !important;
-        }
-
-        .bg-light-primary {
-            background-color: #e3f2fd !important;
-        }
-
-        .badge {
-            padding: 0.5em 0.8em;
+        .bg-light-info { background-color: #e0f7fa !important; }
+        .bg-light-primary { background-color: #e3f2fd !important; }
+        .badge { padding: 0.5em 0.8em; }
+        .select2-container--default .select2-selection--single {
+            height: 45px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
         }
     </style>
 @endpush

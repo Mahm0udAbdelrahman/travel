@@ -60,7 +60,7 @@
                                             @forelse($hotels as $hotel)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $hotel->name[app()->getLocale()] }}</td>
+                                                    <td>{{ $hotel->name['en'] }}</td>
                                                     <td>{{ count($hotel->tourLeaders) ?? 0 }}</td>
                                                     <td>{{ $hotel->is_active == 1 ? 'Active' : 'Unactive' }}
                                                     </td>
