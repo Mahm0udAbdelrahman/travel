@@ -8,17 +8,16 @@ use App\Traits\HttpResponse;
 use App\Http\Resources\TourLeader\HotelTourLeaderResource;
 use App\Services\Api\TourLeader\HotelTourLeaderService;
 
-class HotelTourLeaderController extends Controller
-{
+class HotelTourLeaderController extends Controller {
     use HttpResponse;
-    public function __construct(public HotelTourLeaderService $hotelTourLeaderService)
-    {}
 
-    public function index()
-    {
+    public function __construct( public HotelTourLeaderService $hotelTourLeaderService ) {
+    }
+
+    public function index() {
         $data = $this->hotelTourLeaderService->index();
 
-        return $this->simpleResponse($data,HotelTourLeaderResource::class);
+        return $this->okResponse( new HotelTourLeaderResource( $data ), 'Hotel Tour Leader retrieved successfully' );
     }
 
 }
