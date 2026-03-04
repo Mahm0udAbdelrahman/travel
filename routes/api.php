@@ -95,6 +95,8 @@ Route::group(['middleware' => ['lang']], function () {
     Route::group(['prefix' => 'tour_leader', 'middleware' => ['auth:sanctum', 'tour_leader']], function () {
           Route::post('/orders', [TourLeaderOrderController::class, 'store']);
             Route::get('/hotels_tour_leader', [HotelTourLeaderController::class, 'index']);
+            Route::post('/send-notification',[HotelTourLeaderController::class, 'sendNotification']
+    );
     });
 });
 Route::get('payment/opay/return', [OrderController::class, 'handleReturn'])->name('payment.opay.return');
