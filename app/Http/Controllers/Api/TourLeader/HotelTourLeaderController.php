@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\TourLeader;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\TourLeader\SendNotificationRequest;
+use App\Http\Requests\Api\TourLeader\SendNotification\SendNotificationRequest;
 use App\Http\Resources\TourLeader\HotelTourLeaderResource;
 use App\Services\Api\TourLeader\HotelTourLeaderService;
 use App\Traits\HttpResponse;

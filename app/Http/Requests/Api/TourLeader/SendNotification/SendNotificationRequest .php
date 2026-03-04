@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\TourLeader;
+namespace App\Http\Requests\Api\TourLeader\SendNotification;
 
 use Illuminate\Foundation\Http\FormRequest;
 
