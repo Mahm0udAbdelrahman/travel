@@ -3,32 +3,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Hotel extends Model
-{
-    protected $fillable = ['name', 'is_active'];
+class Hotel extends Model {
+    protected $fillable = [ 'name', 'is_active' ];
 
     protected $casts = [
         'name'      => 'array',
         'is_active' => 'boolean',
     ];
 
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
+    public function scopeActive( $query ) {
+        return $query->where( 'is_active', true );
     }
 
-    public function favorites()
-    {
-        return $this->morphMany(Favorite::class, 'favoritable');
+    public function favorites() {
+        return $this->morphMany( Favorite::class, 'favoritable' );
     }
 
-    public function tourLeaders()
-    {
-        return $this->belongsToMany(User::class, 'tour_leader_hotels', 'hotel_id', 'user_id');
+    public function tourLeaders() {
+        return $this->belongsToMany( User::class, 'tour_leader_hotels', 'hotel_id', 'user_id' );
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
+    public function orders() {
+        return $this->hasMany( Order::class );
     }
+
+    public function customers() {
+        return $this->hasMany( User::class, 'hotel_id', 'id' );
+    }
+
+
 }

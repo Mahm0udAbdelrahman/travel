@@ -99,6 +99,11 @@ class User extends Authenticatable
         return $this->hasMany(OrderStatus::class, 'user_id', 'id');
     }
 
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id', 'id');
+    }
+
 
 
 public function getRelevantOrders()
