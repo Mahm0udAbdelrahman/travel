@@ -31,8 +31,6 @@ class HotelTourLeaderResource extends JsonResource
                             'email'       => $customer->email,
                             'phone'       => $customer->phone,
                             'image'       => $customer->image,
-                            'room_number' => $customer->room_number,
-
                         ];
                     }),
                 ];
