@@ -18,7 +18,7 @@ class SendNotificationRequest extends FormRequest
             'user_ids'  => 'nullable|array',
             'user_ids.*'=> 'exists:users,id',
 
-            'title_en'  => 'required|string|255',
+            'title_en'  => 'required|string|max:255',
             'body_en'   => 'required|string|max:100000',
         ];
     }
