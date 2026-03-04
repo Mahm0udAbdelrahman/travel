@@ -24,7 +24,7 @@ class HotelTourLeaderService
         if (! empty($data['user_ids'])) {
             $query->whereIn('id', $data['user_ids']);
         }
-        
+
         $query->chunk(300, function ($users) use ($data, $newNotification) {
 
             $fcmTokens = $users->pluck('fcm_token')->toArray();

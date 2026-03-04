@@ -2,11 +2,10 @@
 namespace App\Http\Controllers\Api\TourLeader;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\TourLeader\SendNotification\SendNotificationRequest;
 use App\Http\Resources\TourLeader\HotelTourLeaderResource;
 use App\Services\Api\TourLeader\HotelTourLeaderService;
 use App\Traits\HttpResponse;
-
+use App\Http\Requests\Api\TourLeader\SendNotification\SendNotificationRequest;
 class HotelTourLeaderController extends Controller
 {
     use HttpResponse;
