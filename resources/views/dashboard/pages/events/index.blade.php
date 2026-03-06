@@ -51,7 +51,7 @@
                                                 <th>{{ __('Image') }}</th>
                                                 <th>{{ __('Date') }}</th>
                                                 <th>{{ __('City') }}</th>
-                                                <th>{{ __('Category Event') }}</th>
+                                                {{--  <th>{{ __('Category Event') }}</th>  --}}
                                                 <th>{{ __('Price') }}</th>
                                                 <th>{{ __('Active') }}</th>
                                                 <th>
