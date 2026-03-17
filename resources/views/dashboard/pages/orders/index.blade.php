@@ -167,7 +167,7 @@
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @can('orders-show')
-                                                    <a href="{{ route('Admin.orders.show', $order) }}" class="btn btn-sm btn-icon btn-light-primary"><i class="fas fa-eye"></i></a>
+                                                    <a href="{{ route('Admin.orders.show', $order) }}" class="btn btn-sm btn-icon btn-light-warning"><i class="fas fa-eye"></i></a>
                                                     @endcan
                                                     @can('orders-update')
                                                      <a href="{{ route('Admin.orders.edit', $order) }}" class="btn btn-sm btn-icon btn-light-primary"><i class="fas fa-edit"></i></a>
