@@ -166,8 +166,15 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
+                                                    @can('orders-show')
                                                     <a href="{{ route('Admin.orders.show', $order) }}" class="btn btn-sm btn-icon btn-light-primary"><i class="fas fa-eye"></i></a>
+                                                    @endcan
+                                                    @can('orders-update')
+                                                     <a href="{{ route('Admin.orders.edit', $order) }}" class="btn btn-sm btn-icon btn-light-primary"><i class="fas fa-edit"></i></a>
+                                                    @endcan
+                                                    @can('orders-delete')
                                                     <button type="button" class="btn btn-sm btn-icon btn-light-danger delete-btn" data-id="{{ $order->id }}"><i class="far fa-trash-alt"></i></button>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
